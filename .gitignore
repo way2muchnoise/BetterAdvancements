@@ -1,0 +1,50 @@
+## General stuff to keep the repo clean
+*.class
+dist
+download
+.DS_Store
+CREDITS-fml.txt
+options.txt
+MinecraftForge-Credits.txt
+MinecraftForge-License.txt
+
+## gradle
+/.gradle
+/build
+/eclipse
+## ForgeGradle
+/run
+/out
+
+## idea
+/.idea
+*.iml
+*.ipr
+*.iws
+/classes
+
+## eclipse
+/.settings
+/.metadata
+/.classpath
+/.project
+/bin
+
+## netbeans
+.nb*
+/nbproject/private/
+/nbbuild/
+output/
+install.bat
+.cache
+build.xml
+natives/
+nbproject/
+
+## minecraft
+/config/
+/mods/
+/saves/
+/logs/
+/crash-reports/
+/screenshots/

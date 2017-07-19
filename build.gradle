@@ -1,0 +1,164 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
+}
+
+plugins {
+    id "com.matthewprenger.cursegradle" version "1.0.9"
+    id "com.jfrog.bintray" version "1.7"
+}
+
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'idea'
+
+repositories {
+    maven {
+        name = "forge"
+        url = "http://files.minecraftforge.net/maven"
+    }
+    maven {
+        name = "jei"
+        url =  "http://dvs1.progwml6.com/files/maven"
+    }
+}
+
+dependencies {
+    runtime "mezz.jei:jei_${version_minecraft}:${version_jei}"
+    compile fileTree(dir: 'lib', include: '*.jar')
+}
+
+group = "betteradvancements"
+archivesBaseName = "BetterAdvancements-" + version_minecraft
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version = version_major + '.' + version_minor + '.' + version_revis
+
+//adds the build number to the end of the version string if on a build server
+if (System.getenv('TRAVIS_BUILD_NUMBER') != null) {
+    version += ".${System.getenv('TRAVIS_BUILD_NUMBER')}"
+}
+
+minecraft {
+    version = "${version_minecraft}-${version_forge}"
+    mappings = "${version_mappings}"
+    runDir = "run"
+
+    useDepAts = true
+
+    replace "@VERSION@", project.version
+
+    replaceIn "reference/Reference.java"
+    replaceIn "package-info.java"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '**/*.info'
+        expand 'version':"${version_major}.${version_minor}.${version_revis}", 'mcversion':version_minecraft
+    }
+
+    from(sourceSets.main.resources.srcDirs) { exclude '**/*.info' }
+
+    // Move access transformers to META-INF
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+def fmlat = {
+    attributes 'FMLAT': 'betteradvancements_at.cfg'
+}
+
+jar {
+    manifest fmlat
+    destinationDir = file (rootProject.getRootDir().getPath() + '/output')
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest fmlat
+    destinationDir = file (rootProject.getRootDir().getPath() + '/output')
+}
+
+task sourcesJar(type: Jar, dependsOn: 'sourceMainJava') {
+    from "build/sources/main"
+    from "build/resources/main"
+    classifier "sources"
+    destinationDir = file (rootProject.getRootDir().getPath() + '/output')
+}
+
+task apiJar(type: Jar, dependsOn: 'sourceMainJava') {
+    from "build/sources/main/java/betteradvancements/api"
+    from "build/classes/main/betteradvancements/api"
+    classifier "api"
+    destinationDir = file (rootProject.getRootDir().getPath() + '/output')
+}
+
+artifacts {
+    archives deobfJar, sourcesJar, apiJar
+}
+
+curseforge {
+    apiKey = System.getenv('CURSE_KEY') == null ? '0' : System.getenv('CURSE_KEY')
+    project {
+        id = curse_project_id
+        changelog = System.getenv('CHANGELOG') == null ? '' : System.getenv('CHANGELOG')
+        changelogType = 'markdown'
+        releaseType =  'alpha'
+        mainArtifact (jar) {
+            displayName = "${jar.archiveName}".replace(".jar", "")
+        }
+        addArtifact (deobfJar) {
+            displayName = "${deobfJar.archiveName}".replace(".jar", "")
+        }
+        addArtifact (sourcesJar) {
+            displayName = "${sourcesJar.archiveName}".replace(".jar", "")
+        }
+        addArtifact (apiJar) {
+            displayName = "${apiJar.archiveName}".replace(".jar", "")
+        }
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            groupId = project.group
+            artifactId = project.archivesBaseName
+            version = project.version
+            artifact deobfJar
+            artifact sourcesJar
+            artifact apiJar
+            artifact jar
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    publications = ['MyPublication']
+    publish = true
+    pkg {
+        repo = 'dev'
+        name = 'BetterAdvancements'
+        version {
+            name = project.version
+            released = new Date()
+        }
+    }
+}

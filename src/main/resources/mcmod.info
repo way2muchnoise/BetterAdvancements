@@ -1,0 +1,16 @@
+[
+    {
+      "modid": "BetterAdvancements",
+      "name": "Better Advancements",
+      "description": "An improvement to the Advancementscreen",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "https://github.com/way2muchnoise/BetterAdvancements",
+      "updateUrl": "",
+      "authors": ["way2muchnoise"],
+      "credits": "Authored by way2muchnoise",
+      "logoFile": "",
+      "screenshots": [],
+      "dependencies": []
+    }
+]
