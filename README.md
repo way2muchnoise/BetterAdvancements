@@ -1,2 +1,3 @@
-# BetterAdvancements
-Successor to BetterAchievements for the new advancements system in minecraft 1.12+
+# BetterAdvancements [![Downloads](http://cf.way2muchnoise.eu/short_272515_downloads.svg)](https://minecraft.curseforge.com/projects/272515)  
+[![Build Status](https://travis-ci.org/way2muchnoise/BetterAdvancements.svg?branch=master)](https://travis-ci.org/way2muchnoise/BetterAdvancements) [ ![Download](https://api.bintray.com/packages/way2muchnoise/dev/BetterAdvancements/images/download.svg) ](https://bintray.com/way2muchnoise/dev/BetterAdvancements/_latestVersion)  
+Successor to [BetterAchievements](https://github.com/way2muchnoise/BetterAchievements) for the new advancements system in minecraft 1.12+
