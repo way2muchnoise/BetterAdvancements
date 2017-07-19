@@ -100,7 +100,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             if (!this.isScrolling) {
                 this.isScrolling = true;
             } else if (this.selectedTab != null) {
-                this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY);
+                this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 2*PADDING, height - TOP - SIDE - 3*PADDING);
             }
 
             this.scrollMouseX = mouseX;
@@ -120,7 +120,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
         int boxRight = right - PADDING;
-        int boxBottom = bottom - 2*PADDING;
+        int boxBottom = bottom - PADDING;
 
         if (guiBetterAdvancementTab == null) {
             drawRect(boxLeft, boxTop, boxRight, boxBottom, -16777216);
@@ -188,8 +188,8 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         if (this.selectedTab != null) {
             GlStateManager.pushMatrix();
             GlStateManager.enableDepth();
-            GlStateManager.translate((float) (left + 9), (float) (top + 18), 400.0F);
-            this.selectedTab.drawToolTips(mouseX - left - 9, mouseY - top - 18, left, top);
+            GlStateManager.translate((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
+            this.selectedTab.drawToolTips(mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
             GlStateManager.disableDepth();
             GlStateManager.popMatrix();
         }

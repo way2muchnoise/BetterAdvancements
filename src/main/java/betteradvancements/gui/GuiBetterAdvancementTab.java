@@ -68,8 +68,8 @@ public class GuiBetterAdvancementTab extends Gui {
 
     public void drawContents(int width, int height) {
         if (!this.centered) {
-            this.scrollX = width - (this.maxX + this.minX) / 2;
-            this.scrollY = height - (this.maxY + this.minY) / 2;
+            this.scrollX = (width - (this.maxX + this.minX)) / 2;
+            this.scrollY = (height - (this.maxY + this.minY)) / 2;
             this.centered = true;
         }
 
@@ -88,10 +88,12 @@ public class GuiBetterAdvancementTab extends Gui {
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
 
-        for (int k = -1; k <= 15; ++k) {
-            for (int l = -1; l <= 8; ++l) {
+        for (int k = -1; k <= width / 16; k++) {
+            int l = -1;
+            for (;l <= height / 16; l++) {
                 drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16.0F, 16.0F);
             }
+            drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16.0F, 16.0F);
         }
 
         this.root.drawConnectivity(this.scrollX, this.scrollY, true);
@@ -99,13 +101,13 @@ public class GuiBetterAdvancementTab extends Gui {
         this.root.draw(this.scrollX, this.scrollY);
     }
 
-    public void drawToolTips(int mouseX, int mouseY, int left, int top) {
+    public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.0F, 0.0F, 200.0F);
-        drawRect(0, 0, 234, 113, MathHelper.floor(this.fade * 255.0F) << 24);
+        drawRect(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
-        if (mouseX > 0 && mouseX < 234 && mouseY > 0 && mouseY < 113) {
+        if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
             for (GuiBetterAdvancement guiBetterAdvancement : this.guis.values()) {
                 if (guiBetterAdvancement.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
                     flag = true;
@@ -145,13 +147,13 @@ public class GuiBetterAdvancementTab extends Gui {
         }
     }
 
-    public void scroll(int scrollX, int scrollY) {
-        if (this.maxX - this.minX > 234) {
-            this.scrollX = MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - 234), 0);
+    public void scroll(int scrollX, int scrollY, int width, int height) {
+        if (this.maxX - this.minX > width) {
+            this.scrollX = MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - width), 0);
         }
 
-        if (this.maxY - this.minY > 113) {
-            this.scrollY = MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - 113), 0);
+        if (this.maxY - this.minY > height) {
+            this.scrollY = MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - height), 0);
         }
     }
 
@@ -164,14 +166,14 @@ public class GuiBetterAdvancementTab extends Gui {
 
     private void addGuiAdvancement(GuiBetterAdvancement guiBetterAdvancement, Advancement advancement) {
         this.guis.put(advancement, guiBetterAdvancement);
-        int i = guiBetterAdvancement.getX();
-        int j = i + 28;
-        int k = guiBetterAdvancement.getY();
-        int l = k + 27;
-        this.minX = Math.min(this.minX, i);
-        this.maxX = Math.max(this.maxX, j);
-        this.minY = Math.min(this.minY, k);
-        this.maxY = Math.max(this.maxY, l);
+        int left = guiBetterAdvancement.getX();
+        int right = left + 28;
+        int top = guiBetterAdvancement.getY();
+        int bottom = top + 27;
+        this.minX = Math.min(this.minX, left);
+        this.maxX = Math.max(this.maxX, right);
+        this.minY = Math.min(this.minY, top);
+        this.maxY = Math.max(this.maxY, bottom);
 
         for (GuiBetterAdvancement gui : this.guis.values()) {
             gui.attachToParent();
