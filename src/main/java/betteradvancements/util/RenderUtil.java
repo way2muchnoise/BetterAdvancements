@@ -2,8 +2,8 @@ package betteradvancements.util;
 
 import net.minecraft.client.gui.Gui;
 
-public class RenderHelper extends net.minecraft.client.renderer.RenderHelper {
-    private RenderHelper() {}
+public class RenderUtil {
+    private RenderUtil() {}
 
     public static void renderRepeating(Gui screen, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         for (int i = 0; i < width; i += textureWidth) {
