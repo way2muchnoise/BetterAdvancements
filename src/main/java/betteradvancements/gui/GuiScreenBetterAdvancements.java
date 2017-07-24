@@ -123,17 +123,20 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         int boxRight = right - PADDING;
         int boxBottom = bottom - PADDING;
 
+        int width = boxRight - boxLeft;
+        int height = boxBottom - boxTop;
+
         if (guiBetterAdvancementTab == null) {
             drawRect(boxLeft, boxTop, boxRight, boxBottom, -16777216);
             String s = I18n.format("advancements.empty");
             int i = this.fontRenderer.getStringWidth(s);
-            this.fontRenderer.drawString(s, boxLeft + 117 - i / 2, boxTop + 56 - this.fontRenderer.FONT_HEIGHT / 2, -1);
-            this.fontRenderer.drawString(":(", boxLeft + 117 - this.fontRenderer.getStringWidth(":(") / 2, boxTop + 113 - this.fontRenderer.FONT_HEIGHT, -1);
+            this.fontRenderer.drawString(s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.fontRenderer.FONT_HEIGHT, -1);
+            this.fontRenderer.drawString(":(", boxLeft + (width - this.fontRenderer.getStringWidth(":(")) / 2, boxTop + height / 2 + this.fontRenderer.FONT_HEIGHT, -1);
         } else {
             GlStateManager.pushMatrix();
             GlStateManager.translate((float) (boxLeft), (float) (boxTop), -400.0F);
             GlStateManager.enableDepth();
-            guiBetterAdvancementTab.drawContents(boxRight - boxLeft, boxBottom - boxTop);
+            guiBetterAdvancementTab.drawContents(width, height);
             GlStateManager.popMatrix();
             GlStateManager.depthFunc(515);
             GlStateManager.disableDepth();
