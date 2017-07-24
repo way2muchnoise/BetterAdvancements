@@ -14,5 +14,5 @@ public final class Reference
     // proxy info
     public static final String SERVER_PROXY = "betteradvancements.proxy.CommonProxy";
     public static final String CLIENT_PROXY = "betteradvancements.proxy.ClientProxy";
-    public static final String MOD_GUI_FACTORY = "betteradvancements.gui.ModGuiFactory";
+    public static final String MOD_GUI_FACTORY = "betteradvancements.config.ModGuiFactory";
 }

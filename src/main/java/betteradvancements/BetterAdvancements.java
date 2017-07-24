@@ -13,6 +13,6 @@ public class BetterAdvancements {
 
     @Mod.EventHandler
     public void init(FMLPreInitializationEvent event) {
-        proxy.preInit();
+        proxy.preInit(event);
     }
 }
