@@ -45,7 +45,7 @@ public class GuiBetterAdvancement extends Gui {
         this.displayInfo = displayInfo;
         this.minecraft = mc;
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
-        this.x = MathHelper.floor(displayInfo.getX() * 28.0F);
+        this.x = MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = MathHelper.floor(displayInfo.getY() * 27.0F);
         int i = advancement.getRequirementCount();
         int j = String.valueOf(i).length();
@@ -63,7 +63,7 @@ public class GuiBetterAdvancement extends Gui {
 
     private List<String> findOptimalLines(String line, int width) {
         if (line.isEmpty()) {
-            return Collections.<String>emptyList();
+            return Collections.emptyList();
         } else {
             List<String> list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
 
@@ -110,33 +110,33 @@ public class GuiBetterAdvancement extends Gui {
         }
     }
 
-    public void drawConnectivity(int scrollX, int scrollY, boolean p_191819_3_) {
+    public void drawConnectivity(int scrollX, int scrollY, boolean drawInside) {
         if (this.parent != null) {
-            int i = scrollX + this.parent.x + 13;
-            int j = scrollX + this.parent.x + 26 + 4;
-            int k = scrollY + this.parent.y + 13;
-            int l = scrollX + this.x + 13;
-            int i1 = scrollY + this.y + 13;
-            int j1 = p_191819_3_ ? -16777216 : -1;
+            int startX = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
+            int endXHalf = scrollX + this.parent.x + ADVANCEMENT_SIZE + 6; // 6 = 32 - 26
+            int startY = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
+            int endX = scrollX + this.x + ADVANCEMENT_SIZE / 2;
+            int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+            int color = drawInside ? -16777216 : -1;
 
-            if (p_191819_3_) {
-                this.drawHorizontalLine(j, i, k - 1, j1);
-                this.drawHorizontalLine(j + 1, i, k, j1);
-                this.drawHorizontalLine(j, i, k + 1, j1);
-                this.drawHorizontalLine(l, j - 1, i1 - 1, j1);
-                this.drawHorizontalLine(l, j - 1, i1, j1);
-                this.drawHorizontalLine(l, j - 1, i1 + 1, j1);
-                this.drawVerticalLine(j - 1, i1, k, j1);
-                this.drawVerticalLine(j + 1, i1, k, j1);
+            if (drawInside) {
+                this.drawHorizontalLine(endXHalf, startX, startY - 1, color);
+                this.drawHorizontalLine(endXHalf + 1, startX, startY, color);
+                this.drawHorizontalLine(endXHalf, startX, startY + 1, color);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, color);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY, color);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, color);
+                this.drawVerticalLine(endXHalf - 1, endY, startY, color);
+                this.drawVerticalLine(endXHalf + 1, endY, startY, color);
             } else {
-                this.drawHorizontalLine(j, i, k, j1);
-                this.drawHorizontalLine(l, j, i1, j1);
-                this.drawVerticalLine(j, i1, k, j1);
+                this.drawHorizontalLine(endXHalf, startX, startY, color);
+                this.drawHorizontalLine(endX, endXHalf, endY, color);
+                this.drawVerticalLine(endXHalf, endY, startY, color);
             }
         }
 
         for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
-            guiBetterAdvancement.drawConnectivity(scrollX, scrollY, p_191819_3_);
+            guiBetterAdvancement.drawConnectivity(scrollX, scrollY, drawInside);
         }
     }
 

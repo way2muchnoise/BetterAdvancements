@@ -25,11 +25,12 @@ import java.util.Map;
 public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdvancementManager.IListener {
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
     private static final int SIDE = 20, TOP = 40, PADDING = 9;
+    private static final float MIN_ZOOM = 1, MAX_ZOOM = 2, ZOOM_STEP = 0.2F;
     private final ClientAdvancementManager clientAdvancementManager;
     private final Map<Advancement, GuiBetterAdvancementTab> tabs = Maps.newLinkedHashMap();
     private GuiBetterAdvancementTab selectedTab;
-    private int scrollMouseX;
-    private int scrollMouseY;
+    private int scrollMouseX, scrollMouseY;
+    private float zoom = MIN_ZOOM;
     private boolean isScrolling;
 
     public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
@@ -78,6 +79,17 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void handleMouseInput() throws IOException {
+        super.handleMouseInput();
+        int wheel = Mouse.getDWheel();
+        if (wheel < 0 && zoom > MIN_ZOOM) {
+            zoom -= ZOOM_STEP;
+        } else if (wheel > 0 && zoom < MAX_ZOOM) {
+            zoom += ZOOM_STEP;
+        }
     }
 
     /**
