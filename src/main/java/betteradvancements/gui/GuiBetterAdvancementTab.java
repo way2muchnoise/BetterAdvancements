@@ -5,7 +5,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.advancements.AdvancementTabType;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class GuiBetterAdvancementTab extends Gui {
     private final Minecraft minecraft;
     private final GuiScreenBetterAdvancements screen;
-    private final AdvancementTabType type;
+    private final BetterAdvancementTabType type;
     private final int index;
     private final Advancement advancement;
     private final DisplayInfo display;
@@ -37,7 +36,7 @@ public class GuiBetterAdvancementTab extends Gui {
     private float fade;
     private boolean centered;
 
-    public GuiBetterAdvancementTab(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, AdvancementTabType type, int index, Advancement advancement, DisplayInfo displayInfo) {
+    public GuiBetterAdvancementTab(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, BetterAdvancementTabType type, int index, Advancement advancement, DisplayInfo displayInfo) {
         this.minecraft = mc;
         this.screen = guiScreenBetterAdvancements;
         this.type = type;
@@ -58,12 +57,12 @@ public class GuiBetterAdvancementTab extends Gui {
         return this.title;
     }
 
-    public void drawTab(int left, int top, boolean selected) {
-        this.type.draw(this, left, top, selected, this.index);
+    public void drawTab(int left, int top, int width, int height, boolean selected) {
+        this.type.draw(this, left, top, width, height, selected, this.index);
     }
 
-    public void drawIcon(int left, int top, RenderItem renderItem) {
-        this.type.drawIcon(left, top, this.index, renderItem, this.icon);
+    public void drawIcon(int left, int top,int width, int height, RenderItem renderItem) {
+        this.type.drawIcon(left, top, width, height, this.index, renderItem, this.icon);
     }
 
     public void drawContents(int width, int height) {
@@ -126,24 +125,22 @@ public class GuiBetterAdvancementTab extends Gui {
         }
     }
 
-    public boolean isMouseOver(int left, int top, int mouseX, int mouseY) {
-        return this.type.isMouseOver(left, top, this.index, mouseX, mouseY);
+    public boolean isMouseOver(int left, int top, int width, int height, int mouseX, int mouseY) {
+        return this.type.isMouseOver(left, top, width, height, this.index, mouseX, mouseY);
     }
 
     @Nullable
-    public static GuiBetterAdvancementTab create(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, int index, Advancement advancement) {
+    public static GuiBetterAdvancementTab create(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, int index, Advancement advancement, int width, int height) {
         if (advancement.getDisplay() == null) {
             return null;
         } else {
-            for (AdvancementTabType advancementtabtype : AdvancementTabType.values()) {
-                if (index < advancementtabtype.getMax()) {
-                    return new GuiBetterAdvancementTab(mc, guiScreenBetterAdvancements, advancementtabtype, index, advancement, advancement.getDisplay());
-                }
-
-                index -= advancementtabtype.getMax();
+            BetterAdvancementTabType advancementTabType = BetterAdvancementTabType.getTabType(width,height, index);
+            if (advancementTabType == null) {
+                return null;
+            } else {
+                return new GuiBetterAdvancementTab(mc, guiScreenBetterAdvancements, advancementTabType, index, advancement, advancement.getDisplay());
             }
 
-            return null;
         }
     }
 

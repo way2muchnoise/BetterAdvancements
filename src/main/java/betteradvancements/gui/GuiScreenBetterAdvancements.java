@@ -24,7 +24,7 @@ import java.util.Map;
 @SideOnly(Side.CLIENT)
 public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdvancementManager.IListener {
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
-    private static final int SIDE = 20, TOP = 40, PADDING = 9;
+    private static final int SIDE = 30, TOP = 40, BOTTOM = 30, PADDING = 9;
     private static final float MIN_ZOOM = 1, MAX_ZOOM = 2, ZOOM_STEP = 0.2F;
     private final ClientAdvancementManager clientAdvancementManager;
     private final Map<Advancement, GuiBetterAdvancementTab> tabs = Maps.newLinkedHashMap();
@@ -71,7 +71,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0) {
             for (GuiBetterAdvancementTab guiBetterAdvancementTab : this.tabs.values()) {
-                if (guiBetterAdvancementTab.isMouseOver(SIDE, TOP, mouseX, mouseY)) {
+                if (guiBetterAdvancementTab.isMouseOver(SIDE, TOP, width - 2*SIDE, height - TOP - BOTTOM, mouseX, mouseY)) {
                     this.clientAdvancementManager.setSelectedTab(guiBetterAdvancementTab.getAdvancement(), true);
                     break;
                 }
@@ -113,7 +113,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             if (!this.isScrolling) {
                 this.isScrolling = true;
             } else if (this.selectedTab != null) {
-                this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 2*PADDING, height - TOP - SIDE - 3*PADDING);
+                this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 2*PADDING, height - TOP - BOTTOM - 3*PADDING);
             }
 
             this.scrollMouseX = mouseX;
@@ -123,9 +123,9 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         }
 
         this.drawDefaultBackground();
-        this.renderInside(mouseX, mouseY, SIDE, TOP, width - SIDE, height - SIDE);
-        this.renderWindow(SIDE, TOP, width - SIDE, height - SIDE);
-        this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - SIDE);
+        this.renderInside(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
+        this.renderWindow(SIDE, TOP, width - SIDE, height - BOTTOM);
+        this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
     }
 
     private void renderInside(int mouseX, int mouseY, int left, int top, int right, int bottom) {
@@ -177,11 +177,15 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         // Bottom right corner
         this.drawTexturedModalRect(right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
 
+
         if (this.tabs.size() > 1) {
             this.mc.getTextureManager().bindTexture(Resources.Gui.TABS);
 
+            int width = right - left;
+            int height = bottom - top;
+
             for (GuiBetterAdvancementTab tab : this.tabs.values()) {
-                tab.drawTab(left, top, tab == this.selectedTab);
+                tab.drawTab(left, top, width, height, tab == this.selectedTab);
             }
 
             GlStateManager.enableRescaleNormal();
@@ -189,7 +193,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             RenderHelper.enableGUIStandardItemLighting();
 
             for (GuiBetterAdvancementTab tab : this.tabs.values()) {
-                tab.drawIcon(left, top, this.itemRender);
+                tab.drawIcon(left, top, width, height, this.itemRender);
             }
 
             GlStateManager.disableBlend();
@@ -210,9 +214,12 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             GlStateManager.popMatrix();
         }
 
+        int width = right - left;
+        int height = bottom - top;
+
         if (this.tabs.size() > 1) {
             for (GuiBetterAdvancementTab tab : this.tabs.values()) {
-                if (tab.isMouseOver(left, top, mouseX, mouseY)) {
+                if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
                     this.drawHoveringText(tab.getTitle(), mouseX, mouseY);
                 }
             }
@@ -220,7 +227,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     }
 
     public void rootAdvancementAdded(@Nonnull Advancement advancement) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = GuiBetterAdvancementTab.create(this.mc, this, this.tabs.size(), advancement);
+        GuiBetterAdvancementTab guiBetterAdvancementTab = GuiBetterAdvancementTab.create(this.mc, this, this.tabs.size(), advancement, width - 2*SIDE, height - TOP - SIDE);
 
         if (guiBetterAdvancementTab != null) {
             this.tabs.put(advancement, guiBetterAdvancementTab);
