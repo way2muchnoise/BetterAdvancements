@@ -1,4 +1,4 @@
-This computer software code ("the code") is ©201 way2muchnoise ("the author") all rights reserved, and is licensed for use and redistribution under the “Don’t Be a Jerk” non-commercial care-free license.
+This computer software code ("the code") is ©2017 way2muchnoise ("the author") all rights reserved, and is licensed for use and redistribution under the “Don’t Be a Jerk” non-commercial care-free license.
 
 ###Scope
 This means that you’re free to pretty much do what you like with the the code or compiled binaries, including but not limited to:
@@ -36,7 +36,7 @@ Ultimately, your work is your own. This license is designed to protect against j
 This license prohibits any attempt to hold the author liable for damages caused by usage of the the code or compiled binaries. Bugs happen, so make backups, and don't complain if your world gets corrupted. Seriously, make backups.
 
 ###Reserved Rights
-I reserve the right to change this license at any time, although chances are I won't, because legalese annoys me.
+I reserve the right to change this license at any time, although chances are I won't, because legalese annoys me. However, if I ever change this license, the old version will continue to apply to all revisions prior to the change; the new version will only apply to revisions after the change.
 
 Conclusion
 ====
