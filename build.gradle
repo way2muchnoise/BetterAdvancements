@@ -85,6 +85,8 @@ def fmlat = {
 jar {
     manifest fmlat
     destinationDir = file (rootProject.getRootDir().getPath() + '/output')
+    
+    finalizedBy reobfJar
 }
 
 task deobfJar(type: Jar) {
