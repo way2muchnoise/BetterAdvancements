@@ -1,6 +1,8 @@
 package betteradvancements.config;
 
+import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.reference.Reference;
+import betteradvancements.util.ColorHelper;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
@@ -32,6 +34,11 @@ public class ConfigHandler {
     }
 
     private static void loadConfig() {
+        BetterDisplayInfo.defaultUncompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedIconColor", "#FFFFFF").getString());
+        BetterDisplayInfo.defaultUncompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedTitleColor", "#0489C1").getString());
+        BetterDisplayInfo.defaultCompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedIconColor", "#DBA213").getString());
+        BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", "#DBA213").getString());
+
         if (config.hasChanged()) {
             config.save();
         }

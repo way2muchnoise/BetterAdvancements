@@ -1,6 +1,7 @@
 package betteradvancements.util;
 
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class RenderUtil {
     private RenderUtil() {}
@@ -16,5 +17,9 @@ public class RenderUtil {
                 screen.drawTexturedModalRect(drawX, drawY, textureX, textureY, drawWidth, drawHeight);
             }
         }
+    }
+
+    public static void setColor(int color) {
+        GlStateManager.color(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
     }
 }

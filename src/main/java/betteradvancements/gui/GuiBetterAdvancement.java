@@ -1,5 +1,7 @@
 package betteradvancements.gui;
 
+import betteradvancements.advancements.BetterDisplayInfo;
+import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
@@ -14,6 +16,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.opengl.GLSync;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -29,6 +32,7 @@ public class GuiBetterAdvancement extends Gui {
 
     private final GuiBetterAdvancementTab guiBetterAdvancementTab;
     private final Advancement advancement;
+    private final BetterDisplayInfo betterDisplayInfo;
     private final DisplayInfo displayInfo;
     private final String title;
     private final int width;
@@ -42,6 +46,7 @@ public class GuiBetterAdvancement extends Gui {
     public GuiBetterAdvancement(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
         this.guiBetterAdvancementTab = guiBetterAdvancementTab;
         this.advancement = advancement;
+        this.betterDisplayInfo = guiBetterAdvancementTab.getBetterDisplayInfo(advancement);
         this.displayInfo = displayInfo;
         this.minecraft = mc;
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
@@ -152,9 +157,9 @@ public class GuiBetterAdvancement extends Gui {
             }
 
             this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderUtil.setColor(advancementstate == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedIconColor() : betterDisplayInfo.getUnCompletedIconColor());
             GlStateManager.enableBlend();
-            this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + advancementstate.getId() * 26, 26, 26);
+            this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + 26, 26, 26);
             RenderHelper.enableGUIStandardItemLighting();
             this.minecraft.getRenderItem().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
@@ -228,11 +233,14 @@ public class GuiBetterAdvancement extends Gui {
         }
 
         // Title left side
-        this.drawTexturedModalRect(drawX, drawY, 0, advancementstate.getId() * 26, j, 26);
+        RenderUtil.setColor(advancementstate == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
+        this.drawTexturedModalRect(drawX, drawY, 0, 3 * 26, j, 26);
         // Title right side
-        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - k, advancementstate1.getId() * 26, k, 26);
+        RenderUtil.setColor(advancementstate1 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
+        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - k, 3 * 26, k, 26);
         // Advancement icon
-        this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + advancementstate2.getId() * 26, 26, 26);
+        RenderUtil.setColor(advancementstate2 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedIconColor() : betterDisplayInfo.getUnCompletedIconColor());
+        this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + 26, 26, 26);
 
         if (drawLeft) {
             this.minecraft.fontRenderer.drawString(this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1, true);

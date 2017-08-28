@@ -1,5 +1,7 @@
 package betteradvancements.gui;
 
+import betteradvancements.advancements.BetterDisplayInfo;
+import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
@@ -15,6 +17,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 
 @SideOnly(Side.CLIENT)
@@ -29,6 +32,7 @@ public class GuiBetterAdvancementTab extends Gui {
     private final String title;
     private final GuiBetterAdvancement root;
     private final Map<Advancement, GuiBetterAdvancement> guis = Maps.newLinkedHashMap();
+    private final BetterDisplayInfoRegistry betterDisplayInfos;
 
     private int scrollX, scrollY;
     private int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
@@ -45,6 +49,7 @@ public class GuiBetterAdvancementTab extends Gui {
         this.display = displayInfo;
         this.icon = displayInfo.getIcon();
         this.title = displayInfo.getTitle().getFormattedText();
+        this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancement);
         this.root = new GuiBetterAdvancement(this, mc, advancement, displayInfo);
         this.addGuiAdvancement(this.root, advancement);
     }
@@ -184,5 +189,9 @@ public class GuiBetterAdvancementTab extends Gui {
 
     public GuiScreenBetterAdvancements getScreen() {
         return this.screen;
+    }
+
+    public BetterDisplayInfo getBetterDisplayInfo(Advancement advancement) {
+        return betterDisplayInfos.get(advancement);
     }
 }
