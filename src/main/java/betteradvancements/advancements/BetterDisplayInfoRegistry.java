@@ -27,7 +27,7 @@ public class BetterDisplayInfoRegistry {
     }
 
     public BetterDisplayInfo get(Advancement advancement) {
-        return registry.getOrDefault(advancement.getId(), new BetterDisplayInfo(advancement.getId()));
+        return registry.getOrDefault(advancement.getId(), new BetterDisplayInfo(advancement));
     }
 
     private void load(ResourceLocation location) {

@@ -1,10 +1,12 @@
 package betteradvancements.advancements;
 
+import betteradvancements.api.IBetterDisplayInfo;
 import betteradvancements.util.ColorHelper;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
 
-public class BetterDisplayInfo {
+public class BetterDisplayInfo implements IBetterDisplayInfo {
     public static int defaultCompletedIconColor;
     public static int defaultCompletedTitleColor;
     public static int defaultUncompletedIconColor;
@@ -13,6 +15,16 @@ public class BetterDisplayInfo {
     private ResourceLocation id;
     private int completedIconColor, unCompletedIconColor;
     private int completedTitleColor, unCompletedTitleColor;
+
+    public BetterDisplayInfo(Advancement advancement) {
+        this(advancement.getId());
+        if (advancement instanceof IBetterDisplayInfo) {
+            parseIBetterDisplayInfo((IBetterDisplayInfo) advancement);
+        }
+        if (advancement.getDisplay() instanceof IBetterDisplayInfo) {
+            parseIBetterDisplayInfo((IBetterDisplayInfo) advancement.getDisplay());
+        }
+    }
 
     public BetterDisplayInfo(ResourceLocation id) {
         this.id = id;
@@ -35,36 +47,51 @@ public class BetterDisplayInfo {
 
     private void parseDisplayJson(JsonObject displayJson) {
         if (displayJson.has("completed_icon_color")) {
-            completedIconColor = ColorHelper.RGB(displayJson.get("completed_icon_color").getAsString());
+            this.completedIconColor = ColorHelper.RGB(displayJson.get("completed_icon_color").getAsString());
         }
         if (displayJson.has("uncompleted_icon_color")) {
-            unCompletedIconColor = ColorHelper.RGB(displayJson.get("uncompleted_icon_color").getAsString());
+            this.unCompletedIconColor = ColorHelper.RGB(displayJson.get("uncompleted_icon_color").getAsString());
         }
         if (displayJson.has("completed_title_color")) {
-            completedTitleColor = ColorHelper.RGB(displayJson.get("completed_title_color").getAsString());
+            this.completedTitleColor = ColorHelper.RGB(displayJson.get("completed_title_color").getAsString());
         }
         if (displayJson.has("uncompleted_title_color")) {
-            unCompletedTitleColor = ColorHelper.RGB(displayJson.get("uncompleted_title_color").getAsString());
+            this.unCompletedTitleColor = ColorHelper.RGB(displayJson.get("uncompleted_title_color").getAsString());
+        }
+    }
+
+    private void parseIBetterDisplayInfo(IBetterDisplayInfo betterDisplayInfo) {
+        if (betterDisplayInfo.getCompletedIconColor() != -1) {
+            this.completedIconColor = betterDisplayInfo.getCompletedIconColor();
+        }
+        if (betterDisplayInfo.getUnCompletedIconColor() != -1) {
+            this.unCompletedIconColor = betterDisplayInfo.getUnCompletedIconColor();
+        }
+        if (betterDisplayInfo.getCompletedTitleColor() != -1) {
+            this.completedTitleColor = betterDisplayInfo.getCompletedTitleColor();
+        }
+        if (betterDisplayInfo.getUnCompletedTitleColor() != -1) {
+            this.unCompletedTitleColor = betterDisplayInfo.getUnCompletedTitleColor();
         }
     }
 
     public ResourceLocation getId() {
-        return id;
+        return this.id;
     }
 
     public int getCompletedIconColor() {
-        return completedIconColor;
+        return this.completedIconColor;
     }
 
     public int getUnCompletedIconColor() {
-        return unCompletedIconColor;
+        return this.unCompletedIconColor;
     }
 
     public int getCompletedTitleColor() {
-        return completedTitleColor;
+        return this.completedTitleColor;
     }
 
     public int getUnCompletedTitleColor() {
-        return unCompletedTitleColor;
+        return this.unCompletedTitleColor;
     }
 }
