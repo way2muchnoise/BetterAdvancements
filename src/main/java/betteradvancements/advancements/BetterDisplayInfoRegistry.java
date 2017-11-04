@@ -1,14 +1,14 @@
 package betteradvancements.advancements;
 
+import betteradvancements.util.FolderUtil;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -23,50 +23,49 @@ public class BetterDisplayInfoRegistry {
 
     public BetterDisplayInfoRegistry(Advancement root) {
         registry = new HashMap<>();
-        load(root.getId());
+        WorldServer world = null;
+        if (Minecraft.getMinecraft().isIntegratedServerRunning()){
+            world = (WorldServer) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
+        }
+        load(root.getId(), world);
     }
 
     public BetterDisplayInfo get(Advancement advancement) {
         return registry.getOrDefault(advancement.getId(), new BetterDisplayInfo(advancement));
     }
 
-    private void load(ResourceLocation location) {
-        ModContainer modContainer = FMLCommonHandler.instance().findContainerFor(location.getResourceDomain());
+    private void load(ResourceLocation location, WorldServer world) {
         JsonParser parser = new JsonParser();
-        CraftingHelper.findFiles(modContainer, "assets/" + modContainer.getModId() + "/advancements", null,
+        FolderUtil.findAdvancements(location, world, null,
             (root, file) ->
             {
-
-                String relative = root.relativize(file).toString();
+                String relative;
+                try {
+                    relative = root.relativize(file).toString();
+                } catch (Exception e) {
+                    relative = "";
+                }
                 if (!"json".equals(FilenameUtils.getExtension(file.toString())) || relative.startsWith("_"))
                     return true;
 
                 String name = FilenameUtils.removeExtension(relative).replaceAll("\\\\", "/");
-                ResourceLocation key = new ResourceLocation(modContainer.getModId(), name);
+                ResourceLocation key = new ResourceLocation(location.getResourceDomain(), name);
 
-                if (!registry.containsKey(key))
-                {
+                if (!registry.containsKey(key)) {
                     BufferedReader reader = null;
 
-                    try
-                    {
+                    try {
                         reader = Files.newBufferedReader(file);
                         JsonObject advancement = parser.parse(reader).getAsJsonObject();
                         JsonObject betterDisplay = advancement.getAsJsonObject("better_display");
                         registry.put(key, new BetterDisplayInfo(key, betterDisplay));
-                    }
-                    catch (JsonParseException jsonparseexception)
-                    {
+                    } catch (JsonParseException jsonparseexception) {
                         FMLLog.log.error("Parsing error loading built-in advancement " + key, jsonparseexception);
                         return false;
-                    }
-                    catch (IOException ioexception)
-                    {
+                    } catch (IOException ioexception) {
                         FMLLog.log.error("Couldn't read advancement " + key + " from " + file, ioexception);
                         return false;
-                    }
-                    finally
-                    {
+                    } finally {
                         IOUtils.closeQuietly(reader);
                     }
                 }
