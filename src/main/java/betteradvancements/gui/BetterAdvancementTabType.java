@@ -44,22 +44,23 @@ public class BetterAdvancementTabType {
 
     public void draw(Gui gui, int x, int y, int width, int height, boolean selected, int index) {
         int i = this.textureX;
+        index %= getMax(width, height);
 
         if (index > 0) {
             i += this.width;
         }
 
-        if (index == getMax(width, height) - 1) {
+        if (x + this.width == width) {
             i += this.width;
         }
 
         int j = selected ? this.textureY + this.height : this.textureY;
-        gui.drawTexturedModalRect(x + this.getX(index, width), y + this.getY(index, height), i, j, this.width, this.height);
+        gui.drawTexturedModalRect(x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
     public void drawIcon(int left, int top, int width, int height, int index, RenderItem renderItem, ItemStack stack) {
-        int i = left + this.getX(index, width);
-        int j = top + this.getY(index, height);
+        int i = left + this.getX(index, width, height);
+        int j = top + this.getY(index, width, height);
 
         switch (tabType)
         {
@@ -83,7 +84,8 @@ public class BetterAdvancementTabType {
         renderItem.renderItemAndEffectIntoGUI(null, stack, i, j);
     }
 
-    public int getX(int index, int width) {
+    public int getX(int index, int width, int height) {
+        index %= getMax(width, height);
         switch (tabType)
         {
             case ABOVE:
@@ -99,7 +101,8 @@ public class BetterAdvancementTabType {
         }
     }
 
-    public int getY(int index, int height) {
+    public int getY(int index, int width, int height) {
+        index %= getMax(width, height);
         switch (tabType)
         {
             case ABOVE:
@@ -116,8 +119,8 @@ public class BetterAdvancementTabType {
     }
 
     public boolean isMouseOver(int left, int top, int width, int height, int index, int mouseX, int mouseY) {
-        int i = left + this.getX(index, width);
-        int j = top + this.getY(index, height);
+        int i = left + this.getX(index, width, height);
+        int j = top + this.getY(index, width, height);
         return mouseX > i && mouseX < i + this.width && mouseY > j && mouseY < j + this.height;
     }
 
