@@ -22,6 +22,8 @@ import java.util.Map;
 
 @SideOnly(Side.CLIENT)
 public class GuiBetterAdvancementTab extends Gui {
+    public static boolean doFade = true;
+
     private final Minecraft minecraft;
     private final GuiScreenBetterAdvancements screen;
     private final BetterAdvancementTabType type;
@@ -123,7 +125,7 @@ public class GuiBetterAdvancementTab extends Gui {
 
         GlStateManager.popMatrix();
 
-        if (flag) {
+        if (doFade && flag) {
             this.fade = MathHelper.clamp(this.fade + 0.02F, 0.0F, 0.3F);
         } else {
             this.fade = MathHelper.clamp(this.fade - 0.04F, 0.0F, 1.0F);

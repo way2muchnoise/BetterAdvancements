@@ -1,6 +1,7 @@
 package betteradvancements.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
+import betteradvancements.gui.GuiBetterAdvancementTab;
 import betteradvancements.reference.Reference;
 import betteradvancements.util.ColorHelper;
 import net.minecraftforge.common.config.ConfigElement;
@@ -38,6 +39,8 @@ public class ConfigHandler {
         BetterDisplayInfo.defaultUncompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedTitleColor", "#0489C1").getString());
         BetterDisplayInfo.defaultCompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedIconColor", "#DBA213").getString());
         BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", "#DBA213").getString());
+
+        GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
 
         if (config.hasChanged()) {
             config.save();
