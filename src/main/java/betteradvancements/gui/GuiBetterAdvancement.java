@@ -52,18 +52,21 @@ public class GuiBetterAdvancement extends Gui {
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
         this.x = MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = MathHelper.floor(displayInfo.getY() * 27.0F);
-        int i = advancement.getRequirementCount();
-        int j = String.valueOf(i).length();
-        int k = i > 1 ? mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * j * 2 + mc.fontRenderer.getStringWidth("/") : 0;
-        int l = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
+        int k = 0;
+        if (advancement.getRequirementCount() > 1) {
+            // Add some space for the requirement counter
+            int strLengthRequirementCount = String.valueOf(advancement.getRequirementCount()).length();
+            k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
+        }
+        int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
         String s = displayInfo.getDescription().getFormattedText();
-        this.description = this.findOptimalLines(s, l);
+        this.description = this.findOptimalLines(s, titleWidth);
 
-        for (String s1 : this.description) {
-            l = Math.max(l, mc.fontRenderer.getStringWidth(s1));
+        for (String line : this.description) {
+            titleWidth = Math.max(titleWidth, mc.fontRenderer.getStringWidth(line));
         }
 
-        this.width = l + 3 + 5;
+        this.width = titleWidth + 8;
     }
 
     private List<String> findOptimalLines(String line, int width) {
@@ -71,30 +74,11 @@ public class GuiBetterAdvancement extends Gui {
             return Collections.emptyList();
         } else {
             List<String> list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
-
-            if (list.size() < 2) {
-                return list;
-            } else {
-                String s = list.get(0);
-                String s1 = list.get(1);
-                int i = this.minecraft.fontRenderer.getStringWidth(s + ' ' + s1.split(" ")[0]);
-
-                if (i - width <= 10) {
-                    return this.minecraft.fontRenderer.listFormattedStringToWidth(line, i);
-                } else {
-                    Matcher matcher = PATTERN.matcher(s);
-
-                    if (matcher.matches()) {
-                        int j = this.minecraft.fontRenderer.getStringWidth(matcher.group(1));
-
-                        if (width - j <= 10) {
-                            return this.minecraft.fontRenderer.listFormattedStringToWidth(line, j);
-                        }
-                    }
-
-                    return list;
-                }
+            while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < guiBetterAdvancementTab.getScreen().width / 3) {
+                width += width / 2;
+                list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
             }
+            return list;
         }
     }
 
