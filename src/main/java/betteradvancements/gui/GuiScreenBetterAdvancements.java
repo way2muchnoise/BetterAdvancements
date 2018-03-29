@@ -199,7 +199,10 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             GlStateManager.disableBlend();
         }
 
-        String windowTitle = I18n.format("gui.advancements") + " - " + selectedTab.getTitle();
+        String windowTitle = I18n.format("gui.advancements");
+        if (selectedTab != null) {
+            windowTitle += " - " + selectedTab.getTitle();
+        }
         this.fontRenderer.drawString(windowTitle, left + 8, top + 6, 4210752);
     }
 
