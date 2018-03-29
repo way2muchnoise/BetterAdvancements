@@ -74,8 +74,12 @@ public class GuiBetterAdvancement extends Gui {
             return Collections.emptyList();
         } else {
             List<String> list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
-            while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < guiBetterAdvancementTab.getScreen().width / 3) {
-                width += width / 2;
+            if (list.size() > 1) {
+                width = Math.max(width, guiBetterAdvancementTab.getScreen().width / 4);
+                list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
+            }
+            while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < guiBetterAdvancementTab.getScreen().width / 2) {
+                width += width / 4;
                 list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
             }
             return list;
