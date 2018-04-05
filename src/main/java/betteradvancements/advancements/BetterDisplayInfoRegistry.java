@@ -24,7 +24,7 @@ public class BetterDisplayInfoRegistry {
     public BetterDisplayInfoRegistry(Advancement root) {
         registry = new HashMap<>();
         WorldServer world = null;
-        if (Minecraft.getMinecraft().isIntegratedServerRunning()){
+        if (Minecraft.getMinecraft().isIntegratedServerRunning() && Minecraft.getMinecraft().getIntegratedServer().worlds.length > 0){
             world = (WorldServer) Minecraft.getMinecraft().getIntegratedServer().getEntityWorld();
         }
         load(root.getId(), world);
