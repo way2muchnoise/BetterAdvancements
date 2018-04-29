@@ -70,7 +70,7 @@ public class GuiBetterAdvancement extends Gui {
             k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
         }
         int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
-        this.criterionGrid = this.getCriterionGrid();
+        this.criterionGrid = this.findOptimalCriterionGrid();
         int maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         String s = displayInfo.getDescription().getFormattedText();
         this.description = this.findOptimalLines(s, maxWidth);
@@ -82,7 +82,7 @@ public class GuiBetterAdvancement extends Gui {
         this.width = maxWidth + 8;
     }
 
-    private CriterionGrid getCriterionGrid() {
+    private CriterionGrid findOptimalCriterionGrid() {
         if (advancementProgress == null || advancementProgress.isDone()) {
             return new CriterionGrid();
         }
