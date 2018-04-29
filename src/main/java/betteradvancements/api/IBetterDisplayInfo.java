@@ -47,4 +47,31 @@ public interface IBetterDisplayInfo {
     default int getUnCompletedTitleColor() {
         return -1;
     }
+
+    /**
+     * If the advancement should use direct lines for its connections
+     *
+     * @return a boolean value or null to default
+     */
+    default Boolean drawDirectLines() {
+        return null;
+    }
+
+    /**
+     * The inner color of the connection line when an advancement is completed
+     *
+     * @return an integer color value or -1 to default
+     */
+    default int getCompletedLineColor() {
+        return -1;
+    }
+
+    /**
+     * The inner color of the connection line when an advancement is uncompleted
+     *
+     * @return an integer color value or -1 to default
+     */
+    default int getUnCompletedLineColor() {
+        return -1;
+    }
 }

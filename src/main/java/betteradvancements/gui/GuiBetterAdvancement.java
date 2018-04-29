@@ -105,26 +105,43 @@ public class GuiBetterAdvancement extends Gui {
 
     public void drawConnectivity(int scrollX, int scrollY, boolean drawInside) {
         if (this.parent != null) {
-            int startX = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
-            int endXHalf = scrollX + this.parent.x + ADVANCEMENT_SIZE + 6; // 6 = 32 - 26
-            int startY = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
-            int endX = scrollX + this.x + ADVANCEMENT_SIZE / 2;
-            int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
-            int color = drawInside ? -16777216 : -1;
-
-            if (drawInside) {
-                this.drawHorizontalLine(endXHalf, startX, startY - 1, color);
-                this.drawHorizontalLine(endXHalf + 1, startX, startY, color);
-                this.drawHorizontalLine(endXHalf, startX, startY + 1, color);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, color);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY, color);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, color);
-                this.drawVerticalLine(endXHalf - 1, endY, startY, color);
-                this.drawVerticalLine(endXHalf + 1, endY, startY, color);
-            } else {
-                this.drawHorizontalLine(endXHalf, startX, startY, color);
-                this.drawHorizontalLine(endX, endXHalf, endY, color);
-                this.drawVerticalLine(endXHalf, endY, startY, color);
+            
+            int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
+            int borderLineColor = 0xFF000000;
+            
+            if (this.betterDisplayInfo.drawDirectLines()) {
+                double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2;
+                double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+                double x2 = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
+                double y2 = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
+                
+                if (drawInside) {
+                    RenderUtil.drawLineStrip(x1, y1, x2, y2, 7, borderLineColor);
+                } else {
+                    RenderUtil.drawLineStrip(x1, y1, x2, y2, 3, innerLineColor);
+                }
+            }
+            else {
+                int startX = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
+                int endXHalf = scrollX + this.parent.x + ADVANCEMENT_SIZE + 6; // 6 = 32 - 26
+                int startY = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
+                int endX = scrollX + this.x + ADVANCEMENT_SIZE / 2;
+                int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+                
+                if (drawInside) {
+                    this.drawHorizontalLine(endXHalf, startX, startY - 1, borderLineColor);
+                    this.drawHorizontalLine(endXHalf + 1, startX, startY, borderLineColor);
+                    this.drawHorizontalLine(endXHalf, startX, startY + 1, borderLineColor);
+                    this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, borderLineColor);
+                    this.drawHorizontalLine(endX, endXHalf - 1, endY, borderLineColor);
+                    this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, borderLineColor);
+                    this.drawVerticalLine(endXHalf - 1, endY, startY, borderLineColor);
+                    this.drawVerticalLine(endXHalf + 1, endY, startY, borderLineColor);
+                } else {
+                    this.drawHorizontalLine(endXHalf, startX, startY, innerLineColor);
+                    this.drawHorizontalLine(endX, endXHalf, endY, innerLineColor);
+                    this.drawVerticalLine(endXHalf, endY, startY, innerLineColor);
+                }
             }
         }
 
