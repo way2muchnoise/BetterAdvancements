@@ -42,6 +42,10 @@ public class ConfigHandler {
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
 
+        BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
+        BetterDisplayInfo.defaultCompletedLineColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedLineColor", "#FFFFFF").getString());
+        BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedLineColor", "#FFFFFF").getString());
+
         if (config.hasChanged()) {
             config.save();
         }
