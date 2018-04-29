@@ -89,15 +89,21 @@ public class GuiBetterAdvancement extends Gui {
             return new CriterionGrid();
         }
         boolean anyObtained = false;
+        int numUnobtained = 0;
         List<String> cellContents = new ArrayList<String>();
         for (String criterion : criteria.keySet()) {
-            boolean isObtained = advancementProgress.getCriterionProgress(criterion).isObtained();
-            cellContents.add(" " + (isObtained ? "§2+§  " : "§4x§  ") + criterion);
-            anyObtained |= isObtained;
+            if (advancementProgress.getCriterionProgress(criterion).isObtained()) {
+                cellContents.add(" §2+§  " + criterion);
+                anyObtained = true;
+            }
+            else {
+                numUnobtained++;
+            }
         }
         if (!anyObtained) {
             return new CriterionGrid();
         }
+        cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
 
         GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
         int[] cellWidths = new int[cellContents.size()];
