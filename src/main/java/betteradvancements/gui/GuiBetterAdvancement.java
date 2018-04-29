@@ -244,14 +244,14 @@ public class GuiBetterAdvancement extends Gui {
             }
         }
 
+        int yOffset;
         if (drawTop) {
-            for (int k1 = 0; k1 < this.description.size(); ++k1) {
-                this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (drawY + 26 - boxHeight + 7 + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
-            }
+            yOffset = drawY + 26 - boxHeight + 7;
         } else {
-            for (int l1 = 0; l1 < this.description.size(); ++l1) {
-                this.minecraft.fontRenderer.drawString(this.description.get(l1), (float) (drawX + 5), (float) (scrollY + this.y + 9 + 17 + l1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
-            }
+            yOffset = scrollY + this.y + 9 + 17;
+        }
+        for (int k1 = 0; k1 < this.description.size(); ++k1) {
+            this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
         }
 
         RenderHelper.enableGUIStandardItemLighting();
