@@ -3,6 +3,8 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import betteradvancements.reference.Resources;
+import betteradvancements.util.CriterionColumn;
+import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
@@ -68,7 +70,7 @@ public class GuiBetterAdvancement extends Gui {
             k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
         }
         int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
-        this.criterionGrid = this.getCriterionGrid();
+        this.criterionGrid = this.findOptimalCriterionGrid();
         int maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         String s = displayInfo.getDescription().getFormattedText();
         this.description = this.findOptimalLines(s, maxWidth);
@@ -80,7 +82,7 @@ public class GuiBetterAdvancement extends Gui {
         this.width = maxWidth + 8;
     }
 
-    private CriterionGrid getCriterionGrid() {
+    private CriterionGrid findOptimalCriterionGrid() {
         if (advancementProgress == null || advancementProgress.isDone()) {
             return new CriterionGrid();
         }
@@ -128,72 +130,6 @@ public class GuiBetterAdvancement extends Gui {
             prevGrid = currGrid;
         }
         return prevGrid;
-    }
-
-    private class CriterionGrid {
-        private final List<String> cellContents;
-        private final int[] cellWidths;
-        private final int fontHeight;
-        private final int numColumns;
-        public final int numRows;
-        public List<CriterionColumn> columns;
-        public int width;
-        public int height;
-        public double aspectRatio;
-
-        public CriterionGrid() {
-            this.cellContents = Collections.emptyList();
-            this.cellWidths = new int[0];
-            this.fontHeight = 0;
-            this.numColumns = 0;
-            this.numRows = 0;
-            columns = Collections.emptyList();
-            width = 0;
-            height = 0;
-            aspectRatio = Double.NaN;
-        }
-
-        public CriterionGrid(List<String> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
-            this.cellContents = cellContents;
-            this.cellWidths = cellWidths;
-            this.fontHeight = fontHeight;
-            this.numColumns = numColumns;
-            this.numRows = (int)Math.ceil((double)cellContents.size() / numColumns);
-        }
-
-        public void init() {
-            List<CriterionColumn> columns = new ArrayList<CriterionColumn>();
-            int widthSum = 0;
-            for (int c = 0; c < numColumns; c++) {
-                List<String> column = new ArrayList<String>();
-                int columnWidth = 0;
-                for (int r = 0; r < numRows; r++) {
-                    int cellIndex = c * numRows + r;
-                    if (cellIndex >= cellContents.size()) {
-                        break;
-                    }
-                    String str = cellContents.get(cellIndex);
-                    column.add(str);
-                    columnWidth = Math.max(columnWidth, cellWidths[cellIndex]);
-                }
-                columns.add(new CriterionColumn(column, columnWidth));
-                widthSum += columnWidth;
-            }
-            this.columns = columns;
-            this.width = widthSum;
-            this.height = numRows * fontHeight;
-            this.aspectRatio = width / height;
-        }
-    }
-
-    private class CriterionColumn {
-        public final List<String> cells;
-        public final int width;
-        
-        public CriterionColumn(List<String> cells, int width) {
-            this.cells = cells;
-            this.width = width;
-        }
     }
 
     private List<String> findOptimalLines(String line, int width) {
