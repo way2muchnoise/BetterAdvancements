@@ -3,10 +3,13 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import betteradvancements.reference.Resources;
+import betteradvancements.util.CriterionColumn;
+import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -19,8 +22,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GLSync;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,8 +40,9 @@ public class GuiBetterAdvancement extends Gui {
     private final BetterDisplayInfo betterDisplayInfo;
     private final DisplayInfo displayInfo;
     private final String title;
-    private final int width;
-    private final List<String> description;
+    private int width;
+    private List<String> description;
+    private CriterionGrid criterionGrid;
     private final Minecraft minecraft;
     private GuiBetterAdvancement parent;
     private final List<GuiBetterAdvancement> children = Lists.newArrayList();
@@ -52,6 +58,11 @@ public class GuiBetterAdvancement extends Gui {
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
         this.x = MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = MathHelper.floor(displayInfo.getY() * 27.0F);
+        this.refreshHover();
+    }
+
+    private void refreshHover() {
+        Minecraft mc = this.minecraft;
         int k = 0;
         if (advancement.getRequirementCount() > 1) {
             // Add some space for the requirement counter
@@ -59,14 +70,60 @@ public class GuiBetterAdvancement extends Gui {
             k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
         }
         int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
+        this.criterionGrid = this.findOptimalCriterionGrid();
+        int maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         String s = displayInfo.getDescription().getFormattedText();
-        this.description = this.findOptimalLines(s, titleWidth);
+        this.description = this.findOptimalLines(s, maxWidth);
 
         for (String line : this.description) {
-            titleWidth = Math.max(titleWidth, mc.fontRenderer.getStringWidth(line));
+            maxWidth = Math.max(maxWidth, mc.fontRenderer.getStringWidth(line));
         }
 
-        this.width = titleWidth + 8;
+        this.width = maxWidth + 8;
+    }
+
+    private CriterionGrid findOptimalCriterionGrid() {
+        if (advancementProgress == null || advancementProgress.isDone()) {
+            return new CriterionGrid();
+        }
+        Map<String, Criterion> criteria = advancement.getCriteria();
+        if (criteria.size() <= 1) {
+            return new CriterionGrid();
+        }
+        boolean anyObtained = false;
+        List<String> cellContents = new ArrayList<String>();
+        for (String criterion : criteria.keySet()) {
+            boolean isObtained = advancementProgress.getCriterionProgress(criterion).isObtained();
+            cellContents.add(" " + (isObtained ? "§2+§  " : "§4x§  ") + criterion);
+            anyObtained |= isObtained;
+        }
+        if (!anyObtained) {
+            return new CriterionGrid();
+        }
+
+        GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
+        int[] cellWidths = new int[cellContents.size()];
+        for (int i = 0; i < cellWidths.length; i++) {
+            cellWidths[i] = this.minecraft.fontRenderer.getStringWidth(cellContents.get(i));
+        }
+
+        double maxAspectRatio = (double)screen.width / screen.height;
+        CriterionGrid prevGrid = null;
+        for (int numCols = 1; numCols <= cellContents.size(); numCols++)
+        {
+            CriterionGrid currGrid = new CriterionGrid(cellContents, cellWidths, this.minecraft.fontRenderer.FONT_HEIGHT, numCols);
+            if (prevGrid != null && currGrid.numRows == prevGrid.numRows)
+                continue; // We increased the width without decreasing the height, which is pointless.
+            currGrid.init();
+            if (currGrid.aspectRatio > maxAspectRatio) {
+                if (prevGrid == null) {
+                    prevGrid = currGrid;
+                }
+                break;
+            }
+            prevGrid = currGrid;
+        }
+        return prevGrid;
     }
 
     private List<String> findOptimalLines(String line, int width) {
@@ -176,6 +233,7 @@ public class GuiBetterAdvancement extends Gui {
 
     public void getAdvancementProgress(AdvancementProgress advancementProgressIn) {
         this.advancementProgress = advancementProgressIn;
+        this.refreshHover();
     }
 
     public void addGuiAdvancement(GuiBetterAdvancement guiBetterAdvancement) {
@@ -186,7 +244,7 @@ public class GuiBetterAdvancement extends Gui {
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.guiBetterAdvancementTab.getScreen().width;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
-        boolean drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+        boolean drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
         int j = MathHelper.floor(percentageObtained * (float) this.width);
         AdvancementState advancementstate;
@@ -227,7 +285,7 @@ public class GuiBetterAdvancement extends Gui {
             drawX = scrollX + this.x;
         }
 
-        int boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
+        int boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + criterionGrid.height;
 
         if (!this.description.isEmpty()) {
             if (drawTop) {
@@ -261,13 +319,24 @@ public class GuiBetterAdvancement extends Gui {
             }
         }
 
+        int yOffset;
         if (drawTop) {
-            for (int k1 = 0; k1 < this.description.size(); ++k1) {
-                this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (drawY + 26 - boxHeight + 7 + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
-            }
+            yOffset = drawY + 26 - boxHeight + 7;
         } else {
-            for (int l1 = 0; l1 < this.description.size(); ++l1) {
-                this.minecraft.fontRenderer.drawString(this.description.get(l1), (float) (drawX + 5), (float) (scrollY + this.y + 9 + 17 + l1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
+            yOffset = scrollY + this.y + 9 + 17;
+        }
+        for (int k1 = 0; k1 < this.description.size(); ++k1) {
+            this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
+        }
+        if (this.criterionGrid != null) {
+            int xOffset = drawX + 5;
+            yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
+            for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
+                CriterionColumn col = this.criterionGrid.columns.get(colIndex);
+                for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
+                    this.minecraft.fontRenderer.drawString(col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.fontRenderer.FONT_HEIGHT, -5592406, false);
+                }
+                xOffset += col.width;
             }
         }
 
