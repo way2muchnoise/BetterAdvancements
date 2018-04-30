@@ -3,13 +3,11 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import betteradvancements.reference.Resources;
-import betteradvancements.util.CriterionColumn;
 import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -22,10 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GLSync;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -70,7 +66,9 @@ public class GuiBetterAdvancement extends Gui {
             k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
         }
         int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
-        this.criterionGrid = this.findOptimalCriterionGrid();
+        GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
+        double maxAspectRatio = (double)screen.width / screen.height;
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, maxAspectRatio, mc.fontRenderer);
         int maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         String s = displayInfo.getDescription().getFormattedText();
         this.description = this.findOptimalLines(s, maxWidth);
@@ -80,50 +78,6 @@ public class GuiBetterAdvancement extends Gui {
         }
 
         this.width = maxWidth + 8;
-    }
-
-    private CriterionGrid findOptimalCriterionGrid() {
-        if (advancementProgress == null || advancementProgress.isDone()) {
-            return new CriterionGrid();
-        }
-        Map<String, Criterion> criteria = advancement.getCriteria();
-        if (criteria.size() <= 1) {
-            return new CriterionGrid();
-        }
-        boolean anyObtained = false;
-        List<String> cellContents = new ArrayList<String>();
-        for (String criterion : criteria.keySet()) {
-            boolean isObtained = advancementProgress.getCriterionProgress(criterion).isObtained();
-            cellContents.add(" " + (isObtained ? "§2+§  " : "§4x§  ") + criterion);
-            anyObtained |= isObtained;
-        }
-        if (!anyObtained) {
-            return new CriterionGrid();
-        }
-
-        GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
-        int[] cellWidths = new int[cellContents.size()];
-        for (int i = 0; i < cellWidths.length; i++) {
-            cellWidths[i] = this.minecraft.fontRenderer.getStringWidth(cellContents.get(i));
-        }
-
-        double maxAspectRatio = (double)screen.width / screen.height;
-        CriterionGrid prevGrid = null;
-        for (int numCols = 1; numCols <= cellContents.size(); numCols++)
-        {
-            CriterionGrid currGrid = new CriterionGrid(cellContents, cellWidths, this.minecraft.fontRenderer.FONT_HEIGHT, numCols);
-            if (prevGrid != null && currGrid.numRows == prevGrid.numRows)
-                continue; // We increased the width without decreasing the height, which is pointless.
-            currGrid.init();
-            if (currGrid.aspectRatio > maxAspectRatio) {
-                if (prevGrid == null) {
-                    prevGrid = currGrid;
-                }
-                break;
-            }
-            prevGrid = currGrid;
-        }
-        return prevGrid;
     }
 
     private List<String> findOptimalLines(String line, int width) {
@@ -315,7 +269,7 @@ public class GuiBetterAdvancement extends Gui {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
-                CriterionColumn col = this.criterionGrid.columns.get(colIndex);
+                CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
                 for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
                     this.minecraft.fontRenderer.drawString(col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.fontRenderer.FONT_HEIGHT, -5592406, false);
                 }
