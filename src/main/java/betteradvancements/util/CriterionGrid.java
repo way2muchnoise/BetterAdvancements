@@ -11,6 +11,8 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.FontRenderer;
 
 public class CriterionGrid {
+    public static boolean showSpoilers = false;
+
     private final List<String> cellContents;
     private final int[] cellWidths;
     private final int fontHeight;
@@ -40,6 +42,7 @@ public class CriterionGrid {
         this.numColumns = numColumns;
         this.numRows = (int)Math.ceil((double)cellContents.size() / numColumns);
     }
+
     public void init() {
         List<Column> columns = new ArrayList<Column>();
         int widthSum = 0;
@@ -91,13 +94,18 @@ public class CriterionGrid {
                 anyObtained = true;
             }
             else {
+                if (showSpoilers) {
+                    cellContents.add(" §4x§  " + criterion);
+                }
                 numUnobtained++;
             }
         }
         if (!anyObtained) {
             return new CriterionGrid();
         }
-        cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
+        if (!showSpoilers) {
+            cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
+        }
 
         int[] cellWidths = new int[cellContents.size()];
         for (int i = 0; i < cellWidths.length; i++) {
