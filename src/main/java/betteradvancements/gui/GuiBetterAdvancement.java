@@ -181,7 +181,7 @@ public class GuiBetterAdvancement extends Gui {
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.guiBetterAdvancementTab.getScreen().width;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
-        boolean drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+        boolean drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
         int j = MathHelper.floor(percentageObtained * (float) this.width);
         AdvancementState advancementstate;
@@ -222,7 +222,7 @@ public class GuiBetterAdvancement extends Gui {
             drawX = scrollX + this.x;
         }
 
-        int boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + criterionGrid.height;
+        int boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
 
         if (!this.description.isEmpty()) {
             if (drawTop) {

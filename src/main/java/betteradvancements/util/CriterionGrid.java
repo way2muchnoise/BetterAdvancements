@@ -10,8 +10,10 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.FontRenderer;
 
+// An arrangement of criteria into rows and columns
 public class CriterionGrid {
     public static boolean showSpoilers = false;
+    private static final CriterionGrid empty = new CriterionGrid();
 
     private final List<String> cellContents;
     private final int[] cellWidths;
@@ -23,16 +25,16 @@ public class CriterionGrid {
     public int height;
     public double aspectRatio;
 
-    public CriterionGrid() {
+    private CriterionGrid() {
         this.cellContents = Collections.emptyList();
         this.cellWidths = new int[0];
         this.fontHeight = 0;
         this.numColumns = 0;
         this.numRows = 0;
-        columns = Collections.emptyList();
-        width = 0;
-        height = 0;
-        aspectRatio = Double.NaN;
+        this.columns = Collections.emptyList();
+        this.width = 0;
+        this.height = 0;
+        this.aspectRatio = Double.NaN;
     }
 
     public CriterionGrid(List<String> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
@@ -44,27 +46,25 @@ public class CriterionGrid {
     }
 
     public void init() {
-        List<Column> columns = new ArrayList<Column>();
-        int widthSum = 0;
-        for (int c = 0; c < numColumns; c++) {
+        this.columns = new ArrayList<Column>();
+        this.width = 0;
+        for (int c = 0; c < this.numColumns; c++) {
             List<String> column = new ArrayList<String>();
             int columnWidth = 0;
-            for (int r = 0; r < numRows; r++) {
-                int cellIndex = c * numRows + r;
-                if (cellIndex >= cellContents.size()) {
+            for (int r = 0; r < this.numRows; r++) {
+                int cellIndex = c * this.numRows + r;
+                if (cellIndex >= this.cellContents.size()) {
                     break;
                 }
-                String str = cellContents.get(cellIndex);
+                String str = this.cellContents.get(cellIndex);
                 column.add(str);
-                columnWidth = Math.max(columnWidth, cellWidths[cellIndex]);
+                columnWidth = Math.max(columnWidth, this.cellWidths[cellIndex]);
             }
-            columns.add(new Column(column, columnWidth));
-            widthSum += columnWidth;
+            this.columns.add(new Column(column, columnWidth));
+            this.width += columnWidth;
         }
-        this.columns = columns;
-        this.width = widthSum;
-        this.height = numRows * fontHeight;
-        this.aspectRatio = width / height;
+        this.height = this.numRows * this.fontHeight;
+        this.aspectRatio = this.width / this.height;
     }
 
     public class Column {
@@ -77,13 +77,15 @@ public class CriterionGrid {
         }
     }
 
+    // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
+    // If there is no such grid, this method returns a single-column grid.
     public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, double maxAspectRatio, FontRenderer renderer) {
         if (progress == null || progress.isDone()) {
-            return new CriterionGrid();
+            return CriterionGrid.empty;
         }
         Map<String, Criterion> criteria = advancement.getCriteria();
         if (criteria.size() <= 1) {
-            return new CriterionGrid();
+            return CriterionGrid.empty;
         }
         boolean anyObtained = false;
         int numUnobtained = 0;
@@ -94,16 +96,16 @@ public class CriterionGrid {
                 anyObtained = true;
             }
             else {
-                if (showSpoilers) {
+                if (CriterionGrid.showSpoilers) {
                     cellContents.add(" §4x§  " + criterion);
                 }
                 numUnobtained++;
             }
         }
         if (!anyObtained) {
-            return new CriterionGrid();
+            return CriterionGrid.empty;
         }
-        if (!showSpoilers) {
+        if (!CriterionGrid.showSpoilers) {
             cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
         }
 
@@ -112,21 +114,20 @@ public class CriterionGrid {
             cellWidths[i] = renderer.getStringWidth(cellContents.get(i));
         }
 
+        int numCols = 0;
         CriterionGrid prevGrid = null;
-        for (int numCols = 1; numCols <= cellContents.size(); numCols++)
-        {
-            CriterionGrid currGrid = new CriterionGrid(cellContents, cellWidths, renderer.FONT_HEIGHT, numCols);
-            if (prevGrid != null && currGrid.numRows == prevGrid.numRows)
-                continue; // We increased the width without decreasing the height, which is pointless.
-            currGrid.init();
-            if (currGrid.aspectRatio > maxAspectRatio) {
-                if (prevGrid == null) {
-                    prevGrid = currGrid;
-                }
-                break;
+        CriterionGrid currGrid = null;
+        do {
+            numCols++;
+            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, renderer.FONT_HEIGHT, numCols);
+            if (prevGrid != null && newGrid.numRows == prevGrid.numRows) {
+                // We increased the width without decreasing the height, which is pointless.
+                continue;
             }
+            newGrid.init();
             prevGrid = currGrid;
-        }
-        return prevGrid;
+            currGrid = newGrid;
+        } while(numCols <= cellContents.size() && currGrid.aspectRatio <= maxAspectRatio);
+        return prevGrid != null ? prevGrid : currGrid;
     }
 }
