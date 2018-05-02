@@ -10,6 +10,7 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.advancements.AdvancementState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -42,6 +43,7 @@ public class GuiBetterAdvancement extends Gui {
     private final List<GuiBetterAdvancement> children = Lists.newArrayList();
     private AdvancementProgress advancementProgress;
     private final int x, y;
+    private final int screenScale;
 
     public GuiBetterAdvancement(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
         this.guiBetterAdvancementTab = guiBetterAdvancementTab;
@@ -67,6 +69,7 @@ public class GuiBetterAdvancement extends Gui {
         }
 
         this.width = titleWidth + 8;
+        this.screenScale = new ScaledResolution(mc).getScaleFactor();
     }
 
     private List<String> findOptimalLines(String line, int width) {
@@ -110,15 +113,30 @@ public class GuiBetterAdvancement extends Gui {
             int borderLineColor = 0xFF000000;
             
             if (this.betterDisplayInfo.drawDirectLines()) {
-                double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2;
+                double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2 + 3;
                 double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
-                double x2 = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
+                double x2 = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2 + 3;
                 double y2 = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
                 
+                int innerWidth;
+                int outerWidth;
+                
+                if (this.screenScale >= 3)
+                {
+                    innerWidth = 6;
+                    outerWidth = 10;
+                }
+                else
+                {
+                    innerWidth = this.screenScale * 2;
+                    outerWidth = this.screenScale * 4;
+                }
+                
+                
                 if (drawInside) {
-                    RenderUtil.drawLineStrip(x1, y1, x2, y2, 7, borderLineColor);
+                    RenderUtil.drawLineStrip(x1, y1, x2, y2, outerWidth, borderLineColor);
                 } else {
-                    RenderUtil.drawLineStrip(x1, y1, x2, y2, 3, innerLineColor);
+                    RenderUtil.drawLineStrip(x1, y1, x2, y2, innerWidth, innerLineColor);
                 }
             }
             else {
