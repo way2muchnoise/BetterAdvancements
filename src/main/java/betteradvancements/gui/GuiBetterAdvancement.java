@@ -118,20 +118,8 @@ public class GuiBetterAdvancement extends Gui {
                 double x2 = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2 + 3;
                 double y2 = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
                 
-                int innerWidth;
-                int outerWidth;
-                
-                if (this.screenScale >= 3)
-                {
-                    innerWidth = 6;
-                    outerWidth = 10;
-                }
-                else
-                {
-                    innerWidth = this.screenScale * 2;
-                    outerWidth = this.screenScale * 4;
-                }
-                
+                int innerWidth = Math.min(this.screenScale * 2, 6);
+                int outerWidth = Math.min(this.screenScale * 4, 10);
                 
                 if (drawInside) {
                     RenderUtil.drawLineStrip(x1, y1, x2, y2, outerWidth, borderLineColor);
