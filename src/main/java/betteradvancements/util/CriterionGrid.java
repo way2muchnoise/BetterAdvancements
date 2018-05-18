@@ -12,7 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
-    public static boolean showSpoilers = false;
+    public static CriteriaDetail detailLevel = CriteriaDetail.DEFAULT;
     private static final CriterionGrid empty = new CriterionGrid();
 
     private final List<String> cellContents;
@@ -80,7 +80,7 @@ public class CriterionGrid {
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
     public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, double maxAspectRatio, FontRenderer renderer) {
-        if (progress == null || progress.isDone()) {
+        if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
         Map<String, Criterion> criteria = advancement.getCriteria();
@@ -96,7 +96,7 @@ public class CriterionGrid {
                 anyObtained = true;
             }
             else {
-                if (CriterionGrid.showSpoilers) {
+                if (detailLevel.equals(CriteriaDetail.SPOILER)) {
                     cellContents.add(" §4x§  " + criterion);
                 }
                 numUnobtained++;
@@ -105,7 +105,7 @@ public class CriterionGrid {
         if (!anyObtained) {
             return CriterionGrid.empty;
         }
-        if (!CriterionGrid.showSpoilers) {
+        if (!detailLevel.equals(CriteriaDetail.SPOILER)) {
             cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
         }
 

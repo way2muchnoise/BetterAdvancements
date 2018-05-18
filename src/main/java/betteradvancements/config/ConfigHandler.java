@@ -4,6 +4,7 @@ import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.GuiBetterAdvancementTab;
 import betteradvancements.reference.Reference;
 import betteradvancements.util.ColorHelper;
+import betteradvancements.util.CriteriaDetail;
 import betteradvancements.util.CriterionGrid;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
@@ -42,9 +43,9 @@ public class ConfigHandler {
         BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", "#DBA213").getString());
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
-        CriterionGrid.showSpoilers = config.get(Configuration.CATEGORY_GENERAL, "showSpoilers", false,
-            "Set to \"true\" to reveal unobtained criteria for advancements in progress. For example, the \"Adventuring Time\" tooltip will list the biomes you have yet to explore."
-        ).getBoolean();
+
+        String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
+        CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);
 
         BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
         BetterDisplayInfo.defaultCompletedLineColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedLineColor", "#FFFFFF").getString());
