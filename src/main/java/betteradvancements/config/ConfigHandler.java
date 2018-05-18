@@ -46,6 +46,10 @@ public class ConfigHandler {
             "Set to \"true\" to reveal unobtained criteria for advancements in progress. For example, the \"Adventuring Time\" tooltip will list the biomes you have yet to explore."
         ).getBoolean();
 
+        BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
+        BetterDisplayInfo.defaultCompletedLineColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedLineColor", "#FFFFFF").getString());
+        BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedLineColor", "#FFFFFF").getString());
+
         if (config.hasChanged()) {
             config.save();
         }
