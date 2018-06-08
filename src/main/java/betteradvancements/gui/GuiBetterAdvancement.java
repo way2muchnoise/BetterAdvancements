@@ -150,13 +150,54 @@ public class GuiBetterAdvancement extends Gui {
             double x2 = scrollX + parent.x + ADVANCEMENT_SIZE / 2 + 3;
             double y2 = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
             
-            int innerWidth = Math.min(this.screenScale * 2, 6);
-            int outerWidth = Math.min(this.screenScale * 4, 10);
+            double width;
+            boolean perpendicular = x1 == x2 || y1 == y2;
             
-            if (drawInside) {
-                RenderUtil.drawLineStrip(x1, y1, x2, y2, outerWidth, borderLineColor);
-            } else {
-                RenderUtil.drawLineStrip(x1, y1, x2, y2, innerWidth, innerLineColor);
+            if (!perpendicular)
+            {
+                switch (this.screenScale) {
+                case 1: {
+                    width = drawInside ? 1.5 : 0.5;
+                    break;
+                }
+                case 2: {
+                    width = drawInside ? 2.25 : 0.75;
+                    break;
+                }
+                case 3: {
+                    width = drawInside ? 2 : 0.6666666666666667;
+                    break;
+                }
+                case 4: {
+                    width = drawInside ? 2.125 : 0.625;
+                    break;
+                }
+                default: {
+                    width = drawInside ? 3 : 1;
+                    break;
+                }
+                }
+                if (drawInside)
+                {
+                    RenderUtil.drawRect(x1 - .75, y1 - .75, x2 - .75, y2 - .75, width, borderLineColor);
+                }
+                else
+                {
+                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                }
+            }
+            else
+            {
+                width = drawInside ? 3 : 1;
+                
+                if (drawInside)
+                {
+                    RenderUtil.drawRect(x1 - 1, y1 - 1, x2 - 1, y2 - 1, width, borderLineColor);
+                }
+                else
+                {
+                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                }
             }
         }
         else {
