@@ -2,7 +2,7 @@ package betteradvancements.gui;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
-import betteradvancements.api.AdvancementDrawConnectionsEvent;
+import betteradvancements.api.event.AdvancementDrawConnectionsEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
@@ -120,12 +120,10 @@ public class GuiBetterAdvancement extends Gui {
         MinecraftForge.EVENT_BUS.post(event);
         
         //Draw extra connections from event
-        for (Advancement parent : event.getExtraConnections())
-        {
+        for (Advancement parent : event.getExtraConnections()) {
             final GuiBetterAdvancement parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
             
-            if (parentGui != null)
-            {
+            if (parentGui != null) {
                 this.drawConnection(parentGui, scrollX, scrollY, drawInside);
             }
         }
@@ -139,8 +137,7 @@ public class GuiBetterAdvancement extends Gui {
     /**
      * Draws connection line between this advancement and the advancement supplied in parent.
      */
-    public void drawConnection(GuiBetterAdvancement parent, int scrollX, int scrollY, boolean drawInside)
-    {
+    public void drawConnection(GuiBetterAdvancement parent, int scrollX, int scrollY, boolean drawInside) {
         int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
         int borderLineColor = 0xFF000000;
         
@@ -153,8 +150,7 @@ public class GuiBetterAdvancement extends Gui {
             double width;
             boolean perpendicular = x1 == x2 || y1 == y2;
             
-            if (!perpendicular)
-            {
+            if (!perpendicular) {
                 switch (this.screenScale) {
                 case 1: {
                     width = drawInside ? 1.5 : 0.5;
@@ -177,25 +173,20 @@ public class GuiBetterAdvancement extends Gui {
                     break;
                 }
                 }
-                if (drawInside)
-                {
+                if (drawInside) {
                     RenderUtil.drawRect(x1 - .75, y1 - .75, x2 - .75, y2 - .75, width, borderLineColor);
                 }
-                else
-                {
+                else {
                     RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
                 }
             }
-            else
-            {
+            else {
                 width = drawInside ? 3 : 1;
                 
-                if (drawInside)
-                {
+                if (drawInside) {
                     RenderUtil.drawRect(x1 - 1, y1 - 1, x2 - 1, y2 - 1, width, borderLineColor);
                 }
-                else
-                {
+                else {
                     RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
                 }
             }

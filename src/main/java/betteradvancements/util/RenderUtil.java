@@ -26,10 +26,8 @@ public class RenderUtil {
         GlStateManager.color(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
     }
     
-    public static void drawRect(double x, double y, double x2, double y2, double width, int color)
-    {
-        if (y > y2)
-        {
+    public static void drawRect(double x, double y, double x2, double y2, double width, int color) {
+        if (y > y2) {
             double tempY = y;
             double tempX = x;
             y = y2;
@@ -45,8 +43,7 @@ public class RenderUtil {
         RenderUtil.setColor(color);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         boolean xHigh = false;
-        if (x < x2)
-        {
+        if (x < x2) {
             xHigh = true;
         }
         bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();

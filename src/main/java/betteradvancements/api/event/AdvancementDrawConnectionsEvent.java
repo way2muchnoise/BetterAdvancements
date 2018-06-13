@@ -1,4 +1,4 @@
-package betteradvancements.api;
+package betteradvancements.api.event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  *  
  *  Used for adding extra connection lines.
  */
-public class AdvancementDrawConnectionsEvent extends Event
-{
+public class AdvancementDrawConnectionsEvent extends Event {
     /**
      * Advancement having its connection lines drawn.
      */
@@ -22,19 +21,16 @@ public class AdvancementDrawConnectionsEvent extends Event
      */
     private final List<Advancement> extraConnections;
     
-    public AdvancementDrawConnectionsEvent(Advancement advancement)
-    {
+    public AdvancementDrawConnectionsEvent(Advancement advancement) {
         this.advancement = advancement;
         this.extraConnections = new ArrayList<Advancement>();
     }
     
-    public Advancement getAdvancement()
-    {
+    public Advancement getAdvancement() {
         return this.advancement;
     }
 
-    public List<Advancement> getExtraConnections()
-    {
+    public List<Advancement> getExtraConnections() {
         return this.extraConnections;
     }
 }
