@@ -1,7 +1,5 @@
 package betteradvancements.util;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,21 +26,32 @@ public class RenderUtil {
         GlStateManager.color(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
     }
     
-    public static void drawLineStrip(double x, double y, double x2, double y2, float width, int color)
-    {
+    public static void drawRect(double x, double y, double x2, double y2, double width, int color) {
+        if (y > y2) {
+            double tempY = y;
+            double tempX = x;
+            y = y2;
+            x = x2;
+            y2 = tempY;
+            x2 = tempX;
+        }
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderUtil.setColor(color);
-        GlStateManager.glLineWidth(width);
-        bufferbuilder.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION);
-        bufferbuilder.pos(x, y, 0.0D).endVertex();
-        bufferbuilder.pos(x2, y2, 0.0D).endVertex();
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
+        boolean xHigh = false;
+        if (x < x2) {
+            xHigh = true;
+        }
+        bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
+        bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
+        bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
+        bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-        GlStateManager.glLineWidth(1);
     }
 }
