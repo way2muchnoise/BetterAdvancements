@@ -81,7 +81,7 @@ public interface IBetterDisplayInfo {
      * @return an integer position or null to default
      */
     default Integer getPosX() {
-        return -1;
+        return null;
     }
 
     /**
@@ -90,7 +90,7 @@ public interface IBetterDisplayInfo {
      * @return an integer position or null to default
      */
     default Integer getPosY() {
-        return -1;
+        return null;
     }
 
     /**
