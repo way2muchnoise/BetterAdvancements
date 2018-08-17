@@ -54,8 +54,8 @@ public class GuiBetterAdvancement extends Gui {
         this.displayInfo = displayInfo;
         this.minecraft = mc;
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
-        this.x = MathHelper.floor(displayInfo.getX() * 32.0F);
-        this.y = MathHelper.floor(displayInfo.getY() * 27.0F);
+        this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
+        this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         int k = 0;
         if (advancement.getRequirementCount() > 1) {
             // Add some space for the requirement counter
@@ -109,25 +109,27 @@ public class GuiBetterAdvancement extends Gui {
     }
 
     public void drawConnectivity(int scrollX, int scrollY, boolean drawInside) {
-        //Draw connection to parent
-        if (this.parent != null) {
+        //Check if connections should be drawn at all
+        if (!this.betterDisplayInfo.hideLines()) {
+            //Draw connection to parent
+            if (this.parent != null) {
+                
+                this.drawConnection(this.parent, scrollX, scrollY, drawInside);
+            }
             
-            this.drawConnection(this.parent, scrollX, scrollY, drawInside);
-        }
-        
-        //Create and post event to get extra connections
-        final AdvancementDrawConnectionsEvent event = new AdvancementDrawConnectionsEvent(this.advancement);
-        MinecraftForge.EVENT_BUS.post(event);
-        
-        //Draw extra connections from event
-        for (Advancement parent : event.getExtraConnections()) {
-            final GuiBetterAdvancement parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
+            //Create and post event to get extra connections
+            final AdvancementDrawConnectionsEvent event = new AdvancementDrawConnectionsEvent(this.advancement);
+            MinecraftForge.EVENT_BUS.post(event);
             
-            if (parentGui != null) {
-                this.drawConnection(parentGui, scrollX, scrollY, drawInside);
+            //Draw extra connections from event
+            for (Advancement parent : event.getExtraConnections()) {
+                final GuiBetterAdvancement parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
+                
+                if (parentGui != null) {
+                    this.drawConnection(parentGui, scrollX, scrollY, drawInside);
+                }
             }
         }
-
         //Draw child connections
         for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
             guiBetterAdvancement.drawConnectivity(scrollX, scrollY, drawInside);

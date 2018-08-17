@@ -14,12 +14,15 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     public static boolean defaultDrawDirectLines;
     public static int defaultCompletedLineColor;
     public static int defaultUncompletedLineColor;
+    public static boolean defaultHideLines;
 
     private ResourceLocation id;
     private int completedIconColor, unCompletedIconColor;
     private int completedTitleColor, unCompletedTitleColor;
     private boolean drawDirectLines;
     private int completedLineColor, unCompletedLineColor;
+    private Integer posX, posY;
+    private boolean hideLines;
 
     public BetterDisplayInfo(Advancement advancement) {
         this(advancement.getId());
@@ -51,6 +54,9 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         this.drawDirectLines = defaultDrawDirectLines;
         this.unCompletedLineColor = defaultUncompletedLineColor;
         this.completedLineColor = defaultCompletedLineColor;
+        this.posX = null;
+        this.posY = null;
+        this.hideLines = defaultHideLines;
     }
 
     private void parseDisplayJson(JsonObject displayJson) {
@@ -75,6 +81,15 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         if (displayJson.has("uncompleted_line_color")) {
             this.unCompletedLineColor = ColorHelper.RGB(displayJson.get("uncompleted_line_color").getAsString());
         }
+        if (displayJson.has("pos_x")) {
+            this.posX = displayJson.get("pos_x").getAsInt();
+        }
+        if (displayJson.has("pos_y")) {
+            this.posY = displayJson.get("pos_y").getAsInt();
+        }
+        if (displayJson.has("hide_lines")) {
+            this.hideLines = displayJson.get("hide_lines").getAsBoolean();
+        }
     }
 
     private void parseIBetterDisplayInfo(IBetterDisplayInfo betterDisplayInfo) {
@@ -98,6 +113,15 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         }
         if (betterDisplayInfo.getUnCompletedLineColor() != -1) {
             this.unCompletedLineColor = betterDisplayInfo.getUnCompletedLineColor();
+        }
+        if (betterDisplayInfo.getPosX() != null) {
+            this.posX = betterDisplayInfo.getPosX();
+        }
+        if (betterDisplayInfo.getPosY() != null) {
+            this.posY = betterDisplayInfo.getPosY();
+        }
+        if (betterDisplayInfo.hideLines() != null) {
+            this.hideLines = betterDisplayInfo.hideLines();
         }
     }
 
@@ -131,5 +155,17 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     
     public int getUnCompletedLineColor() {
         return this.unCompletedLineColor;
+    }
+    
+    public Integer getPosX() {
+        return this.posX;
+    }
+    
+    public Integer getPosY() {
+        return this.posY;
+    }
+    
+    public Boolean hideLines() {
+        return this.hideLines;
     }
 }
