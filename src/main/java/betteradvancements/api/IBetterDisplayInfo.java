@@ -74,4 +74,31 @@ public interface IBetterDisplayInfo {
     default int getUnCompletedLineColor() {
         return -1;
     }
+
+    /**
+     * The X position of the advancement, in pixels
+     *
+     * @return an integer position or null to default
+     */
+    default Integer getPosX() {
+        return null;
+    }
+
+    /**
+     * The Y position of the advancement, in pixels
+     *
+     * @return an integer position or null to default
+     */
+    default Integer getPosY() {
+        return null;
+    }
+
+    /**
+     * If the advancement should hide its connection lines
+     *
+     * @return a boolean value or null to default
+     */
+    default Boolean hideLines() {
+        return null;
+    }
 }
