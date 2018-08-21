@@ -36,7 +36,7 @@ public class GuiBetterAdvancementTab extends Gui {
     private final Map<Advancement, GuiBetterAdvancement> guis = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
 
-    private int scrollX, scrollY;
+    protected int scrollX, scrollY;
     private int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
     private int minY = Integer.MAX_VALUE, maxY = Integer.MIN_VALUE;
     private float fade;
