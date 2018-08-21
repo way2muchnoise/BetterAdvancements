@@ -32,6 +32,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     private int scrollMouseX, scrollMouseY;
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
+    public static boolean showDebugCoordinates = false;
 
     public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
         this.clientAdvancementManager = clientAdvancementManager;
@@ -126,6 +127,18 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         this.renderInside(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
         this.renderWindow(SIDE, TOP, width - SIDE, height - BOTTOM);
         this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
+        
+        //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
+        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP && mouseY > TOP + PADDING * 2)
+        {
+            int xMouse = mouseX - SIDE - PADDING;
+            int yMouse = mouseY - TOP - 2 * PADDING;
+            //-3 and -1 are needed to have the position be where the advancement starts being rendered, rather than its real position.
+            int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
+            int currentY = yMouse - this.selectedTab.scrollY - 1;
+            
+            fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000, false);
+        }
     }
 
     private void renderInside(int mouseX, int mouseY, int left, int top, int right, int bottom) {

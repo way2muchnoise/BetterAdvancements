@@ -2,6 +2,7 @@ package betteradvancements.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.GuiBetterAdvancementTab;
+import betteradvancements.gui.GuiScreenBetterAdvancements;
 import betteradvancements.reference.Reference;
 import betteradvancements.util.ColorHelper;
 import net.minecraftforge.common.config.ConfigElement;
@@ -41,6 +42,7 @@ public class ConfigHandler {
         BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", "#DBA213").getString());
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
+        GuiScreenBetterAdvancements.showDebugCoordinates = config.get(Configuration.CATEGORY_GENERAL, "showDebugCoordinates", false).getBoolean();
 
         BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
         BetterDisplayInfo.defaultHideLines = config.get(Configuration.CATEGORY_GENERAL, "defaultHideLines", false).getBoolean();
