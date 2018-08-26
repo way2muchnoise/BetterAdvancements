@@ -1,5 +1,6 @@
 package betteradvancements.gui;
 
+import betteradvancements.api.event.AdvancementMovedEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Maps;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.play.client.CPacketSeenAdvancements;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
@@ -33,6 +36,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
     public static boolean showDebugCoordinates = false;
+    private GuiBetterAdvancement advConnectedToMouse = null;
 
     public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
         this.clientAdvancementManager = clientAdvancementManager;
@@ -110,17 +114,52 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
      * Draws the screen and all the components in it.
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if (Mouse.isButtonDown(0)) {
+        if (Mouse.isButtonDown(0) && !this.isScrolling) {
+            if (this.advConnectedToMouse == null) {
+                boolean inGui = mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2;
+                if (this.selectedTab != null && inGui) {
+                    for (GuiBetterAdvancement guiBetterAdvancement : this.selectedTab.guis.values()) {
+                        if (guiBetterAdvancement.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - SIDE - PADDING, mouseY - TOP - 2*PADDING)) {
+                            
+                            if (guiBetterAdvancement.betterDisplayInfo.allowDragging())
+                            {
+                                this.advConnectedToMouse = guiBetterAdvancement;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                int moveX = mouseX - this.scrollMouseX;
+                int moveY = mouseY - this.scrollMouseY;
+                
+                this.advConnectedToMouse.x = this.advConnectedToMouse.x + moveX;
+                this.advConnectedToMouse.y = this.advConnectedToMouse.y + moveY;
+            }
+        }
+        else {
+            if (this.advConnectedToMouse != null) {
+                //Create and post event for the advancement movement
+                final AdvancementMovedEvent event = new AdvancementMovedEvent(advConnectedToMouse);
+                MinecraftForge.EVENT_BUS.post(event);
+            }
+            this.advConnectedToMouse = null;
+        }
+        
+        if (Mouse.isButtonDown(0) && this.advConnectedToMouse == null) {
             if (!this.isScrolling) {
                 this.isScrolling = true;
             } else if (this.selectedTab != null) {
                 this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 2*PADDING, height - TOP - BOTTOM - 3*PADDING);
             }
-
-            this.scrollMouseX = mouseX;
-            this.scrollMouseY = mouseY;
         } else {
             this.isScrolling = false;
+        }
+        
+        if (Mouse.isButtonDown(0)) {
+            this.scrollMouseX = mouseX;
+            this.scrollMouseY = mouseY;
         }
 
         this.drawDefaultBackground();
@@ -129,8 +168,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
         
         //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
-        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP && mouseY > TOP + PADDING * 2)
-        {
+        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
             int xMouse = mouseX - SIDE - PADDING;
             int yMouse = mouseY - TOP - 2 * PADDING;
             //-3 and -1 are needed to have the position be where the advancement starts being rendered, rather than its real position.

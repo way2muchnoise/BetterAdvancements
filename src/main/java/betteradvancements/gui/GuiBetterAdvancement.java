@@ -35,7 +35,7 @@ public class GuiBetterAdvancement extends Gui {
 
     private final GuiBetterAdvancementTab guiBetterAdvancementTab;
     private final Advancement advancement;
-    private final BetterDisplayInfo betterDisplayInfo;
+    protected final BetterDisplayInfo betterDisplayInfo;
     private final DisplayInfo displayInfo;
     private final String title;
     private final int width;
@@ -44,7 +44,7 @@ public class GuiBetterAdvancement extends Gui {
     private GuiBetterAdvancement parent;
     private final List<GuiBetterAdvancement> children = Lists.newArrayList();
     private AdvancementProgress advancementProgress;
-    private final int x, y;
+    protected int x, y;
     private final int screenScale;
 
     public GuiBetterAdvancement(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
@@ -391,5 +391,9 @@ public class GuiBetterAdvancement extends Gui {
 
     public int getX() {
         return this.x;
+    }
+    
+    public Advancement getAdvancement() {
+        return this.advancement;
     }
 }

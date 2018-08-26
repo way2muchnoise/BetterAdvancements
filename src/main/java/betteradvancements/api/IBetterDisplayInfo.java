@@ -101,4 +101,13 @@ public interface IBetterDisplayInfo {
     default Boolean hideLines() {
         return null;
     }
+
+    /**
+     * If the advancement should be able to be dragged in the gui
+     *
+     * @return a boolean value
+     */
+    default boolean allowDragging() {
+        return false;
+    }
 }
