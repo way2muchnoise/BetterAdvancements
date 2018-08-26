@@ -23,6 +23,7 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     private int completedLineColor, unCompletedLineColor;
     private Integer posX, posY;
     private boolean hideLines;
+    private boolean allowDragging;
 
     public BetterDisplayInfo(Advancement advancement) {
         this(advancement.getId());
@@ -57,6 +58,7 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         this.posX = null;
         this.posY = null;
         this.hideLines = defaultHideLines;
+        this.allowDragging = false;
     }
 
     private void parseDisplayJson(JsonObject displayJson) {
@@ -123,6 +125,7 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         if (betterDisplayInfo.hideLines() != null) {
             this.hideLines = betterDisplayInfo.hideLines();
         }
+        this.allowDragging = betterDisplayInfo.allowDragging();
     }
 
     public ResourceLocation getId() {
@@ -167,5 +170,9 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     
     public Boolean hideLines() {
         return this.hideLines;
+    }
+    
+    public boolean allowDragging() {
+        return this.allowDragging;
     }
 }

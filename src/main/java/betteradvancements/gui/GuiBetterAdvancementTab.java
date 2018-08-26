@@ -33,7 +33,7 @@ public class GuiBetterAdvancementTab extends Gui {
     private final ItemStack icon;
     private final String title;
     private final GuiBetterAdvancement root;
-    private final Map<Advancement, GuiBetterAdvancement> guis = Maps.newLinkedHashMap();
+    protected final Map<Advancement, GuiBetterAdvancement> guis = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
 
     protected int scrollX, scrollY;
