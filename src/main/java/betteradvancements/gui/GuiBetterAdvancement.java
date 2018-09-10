@@ -2,6 +2,7 @@ package betteradvancements.gui;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
+import betteradvancements.api.event.AdvancementDrawConnectionsEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.advancements.AdvancementState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GLSync;
@@ -34,7 +36,7 @@ public class GuiBetterAdvancement extends Gui {
 
     private final GuiBetterAdvancementTab guiBetterAdvancementTab;
     private final Advancement advancement;
-    private final BetterDisplayInfo betterDisplayInfo;
+    protected final BetterDisplayInfo betterDisplayInfo;
     private final DisplayInfo displayInfo;
     private final String title;
     private int width;
@@ -44,7 +46,7 @@ public class GuiBetterAdvancement extends Gui {
     private GuiBetterAdvancement parent;
     private final List<GuiBetterAdvancement> children = Lists.newArrayList();
     private AdvancementProgress advancementProgress;
-    private final int x, y;
+    protected int x, y;
     private final int screenScale;
 
     public GuiBetterAdvancement(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
@@ -54,8 +56,8 @@ public class GuiBetterAdvancement extends Gui {
         this.displayInfo = displayInfo;
         this.minecraft = mc;
         this.title = mc.fontRenderer.trimStringToWidth(displayInfo.getTitle().getFormattedText(), 163);
-        this.x = MathHelper.floor(displayInfo.getX() * 32.0F);
-        this.y = MathHelper.floor(displayInfo.getY() * 27.0F);
+        this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
+        this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
         this.screenScale = new ScaledResolution(mc).getScaleFactor();
     }
@@ -118,52 +120,111 @@ public class GuiBetterAdvancement extends Gui {
     }
 
     public void drawConnectivity(int scrollX, int scrollY, boolean drawInside) {
-        if (this.parent != null) {
-            
-            int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
-            int borderLineColor = 0xFF000000;
-            
-            if (this.betterDisplayInfo.drawDirectLines()) {
-                double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2 + 3;
-                double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
-                double x2 = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2 + 3;
-                double y2 = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
+        //Check if connections should be drawn at all
+        if (!this.betterDisplayInfo.hideLines()) {
+            //Draw connection to parent
+            if (this.parent != null) {
                 
-                int innerWidth = Math.min(this.screenScale * 2, 6);
-                int outerWidth = Math.min(this.screenScale * 4, 10);
-                
-                if (drawInside) {
-                    RenderUtil.drawLineStrip(x1, y1, x2, y2, outerWidth, borderLineColor);
-                } else {
-                    RenderUtil.drawLineStrip(x1, y1, x2, y2, innerWidth, innerLineColor);
-                }
+                this.drawConnection(this.parent, scrollX, scrollY, drawInside);
             }
-            else {
-                int startX = scrollX + this.parent.x + ADVANCEMENT_SIZE / 2;
-                int endXHalf = scrollX + this.parent.x + ADVANCEMENT_SIZE + 6; // 6 = 32 - 26
-                int startY = scrollY + this.parent.y + ADVANCEMENT_SIZE / 2;
-                int endX = scrollX + this.x + ADVANCEMENT_SIZE / 2;
-                int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+            
+            //Create and post event to get extra connections
+            final AdvancementDrawConnectionsEvent event = new AdvancementDrawConnectionsEvent(this.advancement);
+            MinecraftForge.EVENT_BUS.post(event);
+            
+            //Draw extra connections from event
+            for (Advancement parent : event.getExtraConnections()) {
+                final GuiBetterAdvancement parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
                 
-                if (drawInside) {
-                    this.drawHorizontalLine(endXHalf, startX, startY - 1, borderLineColor);
-                    this.drawHorizontalLine(endXHalf + 1, startX, startY, borderLineColor);
-                    this.drawHorizontalLine(endXHalf, startX, startY + 1, borderLineColor);
-                    this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, borderLineColor);
-                    this.drawHorizontalLine(endX, endXHalf - 1, endY, borderLineColor);
-                    this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, borderLineColor);
-                    this.drawVerticalLine(endXHalf - 1, endY, startY, borderLineColor);
-                    this.drawVerticalLine(endXHalf + 1, endY, startY, borderLineColor);
-                } else {
-                    this.drawHorizontalLine(endXHalf, startX, startY, innerLineColor);
-                    this.drawHorizontalLine(endX, endXHalf, endY, innerLineColor);
-                    this.drawVerticalLine(endXHalf, endY, startY, innerLineColor);
+                if (parentGui != null) {
+                    this.drawConnection(parentGui, scrollX, scrollY, drawInside);
                 }
             }
         }
-
+        //Draw child connections
         for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
             guiBetterAdvancement.drawConnectivity(scrollX, scrollY, drawInside);
+        }
+    }
+    
+    /**
+     * Draws connection line between this advancement and the advancement supplied in parent.
+     */
+    public void drawConnection(GuiBetterAdvancement parent, int scrollX, int scrollY, boolean drawInside) {
+        int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
+        int borderLineColor = 0xFF000000;
+        
+        if (this.betterDisplayInfo.drawDirectLines()) {
+            double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2 + 3;
+            double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+            double x2 = scrollX + parent.x + ADVANCEMENT_SIZE / 2 + 3;
+            double y2 = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
+            
+            double width;
+            boolean perpendicular = x1 == x2 || y1 == y2;
+            
+            if (!perpendicular) {
+                switch (this.screenScale) {
+                case 1: {
+                    width = drawInside ? 1.5 : 0.5;
+                    break;
+                }
+                case 2: {
+                    width = drawInside ? 2.25 : 0.75;
+                    break;
+                }
+                case 3: {
+                    width = drawInside ? 2 : 0.6666666666666667;
+                    break;
+                }
+                case 4: {
+                    width = drawInside ? 2.125 : 0.625;
+                    break;
+                }
+                default: {
+                    width = drawInside ? 3 : 1;
+                    break;
+                }
+                }
+                if (drawInside) {
+                    RenderUtil.drawRect(x1 - .75, y1 - .75, x2 - .75, y2 - .75, width, borderLineColor);
+                }
+                else {
+                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                }
+            }
+            else {
+                width = drawInside ? 3 : 1;
+                
+                if (drawInside) {
+                    RenderUtil.drawRect(x1 - 1, y1 - 1, x2 - 1, y2 - 1, width, borderLineColor);
+                }
+                else {
+                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                }
+            }
+        }
+        else {
+            int startX = scrollX + parent.x + ADVANCEMENT_SIZE / 2;
+            int endXHalf = scrollX + parent.x + ADVANCEMENT_SIZE + 6; // 6 = 32 - 26
+            int startY = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
+            int endX = scrollX + this.x + ADVANCEMENT_SIZE / 2;
+            int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+            
+            if (drawInside) {
+                this.drawHorizontalLine(endXHalf, startX, startY - 1, borderLineColor);
+                this.drawHorizontalLine(endXHalf + 1, startX, startY, borderLineColor);
+                this.drawHorizontalLine(endXHalf, startX, startY + 1, borderLineColor);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, borderLineColor);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY, borderLineColor);
+                this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, borderLineColor);
+                this.drawVerticalLine(endXHalf - 1, endY, startY, borderLineColor);
+                this.drawVerticalLine(endXHalf + 1, endY, startY, borderLineColor);
+            } else {
+                this.drawHorizontalLine(endXHalf, startX, startY, innerLineColor);
+                this.drawHorizontalLine(endX, endXHalf, endY, innerLineColor);
+                this.drawVerticalLine(endXHalf, endY, startY, innerLineColor);
+            }
         }
     }
 
@@ -353,5 +414,9 @@ public class GuiBetterAdvancement extends Gui {
 
     public int getX() {
         return this.x;
+    }
+    
+    public Advancement getAdvancement() {
+        return this.advancement;
     }
 }
