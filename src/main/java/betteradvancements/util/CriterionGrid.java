@@ -13,6 +13,7 @@ import net.minecraft.client.gui.FontRenderer;
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
     public static CriteriaDetail detailLevel = CriteriaDetail.DEFAULT;
+    public static boolean requiresShift = false;
     private static final CriterionGrid empty = new CriterionGrid();
 
     private final List<String> cellContents;

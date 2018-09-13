@@ -20,6 +20,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GLSync;
 
 import javax.annotation.Nullable;
@@ -74,7 +76,16 @@ public class GuiBetterAdvancement extends Gui {
         GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
         double maxAspectRatio = (double)screen.width / screen.height;
         this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, maxAspectRatio, mc.fontRenderer);
-        int maxWidth = Math.max(titleWidth, this.criterionGrid.width);
+        int maxWidth;
+        
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
+        {
+            maxWidth = Math.max(titleWidth, this.criterionGrid.width);
+        }
+        else
+        {
+            maxWidth =  titleWidth;
+        }
         String s = displayInfo.getDescription().getFormattedText();
         this.description = this.findOptimalLines(s, maxWidth);
 
@@ -262,10 +273,20 @@ public class GuiBetterAdvancement extends Gui {
     }
 
     public void drawHover(int scrollX, int scrollY, float fade, int left, int top) {
+        this.refreshHover();
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.guiBetterAdvancementTab.getScreen().width;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
-        boolean drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+        boolean drawTop;
+        
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
+        {
+            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+        }
+        else
+        {
+            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+        }
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
         int j = MathHelper.floor(percentageObtained * (float) this.width);
         AdvancementState advancementstate;
@@ -305,8 +326,16 @@ public class GuiBetterAdvancement extends Gui {
         } else {
             drawX = scrollX + this.x;
         }
-
-        int boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
+        int boxHeight;
+        
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
+        {
+            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
+        }
+        else
+        {
+            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
+        }
 
         if (!this.description.isEmpty()) {
             if (drawTop) {
@@ -349,7 +378,7 @@ public class GuiBetterAdvancement extends Gui {
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
             this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
         }
-        if (this.criterionGrid != null) {
+        if (this.criterionGrid != null && !CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {

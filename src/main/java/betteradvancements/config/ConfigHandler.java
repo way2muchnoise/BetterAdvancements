@@ -48,6 +48,7 @@ public class ConfigHandler {
 
         String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
         CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);
+        CriterionGrid.requiresShift = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetailRequiresShift", false).getBoolean();
 
         BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
         BetterDisplayInfo.defaultHideLines = config.get(Configuration.CATEGORY_GENERAL, "defaultHideLines", false).getBoolean();
