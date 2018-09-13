@@ -78,12 +78,10 @@ public class GuiBetterAdvancement extends Gui {
         this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, maxAspectRatio, mc.fontRenderer);
         int maxWidth;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
-        {
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         }
-        else
-        {
+        else {
             maxWidth =  titleWidth;
         }
         String s = displayInfo.getDescription().getFormattedText();
@@ -279,12 +277,10 @@ public class GuiBetterAdvancement extends Gui {
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
         boolean drawTop;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
-        {
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
         }
-        else
-        {
+        else {
             drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + 50 >= this.guiBetterAdvancementTab.getScreen().height;
         }
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
@@ -328,12 +324,10 @@ public class GuiBetterAdvancement extends Gui {
         }
         int boxHeight;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)))
-        {
+        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
             boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
         }
-        else
-        {
+        else {
             boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
         }
 
