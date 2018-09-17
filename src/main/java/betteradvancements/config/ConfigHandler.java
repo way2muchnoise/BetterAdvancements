@@ -5,6 +5,8 @@ import betteradvancements.gui.GuiBetterAdvancementTab;
 import betteradvancements.gui.GuiScreenBetterAdvancements;
 import betteradvancements.reference.Reference;
 import betteradvancements.util.ColorHelper;
+import betteradvancements.util.CriteriaDetail;
+import betteradvancements.util.CriterionGrid;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.config.IConfigElement;
@@ -43,6 +45,10 @@ public class ConfigHandler {
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
         GuiScreenBetterAdvancements.showDebugCoordinates = config.get(Configuration.CATEGORY_GENERAL, "showDebugCoordinates", false).getBoolean();
+
+        String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
+        CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);
+        CriterionGrid.requiresShift = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetailRequiresShift", false).getBoolean();
 
         BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
         BetterDisplayInfo.defaultHideLines = config.get(Configuration.CATEGORY_GENERAL, "defaultHideLines", false).getBoolean();
