@@ -165,17 +165,32 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         this.drawDefaultBackground();
         this.renderInside(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
         this.renderWindow(SIDE, TOP, width - SIDE, height - BOTTOM);
-        this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
+        //Don't draw tool tips if dragging an advancement
+        if (this.advConnectedToMouse == null) {
+            this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
+        }
         
-        //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
-        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
-            int xMouse = mouseX - SIDE - PADDING;
-            int yMouse = mouseY - TOP - 2 * PADDING;
-            //-3 and -1 are needed to have the position be where the advancement starts being rendered, rather than its real position.
-            int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
-            int currentY = yMouse - this.selectedTab.scrollY - 1;
-            
-            fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000, false);
+        //If dragging an advancement, draw coordinates of advancement being moved instead of mouse coordinates
+        if (this.advConnectedToMouse != null) {
+            if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
+                //-3 and -1 are needed to have the coordinates be rendered where the advancement starts being rendered, rather than its real position.
+                int currentX = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + 1;
+                int currentY = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY - fontRenderer.FONT_HEIGHT + 1;
+                
+                fontRenderer.drawString(this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000, false);
+            }
+        }
+        else {
+            //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
+            if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
+                int xMouse = mouseX - SIDE - PADDING;
+                int yMouse = mouseY - TOP - 2 * PADDING;
+                //-3 and -1 are needed to have the position be where the advancement starts being rendered, rather than its real position.
+                int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
+                int currentY = yMouse - this.selectedTab.scrollY - 1;
+                
+                fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000, false);
+            }
         }
     }
 
