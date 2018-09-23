@@ -32,7 +32,8 @@ import java.util.regex.Pattern;
 
 @SideOnly(Side.CLIENT)
 public class GuiBetterAdvancement extends Gui {
-    private static final int ADVANCEMENT_SIZE = 26, CORNER_SIZE = 10;
+    protected static final int ADVANCEMENT_SIZE = 26;
+    private static final int CORNER_SIZE = 10;
     private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 20, TITLE_SIZE = 32;
     private static final Pattern PATTERN = Pattern.compile("(.+) \\S+");
 
