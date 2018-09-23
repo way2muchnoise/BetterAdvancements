@@ -170,6 +170,129 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
         }
         
+        //Draw guide lines to all advancements at 45 or 90 degree angles.
+        if (this.advConnectedToMouse != null)
+        {
+            for (GuiBetterAdvancement guiBetterAdvancement : this.selectedTab.guis.values()) {
+                if (guiBetterAdvancement != this.advConnectedToMouse)
+                {
+                    int x1 = guiBetterAdvancement.x + SIDE + PADDING + this.selectedTab.scrollX + 3;
+                    int x2 = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3;
+                    int y1 = guiBetterAdvancement.y + TOP + 2 * PADDING + this.selectedTab.scrollY;
+                    int y2 = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY;
+                    int centerX1 = guiBetterAdvancement.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerX2 = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerY1 = guiBetterAdvancement.y + TOP + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerY2 = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    double degrees = Math.toDegrees(Math.atan2(centerX1 - centerX2, centerY1 - centerY2));
+                    if (degrees < 0)
+                    {
+                        degrees += 360;
+                    }
+                    
+                    if (guiBetterAdvancement.x == this.advConnectedToMouse.x)
+                    {
+                        if (y1 > y2)
+                        {
+                            //Draw right
+                            RenderUtil.drawRect(x1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y2, 1, 0x00FF00);
+                            //Draw bottom for bottom
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw top for bottom
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x2, y1, 1, 0x00FF00);
+                            //Draw bottom for top
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw top for top
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, x2, y2, 1, 0x00FF00);
+                            //Draw left
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, 1, 0x00FF00);
+                        }
+                        else
+                        {
+                            //Draw right
+                            RenderUtil.drawRect(x1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y1, 1, 0x00FF00);
+                            //Draw bottom for bottom
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw top for bottom
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, x2, y2, 1, 0x00FF00);
+                            //Draw bottom for top
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw top for top
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x2, y1, 1, 0x00FF00);
+                            //Draw left
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, 1, 0x00FF00);
+                        }
+                    }
+                    if (guiBetterAdvancement.y == this.advConnectedToMouse.y)
+                    {
+                        if (x1 > x2)
+                        {
+                            //Draw top
+                            RenderUtil.drawRect(x2, y1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, 1, 0x00FF00);
+                            //Draw left for right
+                            RenderUtil.drawRect(x1, y1, x1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw right for right
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw left for left
+                            RenderUtil.drawRect(x2, y1, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw right for left
+                            RenderUtil.drawRect(x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw bottom
+                            RenderUtil.drawRect(x2, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        }
+                        else
+                        {
+                            //Draw left
+                            RenderUtil.drawRect(x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x1, y2, 1, 0x00FF00);
+                            //Draw left for right
+                            RenderUtil.drawRect(x2, y1, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw right for right
+                            RenderUtil.drawRect(x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw left for left
+                            RenderUtil.drawRect(x1, y1, x1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw right for left
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            //Draw right
+                            RenderUtil.drawRect(x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        }
+                    }
+                    if (degrees == 45 || degrees == 135 || degrees == 225 || degrees == 315)
+                    {
+                        //Draw lines around each advancement
+                        //First
+                        //Top
+                        RenderUtil.drawRect(x1, y1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, 1, 0x00FF00);
+                        //Bottom
+                        RenderUtil.drawRect(x1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        //Left
+                        RenderUtil.drawRect(x1, y1, x1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        //Right
+                        RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        //Second
+                        //Top
+                        RenderUtil.drawRect(x2, y2, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, 1, 0x00FF00);
+                        //Bottom
+                        RenderUtil.drawRect(x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        //Left
+                        RenderUtil.drawRect(x2, y2, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        //Right
+                        RenderUtil.drawRect(x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);                        
+                        
+                        if (degrees == 45 || degrees == 225)
+                        {
+                            RenderUtil.drawRect(x1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2, 1, 0x00FF00);
+                        }
+                        else if (degrees == 135 || degrees == 315)
+                        {
+                            RenderUtil.drawRect(x1, y1, x2, y2, 1, 0x00FF00);
+                            RenderUtil.drawRect(x1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y1 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, x2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, y2 + GuiBetterAdvancement.ADVANCEMENT_SIZE - 1, 1, 0x00FF00);
+                        }
+                    }
+                }
+            }
+        }
+        
         //If dragging an advancement, draw coordinates of advancement being moved instead of mouse coordinates
         if (this.advConnectedToMouse != null) {
             if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
