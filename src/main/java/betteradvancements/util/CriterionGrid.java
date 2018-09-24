@@ -93,12 +93,12 @@ public class CriterionGrid {
         List<String> cellContents = new ArrayList<String>();
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
-                cellContents.add(" §2+§  " + criterion);
+                cellContents.add(" §2+§f  " + criterion);
                 anyObtained = true;
             }
             else {
                 if (detailLevel.equals(CriteriaDetail.SPOILER)) {
-                    cellContents.add(" §4x§  " + criterion);
+                    cellContents.add(" §4x§f  " + criterion);
                 }
                 numUnobtained++;
             }
@@ -107,7 +107,7 @@ public class CriterionGrid {
             return CriterionGrid.empty;
         }
         if (!detailLevel.equals(CriteriaDetail.SPOILER)) {
-            cellContents.add(" §4x§  §o" + numUnobtained + " remaining");
+            cellContents.add(" §4x§f  §o" + numUnobtained + " remaining");
         }
 
         int[] cellWidths = new int[cellContents.size()];
