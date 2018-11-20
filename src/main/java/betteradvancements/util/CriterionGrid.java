@@ -9,6 +9,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
@@ -93,12 +95,22 @@ public class CriterionGrid {
         List<String> cellContents = new ArrayList<String>();
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
-                cellContents.add(" §2+§f  " + criterion);
+            	TextComponentString text = new TextComponentString(" + ");
+            	text.getStyle().setColor(TextFormatting.GREEN);
+            	TextComponentString text2 = new TextComponentString(criterion);
+            	text2.getStyle().setColor(TextFormatting.WHITE);
+            	text.appendSibling(text2);
+                cellContents.add(text.getFormattedText());
                 anyObtained = true;
             }
             else {
                 if (detailLevel.equals(CriteriaDetail.SPOILER)) {
-                    cellContents.add(" §4x§f  " + criterion);
+                	TextComponentString text = new TextComponentString(" x ");
+                	text.getStyle().setColor(TextFormatting.DARK_RED);
+                	TextComponentString text2 = new TextComponentString(criterion);
+                	text2.getStyle().setColor(TextFormatting.WHITE);
+                	text.appendSibling(text2);
+                    cellContents.add(text.getFormattedText());
                 }
                 numUnobtained++;
             }
@@ -107,7 +119,13 @@ public class CriterionGrid {
             return CriterionGrid.empty;
         }
         if (!detailLevel.equals(CriteriaDetail.SPOILER)) {
-            cellContents.add(" §4x§f  §o" + numUnobtained + " remaining");
+        	TextComponentString text = new TextComponentString(" x ");
+        	text.getStyle().setColor(TextFormatting.DARK_RED);
+        	TextComponentString text2 = new TextComponentString(numUnobtained + " remaining");
+        	text2.getStyle().setColor(TextFormatting.WHITE);
+        	text2.getStyle().setItalic(true);
+        	text.appendSibling(text2);
+            cellContents.add(text.getFormattedText());
         }
 
         int[] cellWidths = new int[cellContents.size()];
