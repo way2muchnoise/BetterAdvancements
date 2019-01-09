@@ -49,10 +49,10 @@ public class CriterionGrid {
     }
 
     public void init() {
-        this.columns = new ArrayList<Column>();
+        this.columns = new ArrayList<>();
         this.width = 0;
         for (int c = 0; c < this.numColumns; c++) {
-            List<String> column = new ArrayList<String>();
+            List<String> column = new ArrayList<>();
             int columnWidth = 0;
             for (int r = 0; r < this.numRows; r++) {
                 int cellIndex = c * this.numRows + r;
@@ -67,7 +67,7 @@ public class CriterionGrid {
             this.width += columnWidth;
         }
         this.height = this.numRows * this.fontHeight;
-        this.aspectRatio = this.width / this.height;
+        this.aspectRatio = 1.0F * this.width / this.height;
     }
 
     public class Column {
@@ -90,21 +90,21 @@ public class CriterionGrid {
         if (criteria.size() <= 1) {
             return CriterionGrid.empty;
         }
-        boolean anyObtained = false;
         int numUnobtained = 0;
-        List<String> cellContents = new ArrayList<String>();
+        List<String> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
-            	TextComponentString text = new TextComponentString(" + ");
-            	text.getStyle().setColor(TextFormatting.GREEN);
-            	TextComponentString text2 = new TextComponentString(criterion);
-            	text2.getStyle().setColor(TextFormatting.WHITE);
-            	text.appendSibling(text2);
-                cellContents.add(text.getFormattedText());
-                anyObtained = true;
+                if (detailLevel.showObtained()) {
+                    TextComponentString text = new TextComponentString(" + ");
+                    text.getStyle().setColor(TextFormatting.GREEN);
+                    TextComponentString text2 = new TextComponentString(criterion);
+                    text2.getStyle().setColor(TextFormatting.WHITE);
+                    text.appendSibling(text2);
+                    cellContents.add(text.getFormattedText());
+                }
             }
             else {
-                if (detailLevel.equals(CriteriaDetail.SPOILER)) {
+                if (detailLevel.showUnobtained()) {
                 	TextComponentString text = new TextComponentString(" x ");
                 	text.getStyle().setColor(TextFormatting.DARK_RED);
                 	TextComponentString text2 = new TextComponentString(criterion);
@@ -115,10 +115,8 @@ public class CriterionGrid {
                 numUnobtained++;
             }
         }
-        if (!anyObtained) {
-            return CriterionGrid.empty;
-        }
-        if (!detailLevel.equals(CriteriaDetail.SPOILER)) {
+
+        if (!detailLevel.showUnobtained()) {
         	TextComponentString text = new TextComponentString(" x ");
         	text.getStyle().setColor(TextFormatting.DARK_RED);
         	TextComponentString text2 = new TextComponentString(numUnobtained + " remaining");

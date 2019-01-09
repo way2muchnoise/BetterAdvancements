@@ -4,16 +4,19 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public enum CriteriaDetail {
-	OFF("Off", "Vanilla default"),
-	DEFAULT("Default", "List which criteria you have already obtained"),
-	SPOILER("Spoiler", "Also reveal unobtained criteria");
+	OFF("Off", "Vanilla default", false, false),
+	DEFAULT("Default", "List which criteria you have already obtained", true, false),
+	SPOILER("Spoiler", "Only reveal unobtained criteria", false, true),
+	ALL("All", "Show both obtained and unobtained criteria", true, true);
 
-	private final String name;
-	private final String comment;
+	private final String name, comment;
+	private final boolean obtained, unobtained;
 
-	CriteriaDetail(String description, String comment) {
+	CriteriaDetail(String description, String comment, boolean obtained, boolean unobtained) {
 		this.name = description;
 		this.comment = comment;
+		this.obtained = obtained;
+		this.unobtained = unobtained;
 	}
 
 	public static CriteriaDetail fromName(String value) {
@@ -27,7 +30,15 @@ public enum CriteriaDetail {
 		return name;
 	}
 
-    public static String[] names() {
+	public boolean showObtained() {
+		return obtained;
+	}
+
+	public boolean showUnobtained() {
+		return unobtained;
+	}
+
+	public static String[] names() {
     	return Arrays.stream(values())
     	    .map(CriteriaDetail::getName)
     	    .toArray(String[]::new);
