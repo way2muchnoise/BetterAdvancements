@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.play.client.CPacketSeenAdvancements;
-import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -147,19 +146,18 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             this.advConnectedToMouse = null;
         }
         
-        if (Mouse.isButtonDown(0) && this.advConnectedToMouse == null) {
-            if (!this.isScrolling) {
-                this.isScrolling = true;
-            } else if (this.selectedTab != null) {
-                this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 2*PADDING, height - TOP - BOTTOM - 3*PADDING);
-            }
-        } else {
-            this.isScrolling = false;
-        }
-        
         if (Mouse.isButtonDown(0)) {
+            if (this.advConnectedToMouse == null) {
+                if (!this.isScrolling) {
+                    this.isScrolling = true;
+                } else if (this.selectedTab != null) {
+                    this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 3*PADDING, height - TOP - BOTTOM - 3*PADDING);
+                }
+            }
             this.scrollMouseX = mouseX;
             this.scrollMouseY = mouseY;
+        } else {
+            this.isScrolling = false;
         }
 
         this.drawDefaultBackground();

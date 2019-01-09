@@ -94,13 +94,15 @@ public class GuiBetterAdvancementTab extends Gui {
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
 
-        for (int k = -1; k <= width / 16; k++) {
+        int k = -1;
+        for (; k <= 1 + width / 16; k++) {
             int l = -1;
             for (;l <= height / 16; l++) {
                 drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16.0F, 16.0F);
             }
             drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16.0F, 16.0F);
         }
+
 
         this.root.drawConnectivity(this.scrollX, this.scrollY, true);
         this.root.drawConnectivity(this.scrollX, this.scrollY, false);
@@ -153,11 +155,11 @@ public class GuiBetterAdvancementTab extends Gui {
 
     public void scroll(int scrollX, int scrollY, int width, int height) {
         if (this.maxX - this.minX > width) {
-            this.scrollX = MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - width), 0);
+            this.scrollX = MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - width), -this.minX);
         }
 
         if (this.maxY - this.minY > height) {
-            this.scrollY = MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - height), 0);
+            this.scrollY = MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - height), -this.minY);
         }
     }
 
