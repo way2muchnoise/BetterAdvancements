@@ -24,7 +24,7 @@ import java.util.function.Function;
 public class FolderUtil {
     public static boolean findAdvancements(ResourceLocation location, WorldServer world, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
-        ModContainer mod = FMLCommonHandler.instance().findContainerFor(location.getResourceDomain());
+        ModContainer mod = FMLCommonHandler.instance().findContainerFor(location.getNamespace());
         try {
             File source = null;
 
@@ -48,7 +48,7 @@ public class FolderUtil {
             Path root = null;
             if (source == null) {
                 if (world != null) {
-                    root = world.getSaveHandler().getWorldDirectory().toPath().resolve("data/advancements/" + location.getResourceDomain());
+                    root = world.getSaveHandler().getWorldDirectory().toPath().resolve("data/advancements/" + location.getNamespace());
                 }
             }
             else if (source.isFile()) {
