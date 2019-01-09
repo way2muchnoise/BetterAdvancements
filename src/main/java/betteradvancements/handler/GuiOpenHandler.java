@@ -1,10 +1,18 @@
 package betteradvancements.handler;
 
 import betteradvancements.gui.GuiScreenBetterAdvancements;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.advancements.GuiScreenAdvancements;
+import net.minecraft.client.multiplayer.ClientAdvancementManager;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GuiOpenHandler {
     @SubscribeEvent
@@ -13,6 +21,31 @@ public class GuiOpenHandler {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getMinecraft();
             mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH) // put on HIGH to be before Triumph sorting, giving them priority
+    public void onGuiAboutToOpen(final GuiScreenEvent.InitGuiEvent.Pre event) {
+        if (event.getGui() instanceof GuiScreenBetterAdvancements) {
+            if (GuiScreenBetterAdvancements.orderTabsAlphabetically) {
+                Minecraft mc = Minecraft.getMinecraft();
+                ClientAdvancementManager manager = mc.player.connection.getAdvancementManager();
+                AdvancementList advancementList = manager.getAdvancementList();
+                Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
+
+                List<String> advancementLocations = roots.stream().sorted(Comparator.comparing(a -> a.getDisplayText().getUnformattedText().toLowerCase())).map(a -> a.getId().toString()).collect(Collectors.toList());
+
+                List<Advancement> advancements = new ArrayList<>(roots);
+                roots.clear();
+
+                for (String location : advancementLocations) {
+                    for (Advancement advancement : advancements) {
+                        if (advancement.getId().toString().equals(location)) {
+                            roots.add(advancement);
+                        }
+                    }
+                }
+            }
         }
     }
 }

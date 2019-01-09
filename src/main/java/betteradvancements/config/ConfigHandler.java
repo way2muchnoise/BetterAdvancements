@@ -45,6 +45,7 @@ public class ConfigHandler {
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
         GuiScreenBetterAdvancements.showDebugCoordinates = config.get(Configuration.CATEGORY_GENERAL, "showDebugCoordinates", false).getBoolean();
+        GuiScreenBetterAdvancements.orderTabsAlphabetically = config.get(Configuration.CATEGORY_GENERAL, "orderTabsAlphabetically", false).getBoolean();
 
         String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
         CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);

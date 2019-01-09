@@ -35,6 +35,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
     public static boolean showDebugCoordinates = false;
+    public static boolean orderTabsAlphabetically = false;
     private GuiBetterAdvancement advConnectedToMouse = null;
 
     public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
