@@ -101,10 +101,10 @@ public class GuiBetterAdvancement extends Gui {
         } else {
             List<String> list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
             if (list.size() > 1) {
-                width = Math.max(width, guiBetterAdvancementTab.getScreen().width / 4);
+                width = Math.max(width, guiBetterAdvancementTab.getScreen().internalWidth / 4);
                 list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
             }
-            while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < guiBetterAdvancementTab.getScreen().width / 2) {
+            while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < guiBetterAdvancementTab.getScreen().internalWidth / 2) {
                 width += width / 4;
                 list = this.minecraft.fontRenderer.listFormattedStringToWidth(line, width);
             }
@@ -273,7 +273,7 @@ public class GuiBetterAdvancement extends Gui {
 
     public void drawHover(int scrollX, int scrollY, float fade, int left, int top) {
         this.refreshHover();
-        boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.guiBetterAdvancementTab.getScreen().width;
+        boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.guiBetterAdvancementTab.getScreen().internalWidth;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
         boolean drawTop;

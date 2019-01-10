@@ -34,6 +34,8 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     private int scrollMouseX, scrollMouseY;
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
+    protected int internalWidth, internalHeight;
+    public static int uiScaling;
     public static boolean showDebugCoordinates = false;
     public static boolean orderTabsAlphabetically = false;
     private GuiBetterAdvancement advConnectedToMouse = null;
@@ -47,6 +49,9 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
      * window resizes, the buttonList is cleared beforehand.
      */
     public void initGui() {
+        this.internalHeight = this.height * uiScaling / 100;
+        this.internalWidth = this.width * uiScaling / 100;
+
         this.tabs.clear();
         this.selectedTab = null;
         this.clientAdvancementManager.setListener(this);
@@ -75,8 +80,10 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
      */
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0) {
+            int left = SIDE + (width - internalWidth) / 2;
+            int top = TOP + (height - internalHeight) / 2;
             for (GuiBetterAdvancementTab guiBetterAdvancementTab : this.tabs.values()) {
-                if (guiBetterAdvancementTab.isMouseOver(SIDE, TOP, width - 2*SIDE, height - TOP - BOTTOM, mouseX, mouseY)) {
+                if (guiBetterAdvancementTab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
                     this.clientAdvancementManager.setSelectedTab(guiBetterAdvancementTab.getAdvancement(), true);
                     break;
                 }
@@ -114,12 +121,15 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
      * Draws the screen and all the components in it.
      */
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        int left = SIDE + (width - internalWidth) / 2;
+        int top = TOP + (height - internalHeight) / 2;
+
         if (Mouse.isButtonDown(0) && !this.isScrolling) {
             if (this.advConnectedToMouse == null) {
-                boolean inGui = mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2;
+                boolean inGui = mouseX < left + internalWidth - 2*SIDE - PADDING && mouseX > left + PADDING && mouseY < top + internalHeight - TOP + 1 && mouseY > top + 2*PADDING;
                 if (this.selectedTab != null && inGui) {
                     for (GuiBetterAdvancement guiBetterAdvancement : this.selectedTab.guis.values()) {
-                        if (guiBetterAdvancement.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - SIDE - PADDING, mouseY - TOP - 2*PADDING)) {
+                        if (guiBetterAdvancement.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - left - PADDING, mouseY - top - 2*PADDING)) {
                             
                             if (guiBetterAdvancement.betterDisplayInfo.allowDragging())
                             {
@@ -152,7 +162,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
                 if (!this.isScrolling) {
                     this.isScrolling = true;
                 } else if (this.selectedTab != null) {
-                    this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, width - 2*SIDE - 3*PADDING, height - TOP - BOTTOM - 3*PADDING);
+                    this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, internalWidth - 2*SIDE - 3*PADDING, internalHeight - TOP - BOTTOM - 3*PADDING);
                 }
             }
             this.scrollMouseX = mouseX;
@@ -161,12 +171,15 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             this.isScrolling = false;
         }
 
+        int right = internalWidth - SIDE + (width - internalWidth) / 2;
+        int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
+
         this.drawDefaultBackground();
-        this.renderInside(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
-        this.renderWindow(SIDE, TOP, width - SIDE, height - BOTTOM);
+        this.renderInside(mouseX, mouseY, left, top, right, bottom);
+        this.renderWindow(left, top, right, bottom);
         //Don't draw tool tips if dragging an advancement
         if (this.advConnectedToMouse == null) {
-            this.renderToolTips(mouseX, mouseY, SIDE, TOP, width - SIDE, height - BOTTOM);
+            this.renderToolTips(mouseX, mouseY, left, top, right, bottom);
         }
         
         //Draw guide lines to all advancements at 45 or 90 degree angles.
@@ -175,14 +188,14 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             for (GuiBetterAdvancement guiBetterAdvancement : this.selectedTab.guis.values()) {
                 if (guiBetterAdvancement != this.advConnectedToMouse)
                 {
-                    int x1 = guiBetterAdvancement.x + SIDE + PADDING + this.selectedTab.scrollX + 3;
-                    int x2 = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3;
-                    int y1 = guiBetterAdvancement.y + TOP + 2 * PADDING + this.selectedTab.scrollY;
-                    int y2 = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY;
-                    int centerX1 = guiBetterAdvancement.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
-                    int centerX2 = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
-                    int centerY1 = guiBetterAdvancement.y + TOP + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
-                    int centerY2 = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int x1 = guiBetterAdvancement.x + left + PADDING + this.selectedTab.scrollX + 3;
+                    int x2 = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3;
+                    int y1 = guiBetterAdvancement.y + top + 2 * PADDING + this.selectedTab.scrollY;
+                    int y2 = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY;
+                    int centerX1 = guiBetterAdvancement.x + left + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerX2 = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerY1 = guiBetterAdvancement.y + top + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
+                    int centerY2 = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY + GuiBetterAdvancement.ADVANCEMENT_SIZE / 2;
                     double degrees = Math.toDegrees(Math.atan2(centerX1 - centerX2, centerY1 - centerY2));
                     if (degrees < 0)
                     {
@@ -291,26 +304,23 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
                 }
             }
         }
-        
-        //If dragging an advancement, draw coordinates of advancement being moved instead of mouse coordinates
-        if (this.advConnectedToMouse != null) {
-            if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
+
+        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < internalWidth - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < internalHeight - top + 1 && mouseY > top + PADDING * 2) {
+            //If dragging an advancement, draw coordinates of advancement being moved instead of mouse coordinates
+            if (this.advConnectedToMouse != null) {
                 //-3 and -1 are needed to have the coordinates be rendered where the advancement starts being rendered, rather than its real position.
-                int currentX = this.advConnectedToMouse.x + SIDE + PADDING + this.selectedTab.scrollX + 3 + 1;
-                int currentY = this.advConnectedToMouse.y + TOP + 2 * PADDING + this.selectedTab.scrollY - fontRenderer.FONT_HEIGHT + 1;
-                
+                int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
+                int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - fontRenderer.FONT_HEIGHT + 1;
+
                 fontRenderer.drawString(this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000, false);
-            }
-        }
-        else {
-            //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
-            if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < this.width - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < this.height - TOP + 1 && mouseY > TOP + PADDING * 2) {
-                int xMouse = mouseX - SIDE - PADDING;
-                int yMouse = mouseY - TOP - 2 * PADDING;
+            } else {
+                //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
+                int xMouse = mouseX - left - PADDING;
+                int yMouse = mouseY - top - 2 * PADDING;
                 //-3 and -1 are needed to have the position be where the advancement starts being rendered, rather than its real position.
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
-                
+
                 fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000, false);
             }
         }
@@ -351,7 +361,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         // Top left corner
         this.drawTexturedModalRect(left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
         // Top side
-        RenderUtil.renderRepeating(this, left + CORNER_SIZE, TOP, width - left - CORNER_SIZE - SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(this, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Top right corner
         this.drawTexturedModalRect(right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
         // Left side
@@ -361,7 +371,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         // Bottom left corner
         this.drawTexturedModalRect(left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
         // Bottom side
-        RenderUtil.renderRepeating(this, left + CORNER_SIZE, bottom - CORNER_SIZE, width - left - CORNER_SIZE - SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(this, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Bottom right corner
         this.drawTexturedModalRect(right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
 
@@ -419,7 +429,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     }
 
     public void rootAdvancementAdded(@Nonnull Advancement advancement) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = GuiBetterAdvancementTab.create(this.mc, this, this.tabs.size(), advancement, width - 2*SIDE, height - TOP - SIDE);
+        GuiBetterAdvancementTab guiBetterAdvancementTab = GuiBetterAdvancementTab.create(this.mc, this, this.tabs.size(), advancement, internalWidth - 2*SIDE, internalHeight - TOP - SIDE);
 
         if (guiBetterAdvancementTab != null) {
             this.tabs.put(advancement, guiBetterAdvancementTab);

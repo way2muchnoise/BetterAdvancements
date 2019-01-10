@@ -46,6 +46,7 @@ public class ConfigHandler {
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
         GuiScreenBetterAdvancements.showDebugCoordinates = config.get(Configuration.CATEGORY_GENERAL, "showDebugCoordinates", false).getBoolean();
         GuiScreenBetterAdvancements.orderTabsAlphabetically = config.get(Configuration.CATEGORY_GENERAL, "orderTabsAlphabetically", false).getBoolean();
+        GuiScreenBetterAdvancements.uiScaling = config.get(Configuration.CATEGORY_GENERAL, "uiScaling", 100, "Values below 50% might give odd results, use on own risk ;)", 1, 100).getInt();
 
         String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
         CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);
