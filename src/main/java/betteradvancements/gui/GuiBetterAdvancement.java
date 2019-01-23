@@ -278,11 +278,17 @@ public class GuiBetterAdvancement extends Gui {
         boolean drawTop;
         
         if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
-            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+            if (this.criterionGrid.height < this.guiBetterAdvancementTab.getScreen().height) {
+                drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
+            } else {
+                // Always draw on the bottom if the grid is larger than the screen
+                drawTop = false;
+            }
         }
         else {
             drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + 50 >= this.guiBetterAdvancementTab.getScreen().height;
         }
+
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
         int j = MathHelper.floor(percentageObtained * (float) this.width);
         AdvancementState advancementstate;
