@@ -1,10 +1,12 @@
 package betteradvancements.handler;
 
+import betteradvancements.gui.GuiBetterAdvancementsButton;
 import betteradvancements.gui.GuiScreenBetterAdvancements;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.advancements.GuiScreenAdvancements;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.ClientAdvancementManager;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
@@ -21,6 +23,16 @@ public class GuiOpenHandler {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getMinecraft();
             mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
+        }
+    }
+
+    @SubscribeEvent
+    public void onGuiOpened(final GuiScreenEvent.InitGuiEvent.Post event) {
+        if (event.getGui() instanceof GuiInventory) {
+            if (GuiBetterAdvancementsButton.addToInventory) {
+                GuiInventory guiInventory = (GuiInventory) event.getGui();
+                event.getButtonList().add(new GuiBetterAdvancementsButton(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
+            }
         }
     }
 

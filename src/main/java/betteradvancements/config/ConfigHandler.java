@@ -2,6 +2,7 @@ package betteradvancements.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.GuiBetterAdvancementTab;
+import betteradvancements.gui.GuiBetterAdvancementsButton;
 import betteradvancements.gui.GuiScreenBetterAdvancements;
 import betteradvancements.reference.Reference;
 import betteradvancements.util.ColorHelper;
@@ -51,6 +52,7 @@ public class ConfigHandler {
         String criteriaDetailString = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.comments(), CriteriaDetail.names()).getString();
         CriterionGrid.detailLevel = CriteriaDetail.fromName(criteriaDetailString);
         CriterionGrid.requiresShift = config.get(Configuration.CATEGORY_GENERAL, "criteriaDetailRequiresShift", false).getBoolean();
+        GuiBetterAdvancementsButton.addToInventory = config.get(Configuration.CATEGORY_GENERAL, "addInventoryButton", false).getBoolean();
 
         BetterDisplayInfo.defaultDrawDirectLines = config.get(Configuration.CATEGORY_GENERAL, "defaultDrawDirectLines", false).getBoolean();
         BetterDisplayInfo.defaultHideLines = config.get(Configuration.CATEGORY_GENERAL, "defaultHideLines", false).getBoolean();
