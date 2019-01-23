@@ -75,8 +75,7 @@ public class GuiBetterAdvancement extends Gui {
         }
         int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
         GuiScreenBetterAdvancements screen = guiBetterAdvancementTab.getScreen();
-        double maxAspectRatio = (double)screen.width / screen.height;
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, maxAspectRatio, mc.fontRenderer);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.fontRenderer);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {

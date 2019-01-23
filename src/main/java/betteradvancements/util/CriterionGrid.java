@@ -26,7 +26,6 @@ public class CriterionGrid {
     public List<Column> columns;
     public int width;
     public int height;
-    public double aspectRatio;
 
     private CriterionGrid() {
         this.cellContents = Collections.emptyList();
@@ -37,7 +36,6 @@ public class CriterionGrid {
         this.columns = Collections.emptyList();
         this.width = 0;
         this.height = 0;
-        this.aspectRatio = Double.NaN;
     }
 
     public CriterionGrid(List<String> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
@@ -67,7 +65,6 @@ public class CriterionGrid {
             this.width += columnWidth;
         }
         this.height = this.numRows * this.fontHeight;
-        this.aspectRatio = 1.0F * this.width / this.height;
     }
 
     public class Column {
@@ -82,7 +79,7 @@ public class CriterionGrid {
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
-    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, double maxAspectRatio, FontRenderer renderer) {
+    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, int maxWidth, FontRenderer renderer) {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
@@ -144,7 +141,7 @@ public class CriterionGrid {
             newGrid.init();
             prevGrid = currGrid;
             currGrid = newGrid;
-        } while(numCols <= cellContents.size() && currGrid.aspectRatio <= maxAspectRatio);
+        } while(numCols <= cellContents.size() && currGrid.width <= maxWidth);
         return prevGrid != null ? prevGrid : currGrid;
     }
 }
