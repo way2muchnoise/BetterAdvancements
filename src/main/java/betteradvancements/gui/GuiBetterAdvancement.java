@@ -347,10 +347,18 @@ public class GuiBetterAdvancement extends Gui {
 
         // Title left side
         RenderUtil.setColor(advancementstate == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
-        this.drawTexturedModalRect(drawX, drawY, 0, 3 * 26, j, 26);
+        int left_side = Math.min(j, WIDGET_WIDTH - 16);
+        this.drawTexturedModalRect(drawX, drawY, 0, 3 * 26, left_side, 26);
+        if (left_side < j) {
+            this.drawTexturedModalRect(drawX + left_side, drawY, 16, 3 * 26, j - left_side, 26);
+        }
         // Title right side
         RenderUtil.setColor(advancementstate1 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
-        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - k, 3 * 26, k, 26);
+        int right_side = Math.min(k, WIDGET_WIDTH - 16);
+        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - right_side, 3 * 26, right_side, 26);
+        if (right_side < k) {
+            this.drawTexturedModalRect(drawX + j + right_side, drawY, WIDGET_WIDTH - k + right_side, 3 * 26, k - right_side, 26);
+        }
         // Advancement icon
         RenderUtil.setColor(advancementstate2 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedIconColor() : betterDisplayInfo.getUnCompletedIconColor());
         this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + 26, 26, 26);
