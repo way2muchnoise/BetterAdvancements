@@ -39,10 +39,10 @@ public class ConfigHandler {
     }
 
     private static void loadConfig() {
-        BetterDisplayInfo.defaultUncompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedIconColor", "#FFFFFF").getString());
-        BetterDisplayInfo.defaultUncompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedTitleColor", "#0489C1").getString());
-        BetterDisplayInfo.defaultCompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedIconColor", "#DBA213").getString());
-        BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", "#DBA213").getString());
+        BetterDisplayInfo.defaultUncompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedIconColor", BetterDisplayInfo.defaultMinecraftUncompletedIconColor).getString());
+        BetterDisplayInfo.defaultUncompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultUncompletedTitleColor", BetterDisplayInfo.defaultMinecraftUncompletedTitleColor).getString());
+        BetterDisplayInfo.defaultCompletedIconColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedIconColor", BetterDisplayInfo.defaultMinecraftCompletedIconColor).getString());
+        BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(config.get(Configuration.CATEGORY_GENERAL, "defaultCompletedTitleColor", BetterDisplayInfo.defaultMinecraftCompletedTitleColor).getString());
 
         GuiBetterAdvancementTab.doFade = config.get(Configuration.CATEGORY_GENERAL, "doAdvancementsBackgroundFade", true).getBoolean();
         GuiScreenBetterAdvancements.showDebugCoordinates = config.get(Configuration.CATEGORY_GENERAL, "showDebugCoordinates", false).getBoolean();

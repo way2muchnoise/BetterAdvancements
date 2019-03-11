@@ -34,8 +34,7 @@ import java.util.regex.Pattern;
 public class GuiBetterAdvancement extends Gui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;
-    private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 20, TITLE_SIZE = 32;
-    private static final Pattern PATTERN = Pattern.compile("(.+) \\S+");
+    private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 26, TITLE_SIZE = 32, ICON_OFFSET = 128, ICON_SIZE = 26;
 
     private final GuiBetterAdvancementTab guiBetterAdvancementTab;
     private final Advancement advancement;
@@ -240,18 +239,18 @@ public class GuiBetterAdvancement extends Gui {
     public void draw(int scrollX, int scrollY) {
         if (!this.displayInfo.isHidden() || this.advancementProgress != null && this.advancementProgress.isDone()) {
             float f = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
-            AdvancementState advancementstate;
+            AdvancementState advancementState;
 
             if (f >= 1.0F) {
-                advancementstate = AdvancementState.OBTAINED;
+                advancementState = AdvancementState.OBTAINED;
             } else {
-                advancementstate = AdvancementState.UNOBTAINED;
+                advancementState = AdvancementState.UNOBTAINED;
             }
 
             this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
-            RenderUtil.setColor(advancementstate == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedIconColor() : betterDisplayInfo.getUnCompletedIconColor());
+            RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             GlStateManager.enableBlend();
-            this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + 26, 26, 26);
+            this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
             RenderHelper.enableGUIStandardItemLighting();
             this.minecraft.getRenderItem().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
@@ -291,29 +290,29 @@ public class GuiBetterAdvancement extends Gui {
 
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
         int j = MathHelper.floor(percentageObtained * (float) this.width);
-        AdvancementState advancementstate;
-        AdvancementState advancementstate1;
-        AdvancementState advancementstate2;
+        AdvancementState stateTitleLeft;
+        AdvancementState stateTitleRight;
+        AdvancementState stateIcon;
 
         if (percentageObtained >= 1.0F) {
             j = this.width / 2;
-            advancementstate = AdvancementState.OBTAINED;
-            advancementstate1 = AdvancementState.OBTAINED;
-            advancementstate2 = AdvancementState.OBTAINED;
+            stateTitleLeft = AdvancementState.OBTAINED;
+            stateTitleRight = AdvancementState.OBTAINED;
+            stateIcon = AdvancementState.OBTAINED;
         } else if (j < 2) {
             j = this.width / 2;
-            advancementstate = AdvancementState.UNOBTAINED;
-            advancementstate1 = AdvancementState.UNOBTAINED;
-            advancementstate2 = AdvancementState.UNOBTAINED;
+            stateTitleLeft = AdvancementState.UNOBTAINED;
+            stateTitleRight = AdvancementState.UNOBTAINED;
+            stateIcon = AdvancementState.UNOBTAINED;
         } else if (j > this.width - 2) {
             j = this.width / 2;
-            advancementstate = AdvancementState.OBTAINED;
-            advancementstate1 = AdvancementState.OBTAINED;
-            advancementstate2 = AdvancementState.UNOBTAINED;
+            stateTitleLeft = AdvancementState.OBTAINED;
+            stateTitleRight = AdvancementState.OBTAINED;
+            stateIcon = AdvancementState.UNOBTAINED;
         } else {
-            advancementstate = AdvancementState.OBTAINED;
-            advancementstate1 = AdvancementState.UNOBTAINED;
-            advancementstate2 = AdvancementState.UNOBTAINED;
+            stateTitleLeft = AdvancementState.OBTAINED;
+            stateTitleRight = AdvancementState.UNOBTAINED;
+            stateIcon = AdvancementState.UNOBTAINED;
         }
 
         int k = this.width - j;
@@ -339,29 +338,29 @@ public class GuiBetterAdvancement extends Gui {
 
         if (!this.description.isEmpty()) {
             if (drawTop) {
-                this.render9Sprite(drawX, drawY + ADVANCEMENT_SIZE - boxHeight, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, 26, 0, 52);
+                this.render9Sprite(drawX, drawY + ADVANCEMENT_SIZE - boxHeight, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
             } else {
-                this.render9Sprite(drawX, drawY, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, 26, 0, 52);
+                this.render9Sprite(drawX, drawY, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
             }
         }
 
         // Title left side
-        RenderUtil.setColor(advancementstate == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
+        RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleLeft));
         int left_side = Math.min(j, WIDGET_WIDTH - 16);
-        this.drawTexturedModalRect(drawX, drawY, 0, 3 * 26, left_side, 26);
+        this.drawTexturedModalRect(drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
         if (left_side < j) {
-            this.drawTexturedModalRect(drawX + left_side, drawY, 16, 3 * 26, j - left_side, 26);
+            this.drawTexturedModalRect(drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
         }
         // Title right side
-        RenderUtil.setColor(advancementstate1 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedTitleColor() : betterDisplayInfo.getUnCompletedTitleColor());
+        RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleRight));
         int right_side = Math.min(k, WIDGET_WIDTH - 16);
-        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - right_side, 3 * 26, right_side, 26);
+        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
         if (right_side < k) {
-            this.drawTexturedModalRect(drawX + j + right_side, drawY, WIDGET_WIDTH - k + right_side, 3 * 26, k - right_side, 26);
+            this.drawTexturedModalRect(drawX + j + right_side, drawY, WIDGET_WIDTH - k + right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side, WIDGET_HEIGHT);
         }
         // Advancement icon
-        RenderUtil.setColor(advancementstate2 == AdvancementState.OBTAINED ? betterDisplayInfo.getCompletedIconColor() : betterDisplayInfo.getUnCompletedIconColor());
-        this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), 128 + 26, 26, 26);
+        RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
+        this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
             this.minecraft.fontRenderer.drawString(this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1, true);

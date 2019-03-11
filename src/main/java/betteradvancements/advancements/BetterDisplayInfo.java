@@ -4,17 +4,23 @@ import betteradvancements.api.IBetterDisplayInfo;
 import betteradvancements.util.ColorHelper;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.client.gui.advancements.AdvancementState;
 import net.minecraft.util.ResourceLocation;
 
 public class BetterDisplayInfo implements IBetterDisplayInfo {
-    public static int defaultCompletedIconColor;
-    public static int defaultCompletedTitleColor;
-    public static int defaultUncompletedIconColor;
-    public static int defaultUncompletedTitleColor;
+    public static int defaultCompletedIconColor, defaultUncompletedIconColor;
+    public static int defaultCompletedTitleColor, defaultUncompletedTitleColor;
+    public static final String defaultMinecraftCompletedIconColor = "#DBA213", defaultMinecraftUncompletedIconColor = "#FFFFFF";
+    public static final String defaultMinecraftCompletedTitleColor = "#DBA213", defaultMinecraftUncompletedTitleColor = "#0489C1";
     public static boolean defaultDrawDirectLines;
     public static int defaultCompletedLineColor;
     public static int defaultUncompletedLineColor;
     public static boolean defaultHideLines;
+    private static final int WHITE = ColorHelper.RGB(1F, 1F, 1F);
+    private static final int minecraftCompletedIconColor = ColorHelper.RGB(defaultMinecraftCompletedIconColor);
+    private static final int minecraftUncompletedIconColor = ColorHelper.RGB(defaultMinecraftUncompletedIconColor);
+    private static final int minecraftCompletedTitleColor = ColorHelper.RGB(defaultMinecraftCompletedTitleColor);
+    private static final int minecraftUncompletedTitleColor = ColorHelper.RGB(defaultMinecraftUncompletedTitleColor);
 
     private ResourceLocation id;
     private int completedIconColor, unCompletedIconColor;
@@ -175,4 +181,41 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     public boolean allowDragging() {
         return this.allowDragging;
     }
+
+    public boolean hasCustomIconColor() {
+        return this.completedIconColor != minecraftCompletedIconColor || this.unCompletedIconColor != minecraftUncompletedIconColor;
+    }
+
+    public boolean hasCustomTitleColor() {
+        return this.completedTitleColor != minecraftCompletedTitleColor || this.unCompletedTitleColor != minecraftUncompletedTitleColor;
+    }
+
+    public int getIconYMultiplier(AdvancementState state) {
+        if (hasCustomIconColor()) {
+            return 2;
+        }
+        return state == AdvancementState.OBTAINED ? 0 : 1;
+    }
+
+    public int getIconColor(AdvancementState state) {
+        if (!hasCustomIconColor()) {
+            return WHITE;
+        }
+        return state == AdvancementState.OBTAINED ? getCompletedIconColor() : getUnCompletedIconColor();
+    }
+
+    public int getTitleYMultiplier(AdvancementState state) {
+        if (hasCustomTitleColor()) {
+            return 3;
+        }
+        return state == AdvancementState.OBTAINED ? 0 : 1;
+    }
+
+    public int getTitleColor(AdvancementState state) {
+        if (!hasCustomIconColor()) {
+            return WHITE;
+        }
+        return state == AdvancementState.OBTAINED ? getCompletedTitleColor() : getUnCompletedTitleColor();
+    }
+
 }
