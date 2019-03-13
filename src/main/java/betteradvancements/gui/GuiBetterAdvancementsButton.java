@@ -16,27 +16,27 @@ public class GuiBetterAdvancementsButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         if (this.visible)
         {
+            Minecraft mc  = Minecraft.getInstance();
             mc.getTextureManager().bindTexture(Resources.Gui.TABS);
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             this.drawTexturedModalRect(this.x, this.y, 56, 0, 28, 32);
-            this.mouseDragged(mc, mouseX, mouseY);
             if (hovered) {
                 mc.currentScreen.drawHoveringText("Advancements", mouseX, mouseY);
             }
             GlStateManager.enableRescaleNormal();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.enableGUIStandardItemLighting();
-            mc.getRenderItem().renderItemAndEffectIntoGUI(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
+            mc.getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
         }
     }
 
     @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        if (super.mousePressed(mc, mouseX, mouseY)) {
-            mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
+    public boolean mouseClicked(double mouseX, double mouseY, int modifiers) {
+        if (super.mouseClicked(mouseX, mouseY, modifiers)) {
+            Minecraft.getInstance().displayGuiScreen(new GuiScreenBetterAdvancements(Minecraft.getInstance().player.connection.getAdvancementManager()));
             return true;
         }
         return false;

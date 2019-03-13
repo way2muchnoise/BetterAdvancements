@@ -1,12 +1,11 @@
 package betteradvancements.util;
 
-import net.minecraft.item.crafting.CraftingManager;
+import betteradvancements.BetterAdvancements;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -24,22 +23,22 @@ import java.util.function.Function;
 public class FolderUtil {
     public static boolean findAdvancements(ResourceLocation location, WorldServer world, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
-        ModContainer mod = FMLCommonHandler.instance().findContainerFor(location.getNamespace());
+        ModContainer mod = ModList.get().getModContainerById(location.getNamespace()).orElse(null);
         try {
             File source = null;
 
             if (mod != null) {
-                source = mod.getSource();
+                // source = mod.getSource();
 
                 if ("minecraft".equals(mod.getModId())) {
                     try
                     {
-                        URI tmp = CraftingManager.class.getResource("/assets/.mcassetsroot").toURI();
+                        URI tmp = RecipeManager.class.getResource("/assets/.mcassetsroot").toURI();
                         source = new File(tmp.resolve("..").getPath());
                     }
                     catch (URISyntaxException e)
                     {
-                        FMLLog.log.error("Error finding Minecraft jar: ", e);
+                        BetterAdvancements.log.error("Error finding Minecraft jar: ", e);
                         return false;
                     }
                 }
@@ -56,7 +55,7 @@ public class FolderUtil {
                     fs = FileSystems.newFileSystem(source.toPath(), null);
                     root = fs.getPath("/assets/" + mod.getModId() + "/advancements");
                 } catch (IOException e) {
-                    FMLLog.log.error("Error loading FileSystem from jar: ", e);
+                    BetterAdvancements.log.error("Error loading FileSystem from jar: ", e);
                     return false;
                 }
             } else if (source.isDirectory()) {
@@ -79,7 +78,7 @@ public class FolderUtil {
                 try {
                     itr = Files.walk(root).iterator();
                 } catch (IOException e) {
-                    FMLLog.log.error("Error iterating filesystem for: {}", mod.getModId(), e);
+                    BetterAdvancements.log.error("Error iterating filesystem for: {}", mod.getModId(), e);
                     return false;
                 }
 

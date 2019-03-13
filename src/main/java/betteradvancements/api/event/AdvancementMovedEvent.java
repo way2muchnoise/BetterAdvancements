@@ -2,7 +2,7 @@ package betteradvancements.api.event;
 
 import betteradvancements.gui.GuiBetterAdvancement;
 import net.minecraft.advancements.Advancement;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  *  Event fired after an advancement has been moved in the gui and the mouse button has been released.

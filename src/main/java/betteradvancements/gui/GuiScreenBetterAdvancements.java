@@ -13,17 +13,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.network.play.client.CPacketSeenAdvancements;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Mouse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdvancementManager.IListener {
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
     private static final int SIDE = 30, TOP = 40, BOTTOM = 30, PADDING = 9;
@@ -42,6 +41,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
 
     public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
         this.clientAdvancementManager = clientAdvancementManager;
+        this.allowUserInput = true;
     }
 
     /**
@@ -75,56 +75,49 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
         }
     }
 
-    /**
-     * Called when the mouse is clicked. Args : mouseX, mouseY, clickedButton
-     */
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (mouseButton == 0) {
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int modifiers) {
+        if (modifiers == 0) {
             int left = SIDE + (width - internalWidth) / 2;
             int top = TOP + (height - internalHeight) / 2;
             for (GuiBetterAdvancementTab guiBetterAdvancementTab : this.tabs.values()) {
                 if (guiBetterAdvancementTab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
                     this.clientAdvancementManager.setSelectedTab(guiBetterAdvancementTab.getAdvancement(), true);
-                    break;
+                    return true;
                 }
             }
         }
-
-        super.mouseClicked(mouseX, mouseY, mouseButton);
+        return super.mouseClicked(mouseX, mouseY, modifiers);
     }
 
     @Override
-    public void handleMouseInput() throws IOException {
-        super.handleMouseInput();
-        int wheel = Mouse.getDWheel();
+    public boolean mouseScrolled(double scroll) {
+        int wheel = (int) scroll;
         if (wheel < 0 && zoom > MIN_ZOOM) {
             zoom -= ZOOM_STEP;
         } else if (wheel > 0 && zoom < MAX_ZOOM) {
             zoom += ZOOM_STEP;
         }
+        return super.mouseScrolled(scroll);
     }
 
-    /**
-     * Fired when a key is typed (except F11 which toggles full screen). This is the equivalent of
-     * KeyListener.keyTyped(KeyEvent e). Args : character (character on the key), keyCode (lwjgl Keyboard key code)
-     */
-    protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == this.mc.gameSettings.keyBindAdvancements.getKeyCode()) {
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == this.mc.gameSettings.keyBindAdvancements.getKey().getKeyCode()) {
             this.mc.displayGuiScreen(null);
-            this.mc.setIngameFocus();
-        } else {
-            super.keyTyped(typedChar, keyCode);
+            return true;
         }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     /**
      * Draws the screen and all the components in it.
      */
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public void render(int mouseX, int mouseY, float partialTicks) {
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
-        if (Mouse.isButtonDown(0) && !this.isScrolling) {
+        if (this.mc.mouseHelper.isLeftDown() && !this.isScrolling) {
             if (this.advConnectedToMouse == null) {
                 boolean inGui = mouseX < left + internalWidth - 2*SIDE - PADDING && mouseX > left + PADDING && mouseY < top + internalHeight - TOP + 1 && mouseY > top + 2*PADDING;
                 if (this.selectedTab != null && inGui) {
@@ -157,7 +150,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             this.advConnectedToMouse = null;
         }
         
-        if (Mouse.isButtonDown(0)) {
+        if (this.mc.mouseHelper.isLeftDown()) {
             if (this.advConnectedToMouse == null) {
                 if (!this.isScrolling) {
                     this.isScrolling = true;
@@ -312,7 +305,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
                 int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
                 int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - fontRenderer.FONT_HEIGHT + 1;
 
-                fontRenderer.drawString(this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000, false);
+                fontRenderer.drawString(this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
             } else {
                 //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
                 int xMouse = mouseX - left - PADDING;
@@ -321,7 +314,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
 
-                fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000, false);
+                fontRenderer.drawString(currentX + "," + currentY, mouseX, mouseY - fontRenderer.FONT_HEIGHT, 0x000000);
             }
         }
     }
@@ -344,17 +337,17 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             this.fontRenderer.drawString(":(", boxLeft + (width - this.fontRenderer.getStringWidth(":(")) / 2, boxTop + height / 2 + this.fontRenderer.FONT_HEIGHT, -1);
         } else {
             GlStateManager.pushMatrix();
-            GlStateManager.translate((float) (boxLeft), (float) (boxTop), -400.0F);
-            GlStateManager.enableDepth();
+            GlStateManager.translated((float) (boxLeft), (float) (boxTop), -400.0F);
+            GlStateManager.enableDepthTest();
             guiBetterAdvancementTab.drawContents(width, height);
             GlStateManager.popMatrix();
             GlStateManager.depthFunc(515);
-            GlStateManager.disableDepth();
+            GlStateManager.disableDepthTest();
         }
     }
 
     public void renderWindow(int left, int top, int right, int bottom) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
         RenderHelper.disableStandardItemLighting();
         this.mc.getTextureManager().bindTexture(Resources.Gui.WINDOW);
@@ -387,7 +380,7 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
             }
 
             GlStateManager.enableRescaleNormal();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.enableGUIStandardItemLighting();
 
             for (GuiBetterAdvancementTab tab : this.tabs.values()) {
@@ -405,14 +398,14 @@ public class GuiScreenBetterAdvancements extends GuiScreen implements ClientAdva
     }
 
     private void renderToolTips(int mouseX, int mouseY, int left, int top, int right, int bottom) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
             GlStateManager.pushMatrix();
-            GlStateManager.enableDepth();
-            GlStateManager.translate((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
+            GlStateManager.enableDepthTest();
+            GlStateManager.translated((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
             this.selectedTab.drawToolTips(mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
-            GlStateManager.disableDepth();
+            GlStateManager.disableDepthTest();
             GlStateManager.popMatrix();
         }
 

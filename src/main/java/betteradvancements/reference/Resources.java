@@ -1,10 +1,11 @@
 package betteradvancements.reference;
 
+import betteradvancements.BetterAdvancements;
 import net.minecraft.util.ResourceLocation;
 
 public final class Resources {
     private static ResourceLocation resourceLocation(String location) {
-        return new ResourceLocation(Reference.ID, location);
+        return new ResourceLocation(BetterAdvancements.ID, location);
     }
 
     public static final class Gui {

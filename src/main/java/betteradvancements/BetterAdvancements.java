@@ -1,18 +1,26 @@
 package betteradvancements;
 
-import betteradvancements.proxy.CommonProxy;
-import betteradvancements.reference.Reference;
+import betteradvancements.config.Config;
+import betteradvancements.handler.GuiOpenHandler;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.loading.FMLPaths;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-@Mod(modid = Reference.ID, name = Reference.NAME, guiFactory = Reference.MOD_GUI_FACTORY, version = Reference.VERSION_FULL, clientSideOnly = true)
+@Mod(BetterAdvancements.ID)
 public class BetterAdvancements {
-    @SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.SERVER_PROXY)
-    public static CommonProxy proxy;
+    public static final String ID = "betteradvancements";
+    public static final Logger log = LogManager.getLogger();
 
-    @Mod.EventHandler
-    public void init(FMLPreInitializationEvent event) {
-        proxy.preInit(event);
+    public BetterAdvancements() {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
+
+        Config.instance.loadConfig(Config.CLIENT, FMLPaths.CONFIGDIR.get().resolve(ID + "-client.toml"));
+        MinecraftForge.EVENT_BUS.register(Config.instance);
+
+        MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
     }
 }

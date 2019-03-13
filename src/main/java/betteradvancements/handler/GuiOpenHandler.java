@@ -10,18 +10,25 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.multiplayer.ClientAdvancementManager;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class GuiOpenHandler {
+    public static final GuiOpenHandler instance = new GuiOpenHandler();
+
+    private GuiOpenHandler() {
+
+    }
+
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
         if (event.getGui() instanceof GuiScreenAdvancements) {
             event.setCanceled(true);
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
             mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
         }
     }
@@ -40,12 +47,12 @@ public class GuiOpenHandler {
     public void onGuiAboutToOpen(final GuiScreenEvent.InitGuiEvent.Pre event) {
         if (event.getGui() instanceof GuiScreenBetterAdvancements) {
             if (GuiScreenBetterAdvancements.orderTabsAlphabetically) {
-                Minecraft mc = Minecraft.getMinecraft();
+                Minecraft mc = Minecraft.getInstance();
                 ClientAdvancementManager manager = mc.player.connection.getAdvancementManager();
                 AdvancementList advancementList = manager.getAdvancementList();
                 Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
 
-                List<String> advancementLocations = roots.stream().sorted(Comparator.comparing(a -> a.getDisplayText().getUnformattedText().toLowerCase())).map(a -> a.getId().toString()).collect(Collectors.toList());
+                List<String> advancementLocations = roots.stream().sorted(Comparator.comparing(a -> a.getDisplayText().getUnformattedComponentText().toLowerCase())).map(a -> a.getId().toString()).collect(Collectors.toList());
 
                 List<Advancement> advancements = new ArrayList<>(roots);
                 roots.clear();

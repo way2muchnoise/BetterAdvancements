@@ -8,19 +8,18 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBetterAdvancementTab extends Gui {
     public static boolean doFade = true;
 
@@ -68,7 +67,7 @@ public class GuiBetterAdvancementTab extends Gui {
         this.type.draw(this, left, top, width, height, selected, this.index);
     }
 
-    public void drawIcon(int left, int top,int width, int height, RenderItem renderItem) {
+    public void drawIcon(int left, int top,int width, int height, ItemRenderer renderItem) {
         this.type.drawIcon(left, top, width, height, this.index, renderItem, this.icon);
     }
 
@@ -90,7 +89,7 @@ public class GuiBetterAdvancementTab extends Gui {
             this.minecraft.getTextureManager().bindTexture(TextureManager.RESOURCE_LOCATION_EMPTY);
         }
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
 
@@ -111,7 +110,7 @@ public class GuiBetterAdvancementTab extends Gui {
 
     public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.0F, 0.0F, 200.0F);
+        GlStateManager.translated(0.0F, 0.0F, 200.0F);
         drawRect(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
@@ -134,7 +133,7 @@ public class GuiBetterAdvancementTab extends Gui {
         }
     }
 
-    public boolean isMouseOver(int left, int top, int width, int height, int mouseX, int mouseY) {
+    public boolean isMouseOver(int left, int top, int width, int height, double mouseX, double mouseY) {
         return this.type.isMouseOver(left, top, width, height, this.index, mouseX, mouseY);
     }
 

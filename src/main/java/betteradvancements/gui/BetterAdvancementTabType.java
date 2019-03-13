@@ -2,7 +2,7 @@ package betteradvancements.gui;
 
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.advancements.AdvancementTabType;
-import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
 
 public class BetterAdvancementTabType {
@@ -58,7 +58,7 @@ public class BetterAdvancementTabType {
         gui.drawTexturedModalRect(x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
-    public void drawIcon(int left, int top, int width, int height, int index, RenderItem renderItem, ItemStack stack) {
+    public void drawIcon(int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
 
@@ -118,7 +118,7 @@ public class BetterAdvancementTabType {
         }
     }
 
-    public boolean isMouseOver(int left, int top, int width, int height, int index, int mouseX, int mouseY) {
+    public boolean isMouseOver(int left, int top, int width, int height, int index, double mouseX, double mouseY) {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
         return mouseX > i && mouseX < i + this.width && mouseY > j && mouseY < j + this.height;

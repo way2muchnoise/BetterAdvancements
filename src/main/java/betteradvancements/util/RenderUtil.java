@@ -23,7 +23,7 @@ public class RenderUtil {
     }
 
     public static void setColor(int color) {
-        GlStateManager.color(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
+        GlStateManager.color3f(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
     }
     
     public static void drawRect(double x, double y, double x2, double y2, double width, int color) {
@@ -39,7 +39,7 @@ public class RenderUtil {
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderUtil.setColor(color);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         boolean xHigh = false;

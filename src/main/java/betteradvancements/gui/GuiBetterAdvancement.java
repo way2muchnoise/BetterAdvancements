@@ -1,7 +1,6 @@
 package betteradvancements.gui;
 
 import betteradvancements.advancements.BetterDisplayInfo;
-import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import betteradvancements.api.event.AdvancementDrawConnectionsEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.CriterionGrid;
@@ -12,25 +11,21 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.advancements.AdvancementState;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GLSync;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class GuiBetterAdvancement extends Gui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;
@@ -61,7 +56,7 @@ public class GuiBetterAdvancement extends Gui {
         this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
-        this.screenScale = new ScaledResolution(mc).getScaleFactor();
+        this.screenScale = mc.mainWindow.getScaleFactor(0);
     }
 
     private void refreshHover() {
@@ -77,7 +72,7 @@ public class GuiBetterAdvancement extends Gui {
         this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.fontRenderer);
         int maxWidth;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
             maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         }
         else {
@@ -252,7 +247,7 @@ public class GuiBetterAdvancement extends Gui {
             GlStateManager.enableBlend();
             this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
             RenderHelper.enableGUIStandardItemLighting();
-            this.minecraft.getRenderItem().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+            this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
         for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
@@ -276,7 +271,7 @@ public class GuiBetterAdvancement extends Gui {
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
         boolean drawTop;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
             if (this.criterionGrid.height < this.guiBetterAdvancementTab.getScreen().height) {
                 drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
             } else {
@@ -317,7 +312,7 @@ public class GuiBetterAdvancement extends Gui {
 
         int k = this.width - j;
         this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.enableBlend();
         int drawY = scrollY + this.y;
         int drawX;
@@ -329,7 +324,7 @@ public class GuiBetterAdvancement extends Gui {
         }
         int boxHeight;
         
-        if (!CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
             boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
         }
         else {
@@ -363,16 +358,16 @@ public class GuiBetterAdvancement extends Gui {
         this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
-            this.minecraft.fontRenderer.drawString(this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1, true);
+            this.minecraft.fontRenderer.drawStringWithShadow(this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1);
 
             if (s != null) {
-                this.minecraft.fontRenderer.drawString(s, (float) (scrollX + this.x - i), (float) (scrollY + this.y + 9), -1, true);
+                this.minecraft.fontRenderer.drawStringWithShadow(s, (float) (scrollX + this.x - i), (float) (scrollY + this.y + 9), -1);
             }
         } else {
-            this.minecraft.fontRenderer.drawString(this.title, (float) (scrollX + this.x + 32), (float) (scrollY + this.y + 9), -1, true);
+            this.minecraft.fontRenderer.drawStringWithShadow(this.title, (float) (scrollX + this.x + 32), (float) (scrollY + this.y + 9), -1);
 
             if (s != null) {
-                this.minecraft.fontRenderer.drawString(s, (float) (scrollX + this.x + this.width - i - 5), (float) (scrollY + this.y + 9), -1, true);
+                this.minecraft.fontRenderer.drawStringWithShadow(s, (float) (scrollX + this.x + this.width - i - 5), (float) (scrollY + this.y + 9), -1);
             }
         }
 
@@ -383,22 +378,22 @@ public class GuiBetterAdvancement extends Gui {
             yOffset = scrollY + this.y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
-            this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406, false);
+            this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406);
         }
-        if (this.criterionGrid != null && !CriterionGrid.requiresShift || (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) {
+        if (this.criterionGrid != null && !CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
                 CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
                 for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
-                    this.minecraft.fontRenderer.drawString(col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.fontRenderer.FONT_HEIGHT, -5592406, false);
+                    this.minecraft.fontRenderer.drawString(col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.fontRenderer.FONT_HEIGHT, -5592406);
                 }
                 xOffset += col.width;
             }
         }
 
         RenderHelper.enableGUIStandardItemLighting();
-        this.minecraft.getRenderItem().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+        this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
     }
 
     protected void render9Sprite(int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {

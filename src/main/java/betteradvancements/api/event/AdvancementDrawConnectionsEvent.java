@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.advancements.Advancement;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  *  Event fired during advancement connection drawing.
@@ -23,7 +23,7 @@ public class AdvancementDrawConnectionsEvent extends Event {
     
     public AdvancementDrawConnectionsEvent(Advancement advancement) {
         this.advancement = advancement;
-        this.extraConnections = new ArrayList<Advancement>();
+        this.extraConnections = new ArrayList<>();
     }
     
     public Advancement getAdvancement() {

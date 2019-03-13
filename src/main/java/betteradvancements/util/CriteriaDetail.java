@@ -1,6 +1,7 @@
 package betteradvancements.util;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public enum CriteriaDetail {
@@ -38,10 +39,10 @@ public enum CriteriaDetail {
 		return unobtained;
 	}
 
-	public static String[] names() {
+	public static List<String> names() {
     	return Arrays.stream(values())
     	    .map(CriteriaDetail::getName)
-    	    .toArray(String[]::new);
+    	    .collect(Collectors.toList());
     }
     
     public static String comments() {
