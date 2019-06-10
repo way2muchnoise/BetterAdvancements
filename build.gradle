@@ -59,7 +59,6 @@ configurations {
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
-	//runtimeOnly "mezz.jei:jei-${version_minecraft}:${version_jei}"
 }
 
 minecraft {
