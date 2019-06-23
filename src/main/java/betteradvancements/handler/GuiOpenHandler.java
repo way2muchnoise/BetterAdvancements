@@ -1,18 +1,17 @@
 package betteradvancements.handler;
 
-import betteradvancements.gui.GuiBetterAdvancementsButton;
+import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
 import betteradvancements.gui.GuiScreenBetterAdvancements;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.advancements.GuiScreenAdvancements;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.advancements.AdvancementsScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientAdvancementManager;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class GuiOpenHandler {
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
-        if (event.getGui() instanceof GuiScreenAdvancements) {
+        if (event.getGui() instanceof AdvancementsScreen) {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getInstance();
             mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
@@ -35,10 +34,10 @@ public class GuiOpenHandler {
 
     @SubscribeEvent
     public void onGuiOpened(final GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.getGui() instanceof GuiInventory) {
-            if (GuiBetterAdvancementsButton.addToInventory) {
-                GuiInventory guiInventory = (GuiInventory) event.getGui();
-                event.getButtonList().add(new GuiBetterAdvancementsButton(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
+        if (event.getGui() instanceof InventoryScreen) {
+            if (BetterAdvancementsScreenButtonWidget.addToInventory) {
+                InventoryScreen guiInventory = (InventoryScreen) event.getGui();
+                event.getWidgetList().add(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
             }
         }
     }

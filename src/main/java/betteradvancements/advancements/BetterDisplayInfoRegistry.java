@@ -7,7 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -28,7 +28,7 @@ public class BetterDisplayInfoRegistry {
         return registry.getOrDefault(advancement.getId(), new BetterDisplayInfo(advancement));
     }
 
-    private void load(ResourceLocation location, WorldServer world) {
+    private void load(ResourceLocation location, ServerWorld world) {
         JsonParser parser = new JsonParser();
         FolderUtil.findAdvancements(location, world, null,
             (root, file) ->

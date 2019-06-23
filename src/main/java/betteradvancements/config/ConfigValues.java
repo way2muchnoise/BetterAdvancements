@@ -2,7 +2,7 @@ package betteradvancements.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.GuiBetterAdvancementTab;
-import betteradvancements.gui.GuiBetterAdvancementsButton;
+import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
 import betteradvancements.gui.GuiScreenBetterAdvancements;
 import betteradvancements.util.ColorHelper;
 import betteradvancements.util.CriteriaDetail;
@@ -68,7 +68,7 @@ public class ConfigValues {
 
         CriterionGrid.detailLevel = CriteriaDetail.fromName(detailLevel.get());
         CriterionGrid.requiresShift = requiresShift.get();
-        GuiBetterAdvancementsButton.addToInventory = addToInventory.get();
+        BetterAdvancementsScreenButtonWidget.addToInventory = addToInventory.get();
 
         BetterDisplayInfo.defaultDrawDirectLines = defaultDrawDirectLines.get();
         BetterDisplayInfo.defaultHideLines = defaultHideLines.get();

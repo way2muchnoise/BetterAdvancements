@@ -9,7 +9,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
 // An arrangement of criteria into rows and columns
@@ -92,9 +92,9 @@ public class CriterionGrid {
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
                 if (detailLevel.showObtained()) {
-                    TextComponentString text = new TextComponentString(" + ");
+                    StringTextComponent text = new StringTextComponent(" + ");
                     text.getStyle().setColor(TextFormatting.GREEN);
-                    TextComponentString text2 = new TextComponentString(criterion);
+                    StringTextComponent text2 = new StringTextComponent(criterion);
                     text2.getStyle().setColor(TextFormatting.WHITE);
                     text.appendSibling(text2);
                     cellContents.add(text.getFormattedText());
@@ -102,9 +102,9 @@ public class CriterionGrid {
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                	TextComponentString text = new TextComponentString(" x ");
+                    StringTextComponent text = new StringTextComponent(" x ");
                 	text.getStyle().setColor(TextFormatting.DARK_RED);
-                	TextComponentString text2 = new TextComponentString(criterion);
+                    StringTextComponent text2 = new StringTextComponent(criterion);
                 	text2.getStyle().setColor(TextFormatting.WHITE);
                 	text.appendSibling(text2);
                     cellContents.add(text.getFormattedText());
@@ -114,9 +114,9 @@ public class CriterionGrid {
         }
 
         if (!detailLevel.showUnobtained()) {
-        	TextComponentString text = new TextComponentString(" x ");
+            StringTextComponent text = new StringTextComponent(" x ");
         	text.getStyle().setColor(TextFormatting.DARK_RED);
-        	TextComponentString text2 = new TextComponentString(numUnobtained + " remaining");
+            StringTextComponent text2 = new StringTextComponent(numUnobtained + " remaining");
         	text2.getStyle().setColor(TextFormatting.WHITE);
         	text2.getStyle().setItalic(true);
         	text.appendSibling(text2);

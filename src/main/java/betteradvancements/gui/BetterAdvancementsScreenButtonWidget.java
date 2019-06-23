@@ -1,18 +1,18 @@
 package betteradvancements.gui;
 
 import betteradvancements.reference.Resources;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
-public class GuiBetterAdvancementsButton extends GuiButton {
+public class BetterAdvancementsScreenButtonWidget extends Widget {
     public static boolean addToInventory = false;
 
-    public GuiBetterAdvancementsButton(int x, int y, String buttonText) {
-        super(-99, x - 28, y - 28, 28, 28, buttonText);
+    public BetterAdvancementsScreenButtonWidget(int x, int y, String buttonText) {
+        super(x - 28, y - 28, 28, 28, buttonText);
     }
 
     @Override
@@ -21,10 +21,10 @@ public class GuiBetterAdvancementsButton extends GuiButton {
         {
             Minecraft mc  = Minecraft.getInstance();
             mc.getTextureManager().bindTexture(Resources.Gui.TABS);
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            this.drawTexturedModalRect(this.x, this.y, 56, 0, 28, 32);
-            if (hovered) {
-                mc.currentScreen.drawHoveringText("Advancements", mouseX, mouseY);
+            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            this.blit(this.x, this.y, 56, 0, 28, 32);
+            if (this.isHovered) {
+                mc.currentScreen.renderTooltip("Advancements", mouseX, mouseY);
             }
             GlStateManager.enableRescaleNormal();
             GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);

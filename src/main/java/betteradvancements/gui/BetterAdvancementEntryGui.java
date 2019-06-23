@@ -6,14 +6,14 @@ import betteradvancements.reference.Resources;
 import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.advancements.AdvancementState;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBetterAdvancement extends Gui {
+public class BetterAdvancementEntryGui extends AbstractGui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;
     private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 26, TITLE_SIZE = 32, ICON_OFFSET = 128, ICON_SIZE = 26;
@@ -40,13 +40,13 @@ public class GuiBetterAdvancement extends Gui {
     private List<String> description;
     private CriterionGrid criterionGrid;
     private final Minecraft minecraft;
-    private GuiBetterAdvancement parent;
-    private final List<GuiBetterAdvancement> children = Lists.newArrayList();
+    private BetterAdvancementEntryGui parent;
+    private final List<BetterAdvancementEntryGui> children = Lists.newArrayList();
     private AdvancementProgress advancementProgress;
     protected int x, y;
     private final int screenScale;
 
-    public GuiBetterAdvancement(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
+    public BetterAdvancementEntryGui(GuiBetterAdvancementTab guiBetterAdvancementTab, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
         this.guiBetterAdvancementTab = guiBetterAdvancementTab;
         this.advancement = advancement;
         this.betterDisplayInfo = guiBetterAdvancementTab.getBetterDisplayInfo(advancement);
@@ -56,7 +56,8 @@ public class GuiBetterAdvancement extends Gui {
         this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
-        this.screenScale = mc.mainWindow.getScaleFactor(0);
+        // this.screenScale = mc.mainWindow.getScaleFactor(0);
+        this.screenScale = mc.mainWindow.func_216521_a(0, false);
     }
 
     private void refreshHover() {
@@ -72,7 +73,7 @@ public class GuiBetterAdvancement extends Gui {
         this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.fontRenderer);
         int maxWidth;
         
-        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
+        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         }
         else {
@@ -106,7 +107,7 @@ public class GuiBetterAdvancement extends Gui {
     }
 
     @Nullable
-    private GuiBetterAdvancement getFirstVisibleParent(Advancement advancementIn) {
+    private BetterAdvancementEntryGui getFirstVisibleParent(Advancement advancementIn) {
         while (true) {
             advancementIn = advancementIn.getParent();
 
@@ -137,7 +138,7 @@ public class GuiBetterAdvancement extends Gui {
             
             //Draw extra connections from event
             for (Advancement parent : event.getExtraConnections()) {
-                final GuiBetterAdvancement parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
+                final BetterAdvancementEntryGui parentGui = this.guiBetterAdvancementTab.getAdvancementGui(parent);
                 
                 if (parentGui != null) {
                     this.drawConnection(parentGui, scrollX, scrollY, drawInside);
@@ -145,15 +146,15 @@ public class GuiBetterAdvancement extends Gui {
             }
         }
         //Draw child connections
-        for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
-            guiBetterAdvancement.drawConnectivity(scrollX, scrollY, drawInside);
+        for (BetterAdvancementEntryGui betterAdvancementEntryGui : this.children) {
+            betterAdvancementEntryGui.drawConnectivity(scrollX, scrollY, drawInside);
         }
     }
     
     /**
      * Draws connection line between this advancement and the advancement supplied in parent.
      */
-    public void drawConnection(GuiBetterAdvancement parent, int scrollX, int scrollY, boolean drawInside) {
+    public void drawConnection(BetterAdvancementEntryGui parent, int scrollX, int scrollY, boolean drawInside) {
         int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
         int borderLineColor = 0xFF000000;
         
@@ -215,18 +216,18 @@ public class GuiBetterAdvancement extends Gui {
             int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
             
             if (drawInside) {
-                this.drawHorizontalLine(endXHalf, startX, startY - 1, borderLineColor);
-                this.drawHorizontalLine(endXHalf + 1, startX, startY, borderLineColor);
-                this.drawHorizontalLine(endXHalf, startX, startY + 1, borderLineColor);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY - 1, borderLineColor);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY, borderLineColor);
-                this.drawHorizontalLine(endX, endXHalf - 1, endY + 1, borderLineColor);
-                this.drawVerticalLine(endXHalf - 1, endY, startY, borderLineColor);
-                this.drawVerticalLine(endXHalf + 1, endY, startY, borderLineColor);
+                this.hLine(endXHalf, startX, startY - 1, borderLineColor);
+                this.hLine(endXHalf + 1, startX, startY, borderLineColor);
+                this.hLine(endXHalf, startX, startY + 1, borderLineColor);
+                this.hLine(endX, endXHalf - 1, endY - 1, borderLineColor);
+                this.hLine(endX, endXHalf - 1, endY, borderLineColor);
+                this.hLine(endX, endXHalf - 1, endY + 1, borderLineColor);
+                this.vLine(endXHalf - 1, endY, startY, borderLineColor);
+                this.vLine(endXHalf + 1, endY, startY, borderLineColor);
             } else {
-                this.drawHorizontalLine(endXHalf, startX, startY, innerLineColor);
-                this.drawHorizontalLine(endX, endXHalf, endY, innerLineColor);
-                this.drawVerticalLine(endXHalf, endY, startY, innerLineColor);
+                this.hLine(endXHalf, startX, startY, innerLineColor);
+                this.hLine(endX, endXHalf, endY, innerLineColor);
+                this.vLine(endXHalf, endY, startY, innerLineColor);
             }
         }
     }
@@ -245,13 +246,13 @@ public class GuiBetterAdvancement extends Gui {
             this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             GlStateManager.enableBlend();
-            this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
+            this.blit(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
             RenderHelper.enableGUIStandardItemLighting();
             this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
-        for (GuiBetterAdvancement guiBetterAdvancement : this.children) {
-            guiBetterAdvancement.draw(scrollX, scrollY);
+        for (BetterAdvancementEntryGui betterAdvancementEntryGui : this.children) {
+            betterAdvancementEntryGui.draw(scrollX, scrollY);
         }
     }
 
@@ -260,8 +261,8 @@ public class GuiBetterAdvancement extends Gui {
         this.refreshHover();
     }
 
-    public void addGuiAdvancement(GuiBetterAdvancement guiBetterAdvancement) {
-        this.children.add(guiBetterAdvancement);
+    public void addGuiAdvancement(BetterAdvancementEntryGui betterAdvancementEntryGui) {
+        this.children.add(betterAdvancementEntryGui);
     }
 
     public void drawHover(int scrollX, int scrollY, float fade, int left, int top) {
@@ -271,7 +272,7 @@ public class GuiBetterAdvancement extends Gui {
         int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
         boolean drawTop;
         
-        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
+        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             if (this.criterionGrid.height < this.guiBetterAdvancementTab.getScreen().height) {
                 drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.guiBetterAdvancementTab.getScreen().height;
             } else {
@@ -324,7 +325,7 @@ public class GuiBetterAdvancement extends Gui {
         }
         int boxHeight;
         
-        if (!CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
+        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
         }
         else {
@@ -342,20 +343,20 @@ public class GuiBetterAdvancement extends Gui {
         // Title left side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleLeft));
         int left_side = Math.min(j, WIDGET_WIDTH - 16);
-        this.drawTexturedModalRect(drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
+        this.blit(drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
         if (left_side < j) {
-            this.drawTexturedModalRect(drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
+            this.blit(drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
         }
         // Title right side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleRight));
         int right_side = Math.min(k, WIDGET_WIDTH - 16);
-        this.drawTexturedModalRect(drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
+        this.blit(drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
         if (right_side < k) {
-            this.drawTexturedModalRect(drawX + j + right_side, drawY, WIDGET_WIDTH - k + right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side, WIDGET_HEIGHT);
+            this.blit(drawX + j + right_side, drawY, WIDGET_WIDTH - k + right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side, WIDGET_HEIGHT);
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        this.drawTexturedModalRect(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
+        this.blit(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
             this.minecraft.fontRenderer.drawStringWithShadow(this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1);
@@ -380,7 +381,7 @@ public class GuiBetterAdvancement extends Gui {
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
             this.minecraft.fontRenderer.drawString(this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406);
         }
-        if (this.criterionGrid != null && !CriterionGrid.requiresShift || GuiScreen.isShiftKeyDown()) {
+        if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
@@ -398,17 +399,17 @@ public class GuiBetterAdvancement extends Gui {
 
     protected void render9Sprite(int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
         // Top left corner
-        this.drawTexturedModalRect(x, y, textureX, textureY, textureHeight, textureHeight);
+        this.blit(x, y, textureX, textureY, textureHeight, textureHeight);
         // Top side
         RenderUtil.renderRepeating(this,x + textureHeight, y, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY, textureWidth - textureHeight - textureHeight, textureDistance);
         // Top right corner
-        this.drawTexturedModalRect(x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight);
+        this.blit(x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight);
         // Bottom left corner
-        this.drawTexturedModalRect(x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        this.blit(x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
         // Bottom side
         RenderUtil.renderRepeating(this,x + textureHeight, y + height - textureHeight, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY + textureDistance - textureHeight, textureWidth - textureHeight - textureHeight, textureDistance);
         // Bottom right corner
-        this.drawTexturedModalRect(x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        this.blit(x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
         // Left side
         RenderUtil.renderRepeating(this,x, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
         // Center

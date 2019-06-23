@@ -1,6 +1,6 @@
 package betteradvancements.gui;
 
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.advancements.AdvancementTabType;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.item.ItemStack;
@@ -42,7 +42,7 @@ public class BetterAdvancementTabType {
         this.tabType = tabType;
     }
 
-    public void draw(Gui gui, int x, int y, int width, int height, boolean selected, int index) {
+    public void draw(AbstractGui gui, int x, int y, int width, int height, boolean selected, int index) {
         int i = this.textureX;
         index %= getMax(width, height);
 
@@ -55,7 +55,7 @@ public class BetterAdvancementTabType {
         }
 
         int j = selected ? this.textureY + this.height : this.textureY;
-        gui.drawTexturedModalRect(x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
+        gui.blit(x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
     public void drawIcon(int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {

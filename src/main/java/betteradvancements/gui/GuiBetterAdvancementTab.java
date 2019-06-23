@@ -3,11 +3,11 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBetterAdvancementTab extends Gui {
+public class GuiBetterAdvancementTab extends AbstractGui {
     public static boolean doFade = true;
 
     private final Minecraft minecraft;
@@ -31,8 +31,8 @@ public class GuiBetterAdvancementTab extends Gui {
     private final DisplayInfo display;
     private final ItemStack icon;
     private final String title;
-    private final GuiBetterAdvancement root;
-    protected final Map<Advancement, GuiBetterAdvancement> guis = Maps.newLinkedHashMap();
+    private final BetterAdvancementEntryGui root;
+    protected final Map<Advancement, BetterAdvancementEntryGui> guis = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
 
     protected int scrollX, scrollY;
@@ -51,7 +51,7 @@ public class GuiBetterAdvancementTab extends Gui {
         this.icon = displayInfo.getIcon();
         this.title = displayInfo.getTitle().getFormattedText();
         this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancement);
-        this.root = new GuiBetterAdvancement(this, mc, advancement, displayInfo);
+        this.root = new BetterAdvancementEntryGui(this, mc, advancement, displayInfo);
         this.addGuiAdvancement(this.root, advancement);
     }
 
@@ -79,7 +79,7 @@ public class GuiBetterAdvancementTab extends Gui {
         }
 
         GlStateManager.depthFunc(518);
-        drawRect(0, 0, width, height, -16777216);
+        fill(0, 0, width, height, -16777216);
         GlStateManager.depthFunc(515);
         ResourceLocation resourcelocation = this.display.getBackground();
 
@@ -97,9 +97,9 @@ public class GuiBetterAdvancementTab extends Gui {
         for (; k <= 1 + width / 16; k++) {
             int l = -1;
             for (;l <= height / 16; l++) {
-                drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16.0F, 16.0F);
+                blit(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
             }
-            drawModalRectWithCustomSizedTexture(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16.0F, 16.0F);
+            blit(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
         }
 
 
@@ -111,14 +111,14 @@ public class GuiBetterAdvancementTab extends Gui {
     public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {
         GlStateManager.pushMatrix();
         GlStateManager.translated(0.0F, 0.0F, 200.0F);
-        drawRect(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
+        fill(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
         if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-            for (GuiBetterAdvancement guiBetterAdvancement : this.guis.values()) {
-                if (guiBetterAdvancement.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
+            for (BetterAdvancementEntryGui betterAdvancementEntryGui : this.guis.values()) {
+                if (betterAdvancementEntryGui.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
                     flag = true;
-                    guiBetterAdvancement.drawHover(this.scrollX, this.scrollY, this.fade, left, top);
+                    betterAdvancementEntryGui.drawHover(this.scrollX, this.scrollY, this.fade, left, top);
                     break;
                 }
             }
@@ -164,29 +164,29 @@ public class GuiBetterAdvancementTab extends Gui {
 
     public void addAdvancement(Advancement advancement) {
         if (advancement.getDisplay() != null) {
-            GuiBetterAdvancement guiBetterAdvancement = new GuiBetterAdvancement(this, this.minecraft, advancement, advancement.getDisplay());
-            this.addGuiAdvancement(guiBetterAdvancement, advancement);
+            BetterAdvancementEntryGui betterAdvancementEntryGui = new BetterAdvancementEntryGui(this, this.minecraft, advancement, advancement.getDisplay());
+            this.addGuiAdvancement(betterAdvancementEntryGui, advancement);
         }
     }
 
-    private void addGuiAdvancement(GuiBetterAdvancement guiBetterAdvancement, Advancement advancement) {
-        this.guis.put(advancement, guiBetterAdvancement);
-        int left = guiBetterAdvancement.getX();
+    private void addGuiAdvancement(BetterAdvancementEntryGui betterAdvancementEntryGui, Advancement advancement) {
+        this.guis.put(advancement, betterAdvancementEntryGui);
+        int left = betterAdvancementEntryGui.getX();
         int right = left + 28;
-        int top = guiBetterAdvancement.getY();
+        int top = betterAdvancementEntryGui.getY();
         int bottom = top + 27;
         this.minX = Math.min(this.minX, left);
         this.maxX = Math.max(this.maxX, right);
         this.minY = Math.min(this.minY, top);
         this.maxY = Math.max(this.maxY, bottom);
 
-        for (GuiBetterAdvancement gui : this.guis.values()) {
+        for (BetterAdvancementEntryGui gui : this.guis.values()) {
             gui.attachToParent();
         }
     }
 
     @Nullable
-    public GuiBetterAdvancement getAdvancementGui(Advancement advancement) {
+    public BetterAdvancementEntryGui getAdvancementGui(Advancement advancement) {
         return this.guis.get(advancement);
     }
 

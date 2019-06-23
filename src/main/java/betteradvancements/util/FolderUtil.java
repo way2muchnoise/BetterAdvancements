@@ -3,7 +3,7 @@ package betteradvancements.util;
 import betteradvancements.BetterAdvancements;
 import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import org.apache.commons.io.IOUtils;
@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class FolderUtil {
-    public static boolean findAdvancements(ResourceLocation location, WorldServer world, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
+    public static boolean findAdvancements(ResourceLocation location, ServerWorld world, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
         ModContainer mod = ModList.get().getModContainerById(location.getNamespace()).orElse(null);
         try {
