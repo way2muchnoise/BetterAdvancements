@@ -19,22 +19,6 @@ public class Config {
 
     public static final ForgeConfigSpec CLIENT = ConfigValues.build();
 
-    public void loadConfig(ForgeConfigSpec spec, Path path) {
-        BetterAdvancements.log.debug("Loading config file {}", path);
-
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-            .sync()
-            .autosave()
-            .writingMode(WritingMode.REPLACE)
-            .build();
-
-        BetterAdvancements.log.debug("Built TOML config for {}", path.toString());
-        configData.load();
-        BetterAdvancements.log.debug("Loaded TOML config file {}", path.toString());
-        spec.setConfig(configData);
-        ConfigValues.pushChanges();
-    }
-
     @SubscribeEvent
     public void onLoad(final ModConfig.Loading configEvent) {
         BetterAdvancements.log.debug("Loaded {} config file {}", BetterAdvancements.ID, configEvent.getConfig().getFileName());
@@ -44,6 +28,7 @@ public class Config {
     @SubscribeEvent
     public void onFileChange(final ModConfig.ConfigReloading configEvent) {
         BetterAdvancements.log.debug("Reloaded {} config file {}", BetterAdvancements.ID, configEvent.getConfig().getFileName());
+        ((CommentedFileConfig)configEvent.getConfig().getConfigData()).load();
         ConfigValues.pushChanges();
     }
 }

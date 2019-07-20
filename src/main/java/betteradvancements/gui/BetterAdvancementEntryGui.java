@@ -57,7 +57,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
         // this.screenScale = mc.mainWindow.getScaleFactor(0);
-        this.screenScale = mc.mainWindow.func_216521_a(0, false);
+        this.screenScale = mc.mainWindow.calcGuiScale(0, false);
     }
 
     private void refreshHover() {
