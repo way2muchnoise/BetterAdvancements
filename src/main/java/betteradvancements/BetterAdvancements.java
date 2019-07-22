@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +18,7 @@ public class BetterAdvancements {
     public BetterAdvancements() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
 
-        Config.instance.loadConfig(Config.CLIENT, FMLPaths.CONFIGDIR.get().resolve(ID + "-client.toml"));
-        MinecraftForge.EVENT_BUS.register(Config.instance);
-
+        FMLJavaModLoadingContext.get().getModEventBus().register(Config.instance);
         MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
     }
 }
