@@ -37,7 +37,7 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof InventoryScreen) {
             if (BetterAdvancementsScreenButtonWidget.addToInventory) {
                 InventoryScreen guiInventory = (InventoryScreen) event.getGui();
-                event.getWidgetList().add(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
+                event.addWidget(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
             }
         }
     }
