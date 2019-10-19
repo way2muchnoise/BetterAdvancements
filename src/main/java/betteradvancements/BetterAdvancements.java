@@ -2,7 +2,9 @@ package betteradvancements;
 
 import betteradvancements.config.Config;
 import betteradvancements.handler.GuiOpenHandler;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -16,9 +18,11 @@ public class BetterAdvancements {
     public static final Logger log = LogManager.getLogger();
 
     public BetterAdvancements() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
 
-        FMLJavaModLoadingContext.get().getModEventBus().register(Config.instance);
-        MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
+            FMLJavaModLoadingContext.get().getModEventBus().register(Config.instance);
+            MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
+        });
     }
 }
