@@ -36,7 +36,7 @@ public class BetterAdvancementsScreenButtonWidget extends Widget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int modifiers) {
         if (super.mouseClicked(mouseX, mouseY, modifiers)) {
-            Minecraft.getInstance().displayGuiScreen(new GuiScreenBetterAdvancements(Minecraft.getInstance().player.connection.getAdvancementManager()));
+            Minecraft.getInstance().displayGuiScreen(new BetterAdvancementsScreen(Minecraft.getInstance().player.connection.getAdvancementManager()));
             return true;
         }
         return false;

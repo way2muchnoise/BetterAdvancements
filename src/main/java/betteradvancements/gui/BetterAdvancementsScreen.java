@@ -23,14 +23,13 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiScreenBetterAdvancements extends Screen implements ClientAdvancementManager.IListener {
+public class BetterAdvancementsScreen extends Screen implements ClientAdvancementManager.IListener {
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
     private static final int SIDE = 30, TOP = 40, BOTTOM = 30, PADDING = 9;
     private static final float MIN_ZOOM = 1, MAX_ZOOM = 2, ZOOM_STEP = 0.2F;
     private final ClientAdvancementManager clientAdvancementManager;
-    private final Map<Advancement, GuiBetterAdvancementTab> tabs = Maps.newLinkedHashMap();
-    private GuiBetterAdvancementTab selectedTab;
-    private int scrollMouseX, scrollMouseY;
+    private final Map<Advancement, BetterAdvancementTabGui> tabs = Maps.newLinkedHashMap();
+    private BetterAdvancementTabGui selectedTab;
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
     protected int internalWidth, internalHeight;
@@ -39,8 +38,8 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
     public static boolean orderTabsAlphabetically = false;
     private BetterAdvancementEntryGui advConnectedToMouse = null;
 
-    public GuiScreenBetterAdvancements(ClientAdvancementManager clientAdvancementManager) {
-        super(NarratorChatListener.field_216868_a);
+    public BetterAdvancementsScreen(ClientAdvancementManager clientAdvancementManager) {
+        super(NarratorChatListener.EMPTY);
         this.clientAdvancementManager = clientAdvancementManager;
     }
 
@@ -81,9 +80,9 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
         if (modifiers == 0) {
             int left = SIDE + (width - internalWidth) / 2;
             int top = TOP + (height - internalHeight) / 2;
-            for (GuiBetterAdvancementTab guiBetterAdvancementTab : this.tabs.values()) {
-                if (guiBetterAdvancementTab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
-                    this.clientAdvancementManager.setSelectedTab(guiBetterAdvancementTab.getAdvancement(), true);
+            for (BetterAdvancementTabGui betterAdvancementTabGui : this.tabs.values()) {
+                if (betterAdvancementTabGui.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
+                    this.clientAdvancementManager.setSelectedTab(betterAdvancementTabGui.getAdvancement(), true);
                     return true;
                 }
             }
@@ -111,20 +110,23 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    /**
-     * Draws the screen and all the components in it.
-     */
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseDeltaX, double mouseDeltaY) {
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
-        if (this.minecraft.mouseHelper.isLeftDown() && !this.isScrolling) {
+        if (button != 0) {
+            this.isScrolling = false;
+            return false;
+        }
+
+        if (!this.isScrolling) {
             if (this.advConnectedToMouse == null) {
                 boolean inGui = mouseX < left + internalWidth - 2*SIDE - PADDING && mouseX > left + PADDING && mouseY < top + internalHeight - TOP + 1 && mouseY > top + 2*PADDING;
                 if (this.selectedTab != null && inGui) {
                     for (BetterAdvancementEntryGui betterAdvancementEntryGui : this.selectedTab.guis.values()) {
                         if (betterAdvancementEntryGui.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - left - PADDING, mouseY - top - 2*PADDING)) {
-                            
+
                             if (betterAdvancementEntryGui.betterDisplayInfo.allowDragging())
                             {
                                 this.advConnectedToMouse = betterAdvancementEntryGui;
@@ -135,11 +137,8 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
                 }
             }
             else {
-                int moveX = mouseX - this.scrollMouseX;
-                int moveY = mouseY - this.scrollMouseY;
-                
-                this.advConnectedToMouse.x = this.advConnectedToMouse.x + moveX;
-                this.advConnectedToMouse.y = this.advConnectedToMouse.y + moveY;
+                this.advConnectedToMouse.x = (int)Math.round(this.advConnectedToMouse.x + mouseDeltaX);
+                this.advConnectedToMouse.y = (int)Math.round(this.advConnectedToMouse.y + mouseDeltaY);
             }
         }
         else {
@@ -150,20 +149,24 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
             }
             this.advConnectedToMouse = null;
         }
-        
-        if (this.minecraft.mouseHelper.isLeftDown()) {
-            if (this.advConnectedToMouse == null) {
-                if (!this.isScrolling) {
-                    this.isScrolling = true;
-                } else if (this.selectedTab != null) {
-                    this.selectedTab.scroll(mouseX - this.scrollMouseX, mouseY - this.scrollMouseY, internalWidth - 2*SIDE - 3*PADDING, internalHeight - TOP - BOTTOM - 3*PADDING);
-                }
+
+        if (this.advConnectedToMouse == null) {
+            if (!this.isScrolling) {
+                this.isScrolling = true;
+            } else if (this.selectedTab != null) {
+                this.selectedTab.scroll(mouseDeltaX , mouseDeltaY, internalWidth - 2 * SIDE - 3 * PADDING, internalHeight - TOP - BOTTOM - 3 * PADDING);
             }
-            this.scrollMouseX = mouseX;
-            this.scrollMouseY = mouseY;
-        } else {
-            this.isScrolling = false;
         }
+
+        return true;
+    }
+
+    /**
+     * Draws the screen and all the components in it.
+     */
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        int left = SIDE + (width - internalWidth) / 2;
+        int top = TOP + (height - internalHeight) / 2;
 
         int right = internalWidth - SIDE + (width - internalWidth) / 2;
         int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
@@ -299,7 +302,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
             }
         }
 
-        if (GuiScreenBetterAdvancements.showDebugCoordinates && this.selectedTab != null && mouseX < internalWidth - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < internalHeight - top + 1 && mouseY > top + PADDING * 2) {
+        if (BetterAdvancementsScreen.showDebugCoordinates && this.selectedTab != null && mouseX < internalWidth - SIDE - PADDING && mouseX > SIDE + PADDING && mouseY < internalHeight - top + 1 && mouseY > top + PADDING * 2) {
             //If dragging an advancement, draw coordinates of advancement being moved instead of mouse coordinates
             if (this.advConnectedToMouse != null) {
                 //-3 and -1 are needed to have the coordinates be rendered where the advancement starts being rendered, rather than its real position.
@@ -321,7 +324,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
     }
 
     private void renderInside(int mouseX, int mouseY, int left, int top, int right, int bottom) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = this.selectedTab;
+        BetterAdvancementTabGui betterAdvancementTabGui = this.selectedTab;
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
         int boxRight = right - PADDING;
@@ -330,7 +333,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
         int width = boxRight - boxLeft;
         int height = boxBottom - boxTop;
 
-        if (guiBetterAdvancementTab == null) {
+        if (betterAdvancementTabGui == null) {
             fill(boxLeft, boxTop, boxRight, boxBottom, -16777216);
             String s = I18n.format("advancements.empty");
             int i = this.font.getStringWidth(s);
@@ -340,7 +343,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
             GlStateManager.pushMatrix();
             GlStateManager.translated((float) (boxLeft), (float) (boxTop), -400.0F);
             GlStateManager.enableDepthTest();
-            guiBetterAdvancementTab.drawContents(width, height);
+            betterAdvancementTabGui.drawContents(width, height);
             GlStateManager.popMatrix();
             GlStateManager.depthFunc(515);
             GlStateManager.disableDepthTest();
@@ -376,7 +379,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
             int width = right - left;
             int height = bottom - top;
 
-            for (GuiBetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 tab.drawTab(left, top, width, height, tab == this.selectedTab);
             }
 
@@ -384,7 +387,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
             GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             RenderHelper.enableGUIStandardItemLighting();
 
-            for (GuiBetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 tab.drawIcon(left, top, width, height, this.itemRenderer);
             }
 
@@ -414,7 +417,7 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
         int height = bottom - top;
 
         if (this.tabs.size() > 1) {
-            for (GuiBetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
                     this.renderTooltip(tab.getTitle(), mouseX, mouseY);
                 }
@@ -423,10 +426,10 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
     }
 
     public void rootAdvancementAdded(@Nonnull Advancement advancement) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = GuiBetterAdvancementTab.create(this.minecraft, this, this.tabs.size(), advancement, internalWidth - 2*SIDE, internalHeight - TOP - SIDE);
+        BetterAdvancementTabGui betterAdvancementTabGui = BetterAdvancementTabGui.create(this.minecraft, this, this.tabs.size(), advancement, internalWidth - 2*SIDE, internalHeight - TOP - SIDE);
 
-        if (guiBetterAdvancementTab != null) {
-            this.tabs.put(advancement, guiBetterAdvancementTab);
+        if (betterAdvancementTabGui != null) {
+            this.tabs.put(advancement, betterAdvancementTabGui);
         }
     }
 
@@ -434,10 +437,10 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
     }
 
     public void nonRootAdvancementAdded(@Nonnull Advancement advancementIn) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = this.getTab(advancementIn);
+        BetterAdvancementTabGui betterAdvancementTabGui = this.getTab(advancementIn);
 
-        if (guiBetterAdvancementTab != null) {
-            guiBetterAdvancementTab.addAdvancement(advancementIn);
+        if (betterAdvancementTabGui != null) {
+            betterAdvancementTabGui.addAdvancement(advancementIn);
         }
     }
 
@@ -463,12 +466,12 @@ public class GuiScreenBetterAdvancements extends Screen implements ClientAdvance
 
     @Nullable
     public BetterAdvancementEntryGui getAdvancementGui(Advancement advancement) {
-        GuiBetterAdvancementTab guiBetterAdvancementTab = this.getTab(advancement);
-        return guiBetterAdvancementTab == null ? null : guiBetterAdvancementTab.getAdvancementGui(advancement);
+        BetterAdvancementTabGui betterAdvancementTabGui = this.getTab(advancement);
+        return betterAdvancementTabGui == null ? null : betterAdvancementTabGui.getAdvancementGui(advancement);
     }
 
     @Nullable
-    private GuiBetterAdvancementTab getTab(@Nonnull Advancement advancement) {
+    private BetterAdvancementTabGui getTab(@Nonnull Advancement advancement) {
         while (advancement.getParent() != null) {
             advancement = advancement.getParent();
         }

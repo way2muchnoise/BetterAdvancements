@@ -1,7 +1,7 @@
 package betteradvancements.handler;
 
+import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
-import betteradvancements.gui.GuiScreenBetterAdvancements;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof AdvancementsScreen) {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getInstance();
-            mc.displayGuiScreen(new GuiScreenBetterAdvancements(mc.player.connection.getAdvancementManager()));
+            mc.displayGuiScreen(new BetterAdvancementsScreen(mc.player.connection.getAdvancementManager()));
         }
     }
 
@@ -44,8 +44,8 @@ public class GuiOpenHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH) // put on HIGH to be before Triumph sorting, giving them priority
     public void onGuiAboutToOpen(final GuiScreenEvent.InitGuiEvent.Pre event) {
-        if (event.getGui() instanceof GuiScreenBetterAdvancements) {
-            if (GuiScreenBetterAdvancements.orderTabsAlphabetically) {
+        if (event.getGui() instanceof BetterAdvancementsScreen) {
+            if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
                 ClientAdvancementManager manager = mc.player.connection.getAdvancementManager();
                 AdvancementList advancementList = manager.getAdvancementList();

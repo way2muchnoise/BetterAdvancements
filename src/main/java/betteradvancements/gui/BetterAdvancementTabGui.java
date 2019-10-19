@@ -20,11 +20,11 @@ import javax.annotation.Nullable;
 import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
-public class GuiBetterAdvancementTab extends AbstractGui {
+public class BetterAdvancementTabGui extends AbstractGui {
     public static boolean doFade = true;
 
     private final Minecraft minecraft;
-    private final GuiScreenBetterAdvancements screen;
+    private final BetterAdvancementsScreen screen;
     private final BetterAdvancementTabType type;
     private final int index;
     private final Advancement advancement;
@@ -41,9 +41,9 @@ public class GuiBetterAdvancementTab extends AbstractGui {
     private float fade;
     private boolean centered;
 
-    public GuiBetterAdvancementTab(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, BetterAdvancementTabType type, int index, Advancement advancement, DisplayInfo displayInfo) {
+    public BetterAdvancementTabGui(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, BetterAdvancementTabType type, int index, Advancement advancement, DisplayInfo displayInfo) {
         this.minecraft = mc;
-        this.screen = guiScreenBetterAdvancements;
+        this.screen = betterAdvancementsScreen;
         this.type = type;
         this.index = index;
         this.advancement = advancement;
@@ -138,7 +138,7 @@ public class GuiBetterAdvancementTab extends AbstractGui {
     }
 
     @Nullable
-    public static GuiBetterAdvancementTab create(Minecraft mc, GuiScreenBetterAdvancements guiScreenBetterAdvancements, int index, Advancement advancement, int width, int height) {
+    public static BetterAdvancementTabGui create(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, int index, Advancement advancement, int width, int height) {
         if (advancement.getDisplay() == null) {
             return null;
         } else {
@@ -146,19 +146,19 @@ public class GuiBetterAdvancementTab extends AbstractGui {
             if (advancementTabType == null) {
                 return null;
             } else {
-                return new GuiBetterAdvancementTab(mc, guiScreenBetterAdvancements, advancementTabType, index, advancement, advancement.getDisplay());
+                return new BetterAdvancementTabGui(mc, betterAdvancementsScreen, advancementTabType, index, advancement, advancement.getDisplay());
             }
 
         }
     }
 
-    public void scroll(int scrollX, int scrollY, int width, int height) {
+    public void scroll(double scrollX, double scrollY, int width, int height) {
         if (this.maxX - this.minX > width) {
-            this.scrollX = MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - width), -this.minX);
+            this.scrollX = (int)Math.round(MathHelper.clamp(this.scrollX + scrollX, -(this.maxX - width), -this.minX));
         }
 
         if (this.maxY - this.minY > height) {
-            this.scrollY = MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - height), -this.minY);
+            this.scrollY = (int)Math.round(MathHelper.clamp(this.scrollY + scrollY, -(this.maxY - height), -this.minY));
         }
     }
 
@@ -190,7 +190,7 @@ public class GuiBetterAdvancementTab extends AbstractGui {
         return this.guis.get(advancement);
     }
 
-    public GuiScreenBetterAdvancements getScreen() {
+    public BetterAdvancementsScreen getScreen() {
         return this.screen;
     }
 
