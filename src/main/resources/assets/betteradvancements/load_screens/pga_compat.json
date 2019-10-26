@@ -1,0 +1,8 @@
+{
+	"screens" : [{
+			"COMMENT" : "BETTER ADVANCEMENTS SUPPORT", 
+			"class" : "betteradvancements.gui.BetterAdvancementsScreen", 
+			"texture" : "publicguiannouncement:textures/gui/advancements_menu.png", 
+			"fullSize" : 255
+		}]
+}
