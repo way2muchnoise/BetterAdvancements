@@ -4,6 +4,7 @@ import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
@@ -78,9 +79,9 @@ public class BetterAdvancementTabGui extends AbstractGui {
             this.centered = true;
         }
 
-        GlStateManager.depthFunc(518);
+        RenderSystem.depthFunc(518);
         fill(0, 0, width, height, -16777216);
-        GlStateManager.depthFunc(515);
+        RenderSystem.depthFunc(515);
         ResourceLocation resourcelocation = this.display.getBackground();
 
         if (resourcelocation != null) {
@@ -89,7 +90,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
             this.minecraft.getTextureManager().bindTexture(TextureManager.RESOURCE_LOCATION_EMPTY);
         }
 
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
 
@@ -109,8 +110,8 @@ public class BetterAdvancementTabGui extends AbstractGui {
     }
 
     public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(0.0F, 0.0F, 200.0F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translated(0.0F, 0.0F, 200.0F);
         fill(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
@@ -124,7 +125,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
             }
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
 
         if (doFade && flag) {
             this.fade = MathHelper.clamp(this.fade + 0.02F, 0.0F, 0.3F);

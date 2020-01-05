@@ -2,6 +2,7 @@ package betteradvancements.gui;
 
 import betteradvancements.reference.Resources;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.renderer.RenderHelper;
@@ -26,9 +27,10 @@ public class BetterAdvancementsScreenButtonWidget extends Widget {
             if (this.isHovered) {
                 mc.currentScreen.renderTooltip("Advancements", mouseX, mouseY);
             }
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableGUIStandardItemLighting();
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            // RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.func_227780_a_();
             mc.getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
         }
     }

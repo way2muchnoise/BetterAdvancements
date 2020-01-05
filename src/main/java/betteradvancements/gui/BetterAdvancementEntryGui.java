@@ -7,6 +7,7 @@ import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
@@ -56,8 +57,8 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
-        // this.screenScale = mc.mainWindow.getScaleFactor(0);
-        this.screenScale = mc.mainWindow.calcGuiScale(0, false);
+        // this.screenScale = mc.func_228018_at_().calcGuiScale(0, false);
+        this.screenScale = mc.func_228018_at_().calcGuiScale(0, false);
     }
 
     private void refreshHover() {
@@ -245,9 +246,10 @@ public class BetterAdvancementEntryGui extends AbstractGui {
 
             this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
-            GlStateManager.enableBlend();
+            RenderSystem.enableBlend();
             this.blit(scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
-            RenderHelper.enableGUIStandardItemLighting();
+            // RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.func_227780_a_();
             this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
@@ -313,8 +315,8 @@ public class BetterAdvancementEntryGui extends AbstractGui {
 
         int k = this.width - j;
         this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableBlend();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableBlend();
         int drawY = scrollY + this.y;
         int drawX;
 
@@ -393,7 +395,8 @@ public class BetterAdvancementEntryGui extends AbstractGui {
             }
         }
 
-        RenderHelper.enableGUIStandardItemLighting();
+        // RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.func_227780_a_();
         this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(null, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
     }
 

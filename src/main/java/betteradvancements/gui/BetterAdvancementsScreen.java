@@ -5,6 +5,7 @@ import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.gui.chat.NarratorChatListener;
@@ -340,19 +341,19 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             this.font.drawString(s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.font.FONT_HEIGHT, -1);
             this.font.drawString(":(", boxLeft + (width - this.font.getStringWidth(":(")) / 2, boxTop + height / 2 + this.font.FONT_HEIGHT, -1);
         } else {
-            GlStateManager.pushMatrix();
-            GlStateManager.translated((float) (boxLeft), (float) (boxTop), -400.0F);
-            GlStateManager.enableDepthTest();
+            RenderSystem.pushMatrix();
+            RenderSystem.translated((float) (boxLeft), (float) (boxTop), -400.0F);
+            RenderSystem.enableDepthTest();
             betterAdvancementTabGui.drawContents(width, height);
-            GlStateManager.popMatrix();
-            GlStateManager.depthFunc(515);
-            GlStateManager.disableDepthTest();
+            RenderSystem.popMatrix();
+            RenderSystem.depthFunc(515);
+            RenderSystem.disableDepthTest();
         }
     }
 
     public void renderWindow(int left, int top, int right, int bottom) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableBlend();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableBlend();
         RenderHelper.disableStandardItemLighting();
         this.minecraft.getTextureManager().bindTexture(Resources.Gui.WINDOW);
         // Top left corner
@@ -383,15 +384,16 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 tab.drawTab(left, top, width, height, tab == this.selectedTab);
             }
 
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableGUIStandardItemLighting();
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            // RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.func_227780_a_();
 
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 tab.drawIcon(left, top, width, height, this.itemRenderer);
             }
 
-            GlStateManager.disableBlend();
+            RenderSystem.disableBlend();
         }
 
         String windowTitle = I18n.format("gui.advancements");
@@ -402,15 +404,15 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     }
 
     private void renderToolTips(int mouseX, int mouseY, int left, int top, int right, int bottom) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableDepthTest();
-            GlStateManager.translated((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
+            RenderSystem.pushMatrix();
+            RenderSystem.enableDepthTest();
+            RenderSystem.translated((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
             this.selectedTab.drawToolTips(mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
-            GlStateManager.disableDepthTest();
-            GlStateManager.popMatrix();
+            RenderSystem.disableDepthTest();
+            RenderSystem.popMatrix();
         }
 
         int width = right - left;

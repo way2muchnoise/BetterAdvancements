@@ -1,6 +1,7 @@
 package betteradvancements.util;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -23,7 +24,7 @@ public class RenderUtil {
     }
 
     public static void setColor(int color) {
-        GlStateManager.color3f(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
+        RenderSystem.color3f(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F);
     }
     
     public static void drawRect(double x, double y, double x2, double y2, double width, int color) {
@@ -37,21 +38,25 @@ public class RenderUtil {
         }
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        GlStateManager.enableBlend();
-        GlStateManager.disableTexture();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.enableBlend();
+        RenderSystem.disableTexture();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderUtil.setColor(color);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
         boolean xHigh = false;
         if (x < x2) {
             xHigh = true;
         }
-        bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
-        bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
-        bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
-        bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
+        // bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
+        bufferbuilder.func_225582_a_(x, xHigh ? y + width : y, 0.0D).endVertex();
+        // bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
+        bufferbuilder.func_225582_a_(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
+        // bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
+        bufferbuilder.func_225582_a_(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
+        // bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
+        bufferbuilder.func_225582_a_(x + width, xHigh ? y : y + width, 0.0D).endVertex();
         tessellator.draw();
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 }
