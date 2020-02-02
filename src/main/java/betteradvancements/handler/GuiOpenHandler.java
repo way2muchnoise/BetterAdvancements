@@ -2,6 +2,7 @@ package betteradvancements.handler;
 
 import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
+import betteradvancements.util.AdvancementComparer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
@@ -51,7 +52,7 @@ public class GuiOpenHandler {
                 AdvancementList advancementList = manager.getAdvancementList();
                 Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
 
-                List<String> advancementLocations = roots.stream().sorted(Comparator.comparing(a -> a.getDisplayText().getUnformattedComponentText().toLowerCase())).map(a -> a.getId().toString()).collect(Collectors.toList());
+                List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(a -> a.getId().toString()).collect(Collectors.toList());
 
                 List<Advancement> advancements = new ArrayList<>(roots);
                 roots.clear();
