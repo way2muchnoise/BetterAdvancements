@@ -2,13 +2,10 @@ package betteradvancements.config;
 
 import betteradvancements.BetterAdvancements;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
-import java.nio.file.Path;
 
 public class Config {
     public static Config instance = new Config();
@@ -26,7 +23,7 @@ public class Config {
     }
 
     @SubscribeEvent
-    public void onFileChange(final ModConfig.ConfigReloading configEvent) {
+    public void onFileChange(final ModConfig.Reloading configEvent) {
         BetterAdvancements.log.debug("Reloaded {} config file {}", BetterAdvancements.ID, configEvent.getConfig().getFileName());
         ((CommentedFileConfig)configEvent.getConfig().getConfigData()).load();
         ConfigValues.pushChanges();

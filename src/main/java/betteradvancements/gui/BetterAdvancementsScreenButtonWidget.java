@@ -29,8 +29,7 @@ public class BetterAdvancementsScreenButtonWidget extends Widget {
             }
             RenderSystem.enableRescaleNormal();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            // RenderHelper.enableGUIStandardItemLighting();
-            RenderHelper.func_227780_a_();
+            RenderHelper.enableStandardItemLighting();
             mc.getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
         }
     }

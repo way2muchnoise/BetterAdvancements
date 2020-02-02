@@ -47,14 +47,10 @@ public class RenderUtil {
         if (x < x2) {
             xHigh = true;
         }
-        // bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
-        bufferbuilder.func_225582_a_(x, xHigh ? y + width : y, 0.0D).endVertex();
-        // bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
-        bufferbuilder.func_225582_a_(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
-        // bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
-        bufferbuilder.func_225582_a_(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
-        // bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
-        bufferbuilder.func_225582_a_(x + width, xHigh ? y : y + width, 0.0D).endVertex();
+        bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
+        bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
+        bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
+        bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
         tessellator.draw();
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();

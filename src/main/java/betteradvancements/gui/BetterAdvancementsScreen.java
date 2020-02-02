@@ -386,8 +386,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
             RenderSystem.enableRescaleNormal();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            // RenderHelper.enableGUIStandardItemLighting();
-            RenderHelper.func_227780_a_();
+            RenderHelper.enableStandardItemLighting();
 
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 tab.drawIcon(left, top, width, height, this.itemRenderer);
