@@ -79,6 +79,13 @@ public class BetterAdvancementTabGui extends AbstractGui {
             this.centered = true;
         }
 
+        RenderSystem.pushMatrix();
+        RenderSystem.enableDepthTest();
+        RenderSystem.translatef(0.0F, 0.0F, 950.0F);
+        RenderSystem.colorMask(false, false, false, false);
+        fill(4680, 2260, -4680, -2260, -16777216);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.translatef(0.0F, 0.0F, -950.0F);
         RenderSystem.depthFunc(518);
         fill(0, 0, width, height, -16777216);
         RenderSystem.depthFunc(515);
@@ -107,6 +114,14 @@ public class BetterAdvancementTabGui extends AbstractGui {
         this.root.drawConnectivity(this.scrollX, this.scrollY, true);
         this.root.drawConnectivity(this.scrollX, this.scrollY, false);
         this.root.draw(this.scrollX, this.scrollY);
+        RenderSystem.depthFunc(518);
+        RenderSystem.translatef(0.0F, 0.0F, -950.0F);
+        RenderSystem.colorMask(false, false, false, false);
+        fill(4680, 2260, -4680, -2260, -16777216);
+        RenderSystem.colorMask(true, true, true, true);
+        RenderSystem.translatef(0.0F, 0.0F, 950.0F);
+        RenderSystem.depthFunc(515);
+        RenderSystem.popMatrix();
     }
 
     public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {

@@ -342,7 +342,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             this.font.drawString(":(", boxLeft + (width - this.font.getStringWidth(":(")) / 2, boxTop + height / 2 + this.font.FONT_HEIGHT, -1);
         } else {
             RenderSystem.pushMatrix();
-            RenderSystem.translated((float) (boxLeft), (float) (boxTop), -400.0F);
+            RenderSystem.translated((float) (boxLeft), (float) (boxTop), 0.0F);
             RenderSystem.enableDepthTest();
             betterAdvancementTabGui.drawContents(width, height);
             RenderSystem.popMatrix();
