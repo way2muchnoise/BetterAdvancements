@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientAdvancementManager;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -38,7 +39,7 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof InventoryScreen) {
             if (BetterAdvancementsScreenButtonWidget.addToInventory) {
                 InventoryScreen guiInventory = (InventoryScreen) event.getGui();
-                event.addWidget(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), "BA"));
+                event.addWidget(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), new StringTextComponent("BA")));
             }
         }
     }

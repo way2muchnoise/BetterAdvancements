@@ -3,7 +3,7 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,7 +32,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
     private final Advancement advancement;
     private final DisplayInfo display;
     private final ItemStack icon;
-    private final String title;
+    private final ITextProperties title;
     private final BetterAdvancementEntryGui root;
     protected final Map<Advancement, BetterAdvancementEntryGui> guis = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
@@ -50,7 +51,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
         this.advancement = advancement;
         this.display = displayInfo;
         this.icon = displayInfo.getIcon();
-        this.title = displayInfo.getTitle().getFormattedText();
+        this.title = displayInfo.getTitle();
         this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancement);
         this.root = new BetterAdvancementEntryGui(this, mc, advancement, displayInfo);
         this.addGuiAdvancement(this.root, advancement);
@@ -60,34 +61,34 @@ public class BetterAdvancementTabGui extends AbstractGui {
         return this.advancement;
     }
 
-    public String getTitle() {
+    public ITextProperties getTitle() {
         return this.title;
     }
 
-    public void drawTab(int left, int top, int width, int height, boolean selected) {
-        this.type.draw(this, left, top, width, height, selected, this.index);
+    public void drawTab(MatrixStack matrixStack, int left, int top, int width, int height, boolean selected) {
+        this.type.draw(this, matrixStack, left, top, width, height, selected, this.index);
     }
 
-    public void drawIcon(int left, int top,int width, int height, ItemRenderer renderItem) {
-        this.type.drawIcon(left, top, width, height, this.index, renderItem, this.icon);
+    public void drawIcon(MatrixStack matrixStack, int left, int top,int width, int height, ItemRenderer renderItem) {
+        this.type.drawIcon(matrixStack, left, top, width, height, this.index, renderItem, this.icon);
     }
 
-    public void drawContents(int width, int height) {
+    public void drawContents(MatrixStack matrixStack, int width, int height) {
         if (!this.centered) {
             this.scrollX = (width - (this.maxX + this.minX)) / 2;
             this.scrollY = (height - (this.maxY + this.minY)) / 2;
             this.centered = true;
         }
 
-        RenderSystem.pushMatrix();
+        matrixStack.push();
         RenderSystem.enableDepthTest();
-        RenderSystem.translatef(0.0F, 0.0F, 950.0F);
+        matrixStack.translate(0.0F, 0.0F, 950.0F);
         RenderSystem.colorMask(false, false, false, false);
-        fill(4680, 2260, -4680, -2260, -16777216);
+        fill(matrixStack, 4680, 2260, -4680, -2260, -16777216);
         RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.translatef(0.0F, 0.0F, -950.0F);
+        matrixStack.translate(0.0F, 0.0F, -950.0F);
         RenderSystem.depthFunc(518);
-        fill(0, 0, width, height, -16777216);
+        fill(matrixStack, 0, 0, width, height, -16777216);
         RenderSystem.depthFunc(515);
         ResourceLocation resourcelocation = this.display.getBackground();
 
@@ -105,42 +106,38 @@ public class BetterAdvancementTabGui extends AbstractGui {
         for (; k <= 1 + width / 16; k++) {
             int l = -1;
             for (;l <= height / 16; l++) {
-                blit(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
+                blit(matrixStack, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
             }
-            blit(i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
+            blit(matrixStack, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
         }
 
 
-        this.root.drawConnectivity(this.scrollX, this.scrollY, true);
-        this.root.drawConnectivity(this.scrollX, this.scrollY, false);
-        this.root.draw(this.scrollX, this.scrollY);
+        this.root.drawConnectivity(matrixStack, this.scrollX, this.scrollY, true);
+        this.root.drawConnectivity(matrixStack, this.scrollX, this.scrollY, false);
+        this.root.draw(matrixStack, this.scrollX, this.scrollY);
         RenderSystem.depthFunc(518);
-        RenderSystem.translatef(0.0F, 0.0F, -950.0F);
+        matrixStack.translate(0.0F, 0.0F, -950.0F);
         RenderSystem.colorMask(false, false, false, false);
-        fill(4680, 2260, -4680, -2260, -16777216);
+        fill(matrixStack, 4680, 2260, -4680, -2260, -16777216);
         RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.translatef(0.0F, 0.0F, 950.0F);
+        matrixStack.translate(0.0F, 0.0F, 950.0F);
         RenderSystem.depthFunc(515);
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
-    public void drawToolTips(int mouseX, int mouseY, int left, int top, int width, int height) {
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(0.0F, 0.0F, 200.0F);
-        fill(0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
+    public void drawToolTips(MatrixStack matrixStack, int mouseX, int mouseY, int left, int top, int width, int height) {
+        fill(matrixStack, 0, 0, width, height, MathHelper.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
         if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
             for (BetterAdvancementEntryGui betterAdvancementEntryGui : this.guis.values()) {
                 if (betterAdvancementEntryGui.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
                     flag = true;
-                    betterAdvancementEntryGui.drawHover(this.scrollX, this.scrollY, this.fade, left, top);
+                    betterAdvancementEntryGui.drawHover(matrixStack, this.scrollX, this.scrollY, this.fade, left, top);
                     break;
                 }
             }
         }
-
-        RenderSystem.popMatrix();
 
         if (doFade && flag) {
             this.fade = MathHelper.clamp(this.fade + 0.02F, 0.0F, 0.3F);

@@ -9,6 +9,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 
@@ -92,35 +93,28 @@ public class CriterionGrid {
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
                 if (detailLevel.showObtained()) {
-                    StringTextComponent text = new StringTextComponent(" + ");
-                    text.getStyle().setColor(TextFormatting.GREEN);
-                    StringTextComponent text2 = new StringTextComponent(criterion);
-                    text2.getStyle().setColor(TextFormatting.WHITE);
-                    text.appendSibling(text2);
-                    cellContents.add(text.getFormattedText());
+                    IFormattableTextComponent text = new StringTextComponent(" + ").func_240701_a_(TextFormatting.GREEN);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).func_240701_a_(TextFormatting.WHITE);
+                    text.func_230529_a_(text2);
+                    cellContents.add(text.getString());
                 }
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                    StringTextComponent text = new StringTextComponent(" x ");
-                	text.getStyle().setColor(TextFormatting.DARK_RED);
-                    StringTextComponent text2 = new StringTextComponent(criterion);
-                	text2.getStyle().setColor(TextFormatting.WHITE);
-                	text.appendSibling(text2);
-                    cellContents.add(text.getFormattedText());
+                    IFormattableTextComponent text = new StringTextComponent(" x ").func_240701_a_(TextFormatting.DARK_RED);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).func_240701_a_(TextFormatting.WHITE);
+                	text.func_230529_a_(text2);
+                    cellContents.add(text.getString());
                 }
                 numUnobtained++;
             }
         }
 
         if (!detailLevel.showUnobtained()) {
-            StringTextComponent text = new StringTextComponent(" x ");
-        	text.getStyle().setColor(TextFormatting.DARK_RED);
-            StringTextComponent text2 = new StringTextComponent(numUnobtained + " remaining");
-        	text2.getStyle().setColor(TextFormatting.WHITE);
-        	text2.getStyle().setItalic(true);
-        	text.appendSibling(text2);
-            cellContents.add(text.getFormattedText());
+            IFormattableTextComponent text = new StringTextComponent(" x ").func_240701_a_(TextFormatting.DARK_RED);
+            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").func_240701_a_(TextFormatting.WHITE, TextFormatting.ITALIC);
+        	text.func_230529_a_(text2);
+            cellContents.add(text.getString());
         }
 
         int[] cellWidths = new int[cellContents.size()];

@@ -1,5 +1,6 @@
 package betteradvancements.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.advancements.AdvancementTabType;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -42,7 +43,7 @@ public class BetterAdvancementTabType {
         this.tabType = tabType;
     }
 
-    public void draw(AbstractGui gui, int x, int y, int width, int height, boolean selected, int index) {
+    public void draw(AbstractGui gui, MatrixStack matrixStack, int x, int y, int width, int height, boolean selected, int index) {
         int i = this.textureX;
         index %= getMax(width, height);
 
@@ -55,10 +56,10 @@ public class BetterAdvancementTabType {
         }
 
         int j = selected ? this.textureY + this.height : this.textureY;
-        gui.blit(x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
+        gui.blit(matrixStack, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
-    public void drawIcon(int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
+    public void drawIcon(MatrixStack matrixStack, int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
 

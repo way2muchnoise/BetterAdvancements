@@ -1,5 +1,6 @@
 package betteradvancements.util;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.AbstractGui;
@@ -10,7 +11,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 public class RenderUtil {
     private RenderUtil() {}
 
-    public static void renderRepeating(AbstractGui abstractGui, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
+    public static void renderRepeating(AbstractGui abstractGui, MatrixStack matrixStack, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         for (int i = 0; i < width; i += textureWidth) {
             int drawX = x + i;
             int drawWidth = Math.min(textureWidth, width - i);
@@ -18,7 +19,7 @@ public class RenderUtil {
             for (int l = 0; l < height; l += textureHeight) {
                 int drawY = y + l;
                 int drawHeight = Math.min(textureHeight, height - l);
-                abstractGui.blit(drawX, drawY, textureX, textureY, drawWidth, drawHeight);
+                abstractGui.blit(matrixStack, drawX, drawY, textureX, textureY, drawWidth, drawHeight);
             }
         }
     }

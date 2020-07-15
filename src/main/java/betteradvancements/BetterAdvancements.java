@@ -18,9 +18,8 @@ public class BetterAdvancements {
     public static final Logger log = LogManager.getLogger();
 
     public BetterAdvancements() {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
             ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
-
             FMLJavaModLoadingContext.get().getModEventBus().register(Config.instance);
             MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
         });

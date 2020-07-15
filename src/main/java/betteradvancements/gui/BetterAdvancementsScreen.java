@@ -4,6 +4,7 @@ import betteradvancements.api.event.AdvancementMovedEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
@@ -165,19 +166,19 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     /**
      * Draws the screen and all the components in it.
      */
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
         int right = internalWidth - SIDE + (width - internalWidth) / 2;
         int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
 
-        this.renderBackground();
-        this.renderInside(mouseX, mouseY, left, top, right, bottom);
-        this.renderWindow(left, top, right, bottom);
+        this.renderBackground(matrixStack);
+        this.renderInside(matrixStack, mouseX, mouseY, left, top, right, bottom);
+        this.renderWindow(matrixStack, left, top, right, bottom);
         //Don't draw tool tips if dragging an advancement
         if (this.advConnectedToMouse == null) {
-            this.renderToolTips(mouseX, mouseY, left, top, right, bottom);
+            this.renderToolTips(matrixStack, mouseX, mouseY, left, top, right, bottom);
         }
         
         //Draw guide lines to all advancements at 45 or 90 degree angles.
@@ -310,7 +311,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
                 int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - font.FONT_HEIGHT + 1;
 
-                font.drawString(this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
+                font.drawString(matrixStack, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
             } else {
                 //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
                 int xMouse = mouseX - left - PADDING;
@@ -319,12 +320,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
 
-                font.drawString(currentX + "," + currentY, mouseX, mouseY - font.FONT_HEIGHT, 0x000000);
+                font.drawString(matrixStack, currentX + "," + currentY, mouseX, mouseY - font.FONT_HEIGHT, 0x000000);
             }
         }
     }
 
-    private void renderInside(int mouseX, int mouseY, int left, int top, int right, int bottom) {
+    private void renderInside(MatrixStack matrixStack, int mouseX, int mouseY, int left, int top, int right, int bottom) {
         BetterAdvancementTabGui betterAdvancementTabGui = this.selectedTab;
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
@@ -335,43 +336,43 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int height = boxBottom - boxTop;
 
         if (betterAdvancementTabGui == null) {
-            fill(boxLeft, boxTop, boxRight, boxBottom, -16777216);
+            fill(matrixStack, boxLeft, boxTop, boxRight, boxBottom, -16777216);
             String s = I18n.format("advancements.empty");
             int i = this.font.getStringWidth(s);
-            this.font.drawString(s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.font.FONT_HEIGHT, -1);
-            this.font.drawString(":(", boxLeft + (width - this.font.getStringWidth(":(")) / 2, boxTop + height / 2 + this.font.FONT_HEIGHT, -1);
+            this.font.drawString(matrixStack, s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.font.FONT_HEIGHT, -1);
+            this.font.drawString(matrixStack, ":(", boxLeft + (width - this.font.getStringWidth(":(")) / 2, boxTop + height / 2 + this.font.FONT_HEIGHT, -1);
         } else {
-            RenderSystem.pushMatrix();
-            RenderSystem.translated((float) (boxLeft), (float) (boxTop), 0.0F);
+            matrixStack.push();
+            matrixStack.translate(boxLeft, boxTop, 0.0F);
             RenderSystem.enableDepthTest();
-            betterAdvancementTabGui.drawContents(width, height);
-            RenderSystem.popMatrix();
+            betterAdvancementTabGui.drawContents(matrixStack, width, height);
+            matrixStack.pop();
             RenderSystem.depthFunc(515);
             RenderSystem.disableDepthTest();
         }
     }
 
-    public void renderWindow(int left, int top, int right, int bottom) {
+    public void renderWindow(MatrixStack matrixStack, int left, int top, int right, int bottom) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderHelper.disableStandardItemLighting();
         this.minecraft.getTextureManager().bindTexture(Resources.Gui.WINDOW);
         // Top left corner
-        this.blit(left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
+        this.blit(matrixStack, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
         // Top side
-        RenderUtil.renderRepeating(this, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(this, matrixStack, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Top right corner
-        this.blit(right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
+        this.blit(matrixStack, right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
         // Left side
-        RenderUtil.renderRepeating(this, left, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
+        RenderUtil.renderRepeating(this, matrixStack, left, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Right side
-        RenderUtil.renderRepeating(this, right - CORNER_SIZE, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, WIDTH - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
+        RenderUtil.renderRepeating(this, matrixStack, right - CORNER_SIZE, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, WIDTH - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Bottom left corner
-        this.blit(left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
+        this.blit(matrixStack, left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
         // Bottom side
-        RenderUtil.renderRepeating(this, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(this, matrixStack, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Bottom right corner
-        this.blit(right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
+        this.blit(matrixStack, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
 
 
         if (this.tabs.size() > 1) {
@@ -381,7 +382,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             int height = bottom - top;
 
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
-                tab.drawTab(left, top, width, height, tab == this.selectedTab);
+                tab.drawTab(matrixStack, left, top, width, height, tab == this.selectedTab);
             }
 
             RenderSystem.enableRescaleNormal();
@@ -389,7 +390,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             RenderHelper.enableStandardItemLighting();
 
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
-                tab.drawIcon(left, top, width, height, this.itemRenderer);
+                tab.drawIcon(matrixStack, left, top, width, height, this.itemRenderer);
             }
 
             RenderSystem.disableBlend();
@@ -397,21 +398,21 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
         String windowTitle = I18n.format("gui.advancements");
         if (selectedTab != null) {
-            windowTitle += " - " + selectedTab.getTitle();
+            windowTitle += " - " + selectedTab.getTitle().getString();
         }
-        this.font.drawString(windowTitle, left + 8, top + 6, 4210752);
+        this.font.drawString(matrixStack, windowTitle, left + 8, top + 6, 4210752);
     }
 
-    private void renderToolTips(int mouseX, int mouseY, int left, int top, int right, int bottom) {
+    private void renderToolTips(MatrixStack matrixStack, int mouseX, int mouseY, int left, int top, int right, int bottom) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
-            RenderSystem.pushMatrix();
+            matrixStack.push();
             RenderSystem.enableDepthTest();
-            RenderSystem.translated((float) (left + PADDING), (float) (top + 2*PADDING), 400.0F);
-            this.selectedTab.drawToolTips(mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
+            matrixStack.translate(left + PADDING, top + 2*PADDING, 400.0F);
+            this.selectedTab.drawToolTips(matrixStack,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
             RenderSystem.disableDepthTest();
-            RenderSystem.popMatrix();
+            matrixStack.pop();
         }
 
         int width = right - left;
@@ -420,7 +421,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (this.tabs.size() > 1) {
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
-                    this.renderTooltip(tab.getTitle(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, tab.getTitle(), mouseX, mouseY);
                 }
             }
         }
