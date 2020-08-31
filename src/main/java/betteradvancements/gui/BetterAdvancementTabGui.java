@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,7 +32,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
     private final Advancement advancement;
     private final DisplayInfo display;
     private final ItemStack icon;
-    private final ITextProperties title;
+    private final ITextComponent title;
     private final BetterAdvancementEntryGui root;
     protected final Map<Advancement, BetterAdvancementEntryGui> guis = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
@@ -61,7 +61,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
         return this.advancement;
     }
 
-    public ITextProperties getTitle() {
+    public ITextComponent getTitle() {
         return this.title;
     }
 

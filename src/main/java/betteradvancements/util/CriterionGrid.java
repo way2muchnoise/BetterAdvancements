@@ -93,17 +93,17 @@ public class CriterionGrid {
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterionProgress(criterion).isObtained()) {
                 if (detailLevel.showObtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" + ").func_240701_a_(TextFormatting.GREEN);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).func_240701_a_(TextFormatting.WHITE);
-                    text.func_230529_a_(text2);
+                    IFormattableTextComponent text = new StringTextComponent(" + ").mergeStyle(TextFormatting.GREEN);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
+                    text.append(text2);
                     cellContents.add(text.getString());
                 }
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" x ").func_240701_a_(TextFormatting.DARK_RED);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).func_240701_a_(TextFormatting.WHITE);
-                	text.func_230529_a_(text2);
+                    IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
+                	text.append(text2);
                     cellContents.add(text.getString());
                 }
                 numUnobtained++;
@@ -111,9 +111,9 @@ public class CriterionGrid {
         }
 
         if (!detailLevel.showUnobtained()) {
-            IFormattableTextComponent text = new StringTextComponent(" x ").func_240701_a_(TextFormatting.DARK_RED);
-            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").func_240701_a_(TextFormatting.WHITE, TextFormatting.ITALIC);
-        	text.func_230529_a_(text2);
+            IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
+            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").mergeStyle(TextFormatting.WHITE, TextFormatting.ITALIC);
+        	text.append(text2);
             cellContents.add(text.getString());
         }
 

@@ -17,9 +17,9 @@ import net.minecraft.client.gui.advancements.AdvancementState;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,7 +28,6 @@ import net.minecraftforge.common.MinecraftForge;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class BetterAdvancementEntryGui extends AbstractGui {
@@ -42,7 +41,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
     private final DisplayInfo displayInfo;
     private final String title;
     private int width;
-    private List<String> description;
+    private List<IReorderingProcessor> description;
     private CriterionGrid criterionGrid;
     private final Minecraft minecraft;
     private BetterAdvancementEntryGui parent;
@@ -85,18 +84,18 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         }
         this.description = this.findOptimalLines(displayInfo.getDescription(), maxWidth);
 
-        for (String line : this.description) {
-            maxWidth = Math.max(maxWidth, mc.fontRenderer.getStringWidth(line));
+        for (IReorderingProcessor line : this.description) {
+            maxWidth = Math.max(maxWidth, mc.fontRenderer.func_243245_a(line));
         }
 
         this.width = maxWidth + 8;
     }
 
-    private List<String> findOptimalLines(ITextComponent line, int width) {
+    private List<IReorderingProcessor> findOptimalLines(ITextComponent line, int width) {
         if (line.getString().isEmpty()) {
             return Collections.emptyList();
         } else {
-            List<ITextProperties> list = this.minecraft.fontRenderer.func_238425_b_(line, width);
+            List<IReorderingProcessor> list = this.minecraft.fontRenderer.func_238425_b_(line, width);
             if (list.size() > 1) {
                 width = Math.max(width, betterAdvancementTabGui.getScreen().internalWidth / 4);
                 list = this.minecraft.fontRenderer.func_238425_b_(line, width);
@@ -105,7 +104,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
                 width += width / 4;
                 list = this.minecraft.fontRenderer.func_238425_b_(line, width);
             }
-            return list.stream().map(ITextProperties::getString).collect(Collectors.toList());
+            return list;
         }
     }
 
@@ -381,7 +380,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
             yOffset = scrollY + this.y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
-            this.minecraft.fontRenderer.drawString(matrixStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406);
+            this.minecraft.fontRenderer.func_238407_a_(matrixStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406);
         }
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;

@@ -69,7 +69,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
      * Called when the screen is unloaded. Used to disable keyboard repeat events
      */
     @Override
-    public void removed() {
+    public void onClose() {
         this.clientAdvancementManager.setListener(null);
         ClientPlayNetHandler clientPlayNetHandler = this.minecraft.getConnection();
         if (clientPlayNetHandler != null) {
