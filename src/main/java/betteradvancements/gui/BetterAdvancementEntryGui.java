@@ -95,14 +95,14 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         if (line.getString().isEmpty()) {
             return Collections.emptyList();
         } else {
-            List<IReorderingProcessor> list = this.minecraft.fontRenderer.func_238425_b_(line, width);
+            List<IReorderingProcessor> list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
             if (list.size() > 1) {
                 width = Math.max(width, betterAdvancementTabGui.getScreen().internalWidth / 4);
-                list = this.minecraft.fontRenderer.func_238425_b_(line, width);
+                list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
             }
             while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < betterAdvancementTabGui.getScreen().internalWidth / 2.5) {
                 width += width / 4;
-                list = this.minecraft.fontRenderer.func_238425_b_(line, width);
+                list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
             }
             return list;
         }
