@@ -95,7 +95,7 @@ public class CriterionGrid {
                 if (detailLevel.showObtained()) {
                     IFormattableTextComponent text = new StringTextComponent(" + ").mergeStyle(TextFormatting.GREEN);
                     IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
-                    text.append(text2);
+                    text.appendSibling(text2);
                     cellContents.add(text.getString());
                 }
             }
@@ -103,7 +103,7 @@ public class CriterionGrid {
                 if (detailLevel.showUnobtained()) {
                     IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
                     IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
-                	text.append(text2);
+                	text.appendSibling(text2);
                     cellContents.add(text.getString());
                 }
                 numUnobtained++;
@@ -113,7 +113,7 @@ public class CriterionGrid {
         if (!detailLevel.showUnobtained()) {
             IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
             IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").mergeStyle(TextFormatting.WHITE, TextFormatting.ITALIC);
-        	text.append(text2);
+        	text.appendSibling(text2);
             cellContents.add(text.getString());
         }
 
