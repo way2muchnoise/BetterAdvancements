@@ -38,21 +38,18 @@ public class RenderUtil {
             x2 = tempX;
         }
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         RenderSystem.enableBlend();
         RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderUtil.setColor(color);
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION);
-        boolean xHigh = false;
-        if (x < x2) {
-            xHigh = true;
-        }
-        bufferbuilder.pos(x, xHigh ? y + width : y, 0.0D).endVertex();
-        bufferbuilder.pos(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
-        bufferbuilder.pos(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
-        bufferbuilder.pos(x + width, xHigh ? y : y + width, 0.0D).endVertex();
-        tessellator.draw();
+        boolean xHigh = x < x2;
+        bufferbuilder.vertex(x, xHigh ? y + width : y, 0.0D).endVertex();
+        bufferbuilder.vertex(x2, xHigh ? y2 + width : y2, 0.0D).endVertex();
+        bufferbuilder.vertex(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
+        bufferbuilder.vertex(x + width, xHigh ? y : y + width, 0.0D).endVertex();
+        tessellator.end();
         RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }

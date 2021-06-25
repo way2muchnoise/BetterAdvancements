@@ -56,24 +56,24 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         this.betterDisplayInfo = betterAdvancementTabGui.getBetterDisplayInfo(advancement);
         this.displayInfo = displayInfo;
         this.minecraft = mc;
-        this.title = displayInfo.getTitle().getStringTruncated(163);
+        this.title = displayInfo.getTitle().getString(163);
         this.x = this.betterDisplayInfo.getPosX() != null ? this.betterDisplayInfo.getPosX() : MathHelper.floor(displayInfo.getX() * 32.0F);
         this.y = this.betterDisplayInfo.getPosY() != null ? this.betterDisplayInfo.getPosY() : MathHelper.floor(displayInfo.getY() * 27.0F);
         this.refreshHover();
-        this.screenScale = mc.getMainWindow().calcGuiScale(0, false);
+        this.screenScale = mc.getWindow().calculateScale(0, false);
     }
 
     private void refreshHover() {
         Minecraft mc = this.minecraft;
         int k = 0;
-        if (advancement.getRequirementCount() > 1) {
+        if (advancement.getMaxCriteraRequired() > 1) {
             // Add some space for the requirement counter
-            int strLengthRequirementCount = String.valueOf(advancement.getRequirementCount()).length();
-            k = mc.fontRenderer.getStringWidth("  ") + mc.fontRenderer.getStringWidth("0") * strLengthRequirementCount * 2 + mc.fontRenderer.getStringWidth("/");
+            int strLengthRequirementCount = String.valueOf(advancement.getMaxCriteraRequired()).length();
+            k = mc.font.width("  ") + mc.font.width("0") * strLengthRequirementCount * 2 + mc.font.width("/");
         }
-        int titleWidth = 29 + mc.fontRenderer.getStringWidth(this.title) + k;
+        int titleWidth = 29 + mc.font.width(this.title) + k;
         BetterAdvancementsScreen screen = betterAdvancementTabGui.getScreen();
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.fontRenderer);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.font);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
@@ -85,7 +85,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         this.description = this.findOptimalLines(displayInfo.getDescription(), maxWidth);
 
         for (IReorderingProcessor line : this.description) {
-            maxWidth = Math.max(maxWidth, mc.fontRenderer.func_243245_a(line));
+            maxWidth = Math.max(maxWidth, mc.font.width(line));
         }
 
         this.width = maxWidth + 8;
@@ -95,14 +95,14 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         if (line.getString().isEmpty()) {
             return Collections.emptyList();
         } else {
-            List<IReorderingProcessor> list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
+            List<IReorderingProcessor> list = this.minecraft.font.split(line, width);
             if (list.size() > 1) {
                 width = Math.max(width, betterAdvancementTabGui.getScreen().internalWidth / 4);
-                list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
+                list = this.minecraft.font.split(line, width);
             }
             while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < betterAdvancementTabGui.getScreen().internalWidth / 2.5) {
                 width += width / 4;
-                list = this.minecraft.fontRenderer.trimStringToWidth(line, width);
+                list = this.minecraft.font.split(line, width);
             }
             return list;
         }
@@ -245,10 +245,10 @@ public class BetterAdvancementEntryGui extends AbstractGui {
                 advancementState = AdvancementState.UNOBTAINED;
             }
 
-            this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
+            this.minecraft.getTextureManager().bind(Resources.Gui.WIDGETS);
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            this.blit(matrixStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
+            this.blit(matrixStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
             renderItemAndEffectIntoGUI(matrixStack, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
@@ -270,19 +270,19 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         this.refreshHover();
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.betterAdvancementTabGui.getScreen().internalWidth;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
-        int i = s == null ? 0 : this.minecraft.fontRenderer.getStringWidth(s);
+        int i = s == null ? 0 : this.minecraft.font.width(s);
         boolean drawTop;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             if (this.criterionGrid.height < this.betterAdvancementTabGui.getScreen().height) {
-                drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height + 50 >= this.betterAdvancementTabGui.getScreen().height;
+                drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height + 50 >= this.betterAdvancementTabGui.getScreen().height;
             } else {
                 // Always draw on the bottom if the grid is larger than the screen
                 drawTop = false;
             }
         }
         else {
-            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + 50 >= this.betterAdvancementTabGui.getScreen().height;
+            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.font.lineHeight + 50 >= this.betterAdvancementTabGui.getScreen().height;
         }
 
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
@@ -313,7 +313,7 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         }
 
         int k = this.width - j;
-        this.minecraft.getTextureManager().bindTexture(Resources.Gui.WIDGETS);
+        this.minecraft.getTextureManager().bind(Resources.Gui.WIDGETS);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         int drawY = scrollY + this.y;
@@ -327,10 +327,10 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         int boxHeight;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
-            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT + this.criterionGrid.height;
+            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height;
         }
         else {
-            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
+            boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.font.lineHeight;
         }
 
         if (!this.description.isEmpty()) {
@@ -357,19 +357,19 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        this.blit(matrixStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getIcon(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
+        this.blit(matrixStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
-            this.minecraft.fontRenderer.drawStringWithShadow(matrixStack, this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1);
+            this.minecraft.font.drawShadow(matrixStack, this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1);
 
             if (s != null) {
-                this.minecraft.fontRenderer.drawStringWithShadow(matrixStack, s, (float) (scrollX + this.x - i), (float) (scrollY + this.y + 9), -1);
+                this.minecraft.font.drawShadow(matrixStack, s, (float) (scrollX + this.x - i), (float) (scrollY + this.y + 9), -1);
             }
         } else {
-            this.minecraft.fontRenderer.drawStringWithShadow(matrixStack, this.title, (float) (scrollX + this.x + 32), (float) (scrollY + this.y + 9), -1);
+            this.minecraft.font.drawShadow(matrixStack, this.title, (float) (scrollX + this.x + 32), (float) (scrollY + this.y + 9), -1);
 
             if (s != null) {
-                this.minecraft.fontRenderer.drawStringWithShadow(matrixStack, s, (float) (scrollX + this.x + this.width - i - 5), (float) (scrollY + this.y + 9), -1);
+                this.minecraft.font.drawShadow(matrixStack, s, (float) (scrollX + this.x + this.width - i - 5), (float) (scrollY + this.y + 9), -1);
             }
         }
 
@@ -380,15 +380,15 @@ public class BetterAdvancementEntryGui extends AbstractGui {
             yOffset = scrollY + this.y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
-            this.minecraft.fontRenderer.drawTextWithShadow(matrixStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.fontRenderer.FONT_HEIGHT), -5592406);
+            this.minecraft.font.drawShadow(matrixStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.font.lineHeight), -5592406);
         }
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;
-            yOffset += this.description.size() * this.minecraft.fontRenderer.FONT_HEIGHT;
+            yOffset += this.description.size() * this.minecraft.font.lineHeight;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
                 CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
                 for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
-                    this.minecraft.fontRenderer.drawString(matrixStack, col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.fontRenderer.FONT_HEIGHT, -5592406);
+                    this.minecraft.font.draw(matrixStack, col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406);
                 }
                 xOffset += col.width;
             }
@@ -398,14 +398,14 @@ public class BetterAdvancementEntryGui extends AbstractGui {
     }
 
     protected void renderItemAndEffectIntoGUI(MatrixStack matrixStack, ItemStack itemStack, int xPosition, int yPosition) {
-        matrixStack.push();
+        matrixStack.pushPose();
         RenderSystem.pushMatrix();
-        RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
-        RenderHelper.enableStandardItemLighting();
-        this.minecraft.getItemRenderer().renderItemAndEffectIntoGUI(itemStack, xPosition, yPosition);
-        RenderHelper.disableStandardItemLighting();
+        RenderSystem.multMatrix(matrixStack.last().pose());
+        RenderHelper.turnBackOn();
+        this.minecraft.getItemRenderer().renderAndDecorateItem(itemStack, xPosition, yPosition);
+        RenderHelper.turnOff();
         RenderSystem.popMatrix();
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     protected void render9Sprite(MatrixStack matrixStack, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {

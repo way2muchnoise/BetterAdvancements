@@ -80,7 +80,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
             this.centered = true;
         }
 
-        matrixStack.push();
+        matrixStack.pushPose();
         RenderSystem.enableDepthTest();
         matrixStack.translate(0.0F, 0.0F, 950.0F);
         RenderSystem.colorMask(false, false, false, false);
@@ -93,9 +93,9 @@ public class BetterAdvancementTabGui extends AbstractGui {
         ResourceLocation resourcelocation = this.display.getBackground();
 
         if (resourcelocation != null) {
-            this.minecraft.getTextureManager().bindTexture(resourcelocation);
+            this.minecraft.getTextureManager().bind(resourcelocation);
         } else {
-            this.minecraft.getTextureManager().bindTexture(TextureManager.RESOURCE_LOCATION_EMPTY);
+            this.minecraft.getTextureManager().bind(TextureManager.INTENTIONAL_MISSING_TEXTURE);
         }
 
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -122,7 +122,7 @@ public class BetterAdvancementTabGui extends AbstractGui {
         RenderSystem.colorMask(true, true, true, true);
         matrixStack.translate(0.0F, 0.0F, 950.0F);
         RenderSystem.depthFunc(515);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public void drawToolTips(MatrixStack matrixStack, int mouseX, int mouseY, int left, int top, int width, int height) {

@@ -24,23 +24,23 @@ public class BetterAdvancementsScreenButtonWidget extends Widget {
         if (this.visible)
         {
             Minecraft mc  = Minecraft.getInstance();
-            mc.getTextureManager().bindTexture(Resources.Gui.TABS);
+            mc.getTextureManager().bind(Resources.Gui.TABS);
             this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
             this.blit(matrixStack, this.x, this.y, 56, 0, 28, 32);
             if (this.isHovered) {
-                mc.currentScreen.renderTooltip(matrixStack, new StringTextComponent("Advancements"), mouseX, mouseY);
+                mc.screen.renderTooltip(matrixStack, new StringTextComponent("Advancements"), mouseX, mouseY);
             }
             RenderSystem.enableRescaleNormal();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableStandardItemLighting();
-            mc.getItemRenderer().renderItemAndEffectIntoGUI(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
+            RenderHelper.turnBackOn();
+            mc.getItemRenderer().renderAndDecorateItem(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int modifiers) {
         if (super.mouseClicked(mouseX, mouseY, modifiers)) {
-            Minecraft.getInstance().displayGuiScreen(new BetterAdvancementsScreen(Minecraft.getInstance().player.connection.getAdvancementManager()));
+            Minecraft.getInstance().setScreen(new BetterAdvancementsScreen(Minecraft.getInstance().player.connection.getAdvancements()));
             return true;
         }
         return false;

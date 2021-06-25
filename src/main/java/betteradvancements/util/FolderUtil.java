@@ -47,8 +47,7 @@ public class FolderUtil {
             Path root = null;
             if (source == null) {
                 if (world != null) {
-                    //root = world.getSaveHandler().getSavedData().getWorldDirectory().toPath().resolve("data/advancements/" + location.getNamespace());
-                    root = world.getServer().getDataDirectory().toPath().resolve("advancements/" + location.getNamespace());
+                    root = world.getServer().getServerDirectory().toPath().resolve("advancements/" + location.getNamespace());
                 }
             }
             else if (source.isFile()) {

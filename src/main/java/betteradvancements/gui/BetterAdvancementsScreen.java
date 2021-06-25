@@ -41,7 +41,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     private BetterAdvancementEntryGui advConnectedToMouse = null;
 
     public BetterAdvancementsScreen(ClientAdvancementManager clientAdvancementManager) {
-        super(NarratorChatListener.EMPTY);
+        super(NarratorChatListener.NO_TITLE);
         this.clientAdvancementManager = clientAdvancementManager;
     }
 
@@ -73,8 +73,9 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         this.clientAdvancementManager.setListener(null);
         ClientPlayNetHandler clientPlayNetHandler = this.minecraft.getConnection();
         if (clientPlayNetHandler != null) {
-            clientPlayNetHandler.sendPacket(CSeenAdvancementsPacket.closedScreen());
+            clientPlayNetHandler.send(CSeenAdvancementsPacket.closedScreen());
         }
+        super.onClose();
     }
 
     @Override
@@ -105,8 +106,8 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == this.minecraft.gameSettings.keyBindAdvancements.getKey().getKeyCode()) {
-            this.minecraft.displayGuiScreen(null);
+        if (keyCode == this.minecraft.options.keyAdvancements.getKey().getValue()) {
+            this.minecraft.setScreen(null);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -309,9 +310,9 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             if (this.advConnectedToMouse != null) {
                 //-3 and -1 are needed to have the coordinates be rendered where the advancement starts being rendered, rather than its real position.
                 int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
-                int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - font.FONT_HEIGHT + 1;
+                int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - font.lineHeight + 1;
 
-                font.drawString(matrixStack, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
+                font.draw(matrixStack, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
             } else {
                 //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
                 int xMouse = mouseX - left - PADDING;
@@ -320,7 +321,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
 
-                font.drawString(matrixStack, currentX + "," + currentY, mouseX, mouseY - font.FONT_HEIGHT, 0x000000);
+                font.draw(matrixStack, currentX + "," + currentY, mouseX, mouseY - font.lineHeight, 0x000000);
             }
         }
     }
@@ -337,16 +338,16 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
         if (betterAdvancementTabGui == null) {
             fill(matrixStack, boxLeft, boxTop, boxRight, boxBottom, -16777216);
-            String s = I18n.format("advancements.empty");
-            int i = this.font.getStringWidth(s);
-            this.font.drawString(matrixStack, s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.font.FONT_HEIGHT, -1);
-            this.font.drawString(matrixStack, ":(", boxLeft + (width - this.font.getStringWidth(":(")) / 2, boxTop + height / 2 + this.font.FONT_HEIGHT, -1);
+            String s = I18n.get("advancements.empty");
+            int i = this.font.width(s);
+            this.font.draw(matrixStack, s, boxLeft + (width - i) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
+            this.font.draw(matrixStack, ":(", boxLeft + (width - this.font.width(":(")) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
         } else {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(boxLeft, boxTop, 0.0F);
             RenderSystem.enableDepthTest();
             betterAdvancementTabGui.drawContents(matrixStack, width, height);
-            matrixStack.pop();
+            matrixStack.popPose();
             RenderSystem.depthFunc(515);
             RenderSystem.disableDepthTest();
         }
@@ -355,8 +356,8 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     public void renderWindow(MatrixStack matrixStack, int left, int top, int right, int bottom) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        RenderHelper.disableStandardItemLighting();
-        this.minecraft.getTextureManager().bindTexture(Resources.Gui.WINDOW);
+        RenderHelper.turnOff();
+        this.minecraft.getTextureManager().bind(Resources.Gui.WINDOW);
         // Top left corner
         this.blit(matrixStack, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
         // Top side
@@ -376,7 +377,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
 
         if (this.tabs.size() > 1) {
-            this.minecraft.getTextureManager().bindTexture(Resources.Gui.TABS);
+            this.minecraft.getTextureManager().bind(Resources.Gui.TABS);
 
             int width = right - left;
             int height = bottom - top;
@@ -387,7 +388,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
             RenderSystem.enableRescaleNormal();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            RenderHelper.enableStandardItemLighting();
+            RenderHelper.turnBackOn();
 
             for (BetterAdvancementTabGui tab : this.tabs.values()) {
                 tab.drawIcon(matrixStack, left, top, width, height, this.itemRenderer);
@@ -396,23 +397,23 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             RenderSystem.disableBlend();
         }
 
-        String windowTitle = I18n.format("gui.advancements");
+        String windowTitle = I18n.get("gui.advancements");
         if (selectedTab != null) {
             windowTitle += " - " + selectedTab.getTitle().getString();
         }
-        this.font.drawString(matrixStack, windowTitle, left + 8, top + 6, 4210752);
+        this.font.draw(matrixStack, windowTitle, left + 8, top + 6, 4210752);
     }
 
     private void renderToolTips(MatrixStack matrixStack, int mouseX, int mouseY, int left, int top, int right, int bottom) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
-            matrixStack.push();
+            matrixStack.pushPose();
             RenderSystem.enableDepthTest();
             matrixStack.translate(left + PADDING, top + 2*PADDING, 400.0F);
             this.selectedTab.drawToolTips(matrixStack,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
             RenderSystem.disableDepthTest();
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
         int width = right - left;
@@ -427,7 +428,8 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
     }
 
-    public void rootAdvancementAdded(@Nonnull Advancement advancement) {
+    @Override
+    public void onAddAdvancementRoot(@Nonnull Advancement advancement) {
         BetterAdvancementTabGui betterAdvancementTabGui = BetterAdvancementTabGui.create(this.minecraft, this, this.tabs.size(), advancement, internalWidth - 2*SIDE, internalHeight - TOP - SIDE);
 
         if (betterAdvancementTabGui != null) {
@@ -435,20 +437,24 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
     }
 
-    public void rootAdvancementRemoved(@Nonnull Advancement advancementIn) {
+    @Override
+    public void onRemoveAdvancementRoot(@Nonnull Advancement advancement) {
     }
 
-    public void nonRootAdvancementAdded(@Nonnull Advancement advancementIn) {
-        BetterAdvancementTabGui betterAdvancementTabGui = this.getTab(advancementIn);
+    @Override
+    public void onAddAdvancementTask(@Nonnull Advancement advancement) {
+        BetterAdvancementTabGui betterAdvancementTabGui = this.getTab(advancement);
 
         if (betterAdvancementTabGui != null) {
-            betterAdvancementTabGui.addAdvancement(advancementIn);
+            betterAdvancementTabGui.addAdvancement(advancement);
         }
     }
 
-    public void nonRootAdvancementRemoved(@Nonnull Advancement advancementIn) {
+    @Override
+    public void onRemoveAdvancementTask(@Nonnull Advancement advancement) {
     }
 
+    @Override
     public void onUpdateAdvancementProgress(@Nonnull Advancement advancement, @Nonnull AdvancementProgress advancementProgress) {
         BetterAdvancementEntryGui betterAdvancementEntryGui = this.getAdvancementGui(advancement);
 
@@ -457,11 +463,13 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
     }
 
-    public void setSelectedTab(@Nullable Advancement advancement) {
+    @Override
+    public void onSelectedTabChanged(@Nullable Advancement advancement) {
         this.selectedTab = this.tabs.get(advancement);
     }
 
-    public void advancementsCleared() {
+    @Override
+    public void onAdvancementsCleared() {
         this.tabs.clear();
         this.selectedTab = null;
     }

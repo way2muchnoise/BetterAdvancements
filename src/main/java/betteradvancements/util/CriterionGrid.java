@@ -91,19 +91,19 @@ public class CriterionGrid {
         int numUnobtained = 0;
         List<String> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
-            if (progress.getCriterionProgress(criterion).isObtained()) {
+            if (progress.getCriterion(criterion).isDone()) {
                 if (detailLevel.showObtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" + ").mergeStyle(TextFormatting.GREEN);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
-                    text.appendSibling(text2);
+                    IFormattableTextComponent text = new StringTextComponent(" + ").withStyle(TextFormatting.GREEN);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).withStyle(TextFormatting.WHITE);
+                    text.append(text2);
                     cellContents.add(text.getString());
                 }
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).mergeStyle(TextFormatting.WHITE);
-                	text.appendSibling(text2);
+                    IFormattableTextComponent text = new StringTextComponent(" x ").withStyle(TextFormatting.DARK_RED);
+                    IFormattableTextComponent text2 = new StringTextComponent(criterion).withStyle(TextFormatting.WHITE);
+                	text.append(text2);
                     cellContents.add(text.getString());
                 }
                 numUnobtained++;
@@ -111,15 +111,15 @@ public class CriterionGrid {
         }
 
         if (!detailLevel.showUnobtained()) {
-            IFormattableTextComponent text = new StringTextComponent(" x ").mergeStyle(TextFormatting.DARK_RED);
-            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").mergeStyle(TextFormatting.WHITE, TextFormatting.ITALIC);
-        	text.appendSibling(text2);
+            IFormattableTextComponent text = new StringTextComponent(" x ").withStyle(TextFormatting.DARK_RED);
+            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").withStyle(TextFormatting.WHITE, TextFormatting.ITALIC);
+        	text.append(text2);
             cellContents.add(text.getString());
         }
 
         int[] cellWidths = new int[cellContents.size()];
         for (int i = 0; i < cellWidths.length; i++) {
-            cellWidths[i] = renderer.getStringWidth(cellContents.get(i));
+            cellWidths[i] = renderer.width(cellContents.get(i));
         }
 
         int numCols = 0;
@@ -127,7 +127,7 @@ public class CriterionGrid {
         CriterionGrid currGrid = null;
         do {
             numCols++;
-            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, renderer.FONT_HEIGHT, numCols);
+            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, renderer.lineHeight, numCols);
             if (prevGrid != null && newGrid.numRows == prevGrid.numRows) {
                 // We increased the width without decreasing the height, which is pointless.
                 continue;

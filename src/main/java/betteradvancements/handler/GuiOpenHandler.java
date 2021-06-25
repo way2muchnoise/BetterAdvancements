@@ -30,7 +30,7 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof AdvancementsScreen) {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getInstance();
-            mc.displayGuiScreen(new BetterAdvancementsScreen(mc.player.connection.getAdvancementManager()));
+            mc.setScreen(new BetterAdvancementsScreen(mc.player.connection.getAdvancements()));
         }
     }
 
@@ -49,8 +49,8 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof BetterAdvancementsScreen) {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
-                ClientAdvancementManager manager = mc.player.connection.getAdvancementManager();
-                AdvancementList advancementList = manager.getAdvancementList();
+                ClientAdvancementManager manager = mc.player.connection.getAdvancements();
+                AdvancementList advancementList = manager.getAdvancements();
                 Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
 
                 List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(a -> a.getId().toString()).collect(Collectors.toList());

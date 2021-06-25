@@ -82,7 +82,7 @@ public class BetterAdvancementTabType {
                 j += 5;
         }
 
-        renderItem.renderItemAndEffectIntoGUI(null, stack, i, j);
+        renderItem.renderAndDecorateItem(null, stack, i, j);
     }
 
     public int getX(int index, int width, int height) {
