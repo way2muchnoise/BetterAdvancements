@@ -1,6 +1,6 @@
-package betteradvancements.api.event;
+package betteradvancements.api;
 
-import betteradvancements.gui.BetterAdvancementEntryGui;
+import betteradvancements.api.IBetterAdvancementEntryGui;
 import net.minecraft.advancements.Advancement;
 import net.minecraftforge.eventbus.api.Event;
 
@@ -17,7 +17,7 @@ public class AdvancementMovedEvent extends Event {
      */
     private final int x, y;
     
-    public AdvancementMovedEvent(BetterAdvancementEntryGui gui) {
+    public AdvancementMovedEvent(IBetterAdvancementEntryGui gui) {
         this.advancement = gui.getAdvancement();
         this.x = gui.getX();
         this.y = gui.getY();

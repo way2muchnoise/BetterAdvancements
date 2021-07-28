@@ -1,6 +1,6 @@
 package betteradvancements.gui;
 
-import betteradvancements.api.event.AdvancementMovedEvent;
+import betteradvancements.api.AdvancementMovedEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Maps;

@@ -1,6 +1,7 @@
 package betteradvancements.gui;
 
 import betteradvancements.advancements.BetterDisplayInfo;
+import betteradvancements.api.IBetterAdvancementEntryGui;
 import betteradvancements.api.event.AdvancementDrawConnectionsEvent;
 import betteradvancements.reference.Resources;
 import betteradvancements.util.CriterionGrid;
@@ -30,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class BetterAdvancementEntryGui extends AbstractGui {
+public class BetterAdvancementEntryGui extends AbstractGui implements IBetterAdvancementEntryGui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;
     private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 26, TITLE_SIZE = 32, ICON_OFFSET = 128, ICON_SIZE = 26;
@@ -451,14 +452,17 @@ public class BetterAdvancementEntryGui extends AbstractGui {
         }
     }
 
+    @Override
     public int getY() {
         return this.y;
     }
 
+    @Override
     public int getX() {
         return this.x;
     }
-    
+
+    @Override
     public Advancement getAdvancement() {
         return this.advancement;
     }
