@@ -2,8 +2,8 @@ package betteradvancements.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementTabGui;
-import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
+import betteradvancements.gui.BetterAdvancementTab;
+import betteradvancements.gui.BetterAdvancementsScreenButton;
 import betteradvancements.util.ColorHelper;
 import betteradvancements.util.CriteriaDetail;
 import betteradvancements.util.CriterionGrid;
@@ -61,14 +61,14 @@ public class ConfigValues {
         BetterDisplayInfo.defaultCompletedIconColor = ColorHelper.RGB(defaultCompletedIconColor.get());
         BetterDisplayInfo.defaultCompletedTitleColor = ColorHelper.RGB(defaultCompletedTitleColor.get());
 
-        BetterAdvancementTabGui.doFade = doFade.get();
+        BetterAdvancementTab.doFade = doFade.get();
         BetterAdvancementsScreen.showDebugCoordinates = showDebugCoordinates.get();
         BetterAdvancementsScreen.orderTabsAlphabetically = orderTabsAlphabetically.get();
         BetterAdvancementsScreen.uiScaling = uiScaling.get();
 
         CriterionGrid.detailLevel = CriteriaDetail.fromName(detailLevel.get());
         CriterionGrid.requiresShift = requiresShift.get();
-        BetterAdvancementsScreenButtonWidget.addToInventory = addToInventory.get();
+        BetterAdvancementsScreenButton.addToInventory = addToInventory.get();
 
         BetterDisplayInfo.defaultDrawDirectLines = defaultDrawDirectLines.get();
         BetterDisplayInfo.defaultHideLines = defaultHideLines.get();

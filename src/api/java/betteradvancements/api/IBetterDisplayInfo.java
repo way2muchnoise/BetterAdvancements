@@ -1,6 +1,6 @@
 package betteradvancements.api;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * More advanced information for displaying advancements

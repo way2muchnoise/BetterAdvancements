@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
@@ -80,7 +80,7 @@ public class CriterionGrid {
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
-    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, int maxWidth, FontRenderer renderer) {
+    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
@@ -93,16 +93,16 @@ public class CriterionGrid {
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterion(criterion).isDone()) {
                 if (detailLevel.showObtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" + ").withStyle(TextFormatting.GREEN);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).withStyle(TextFormatting.WHITE);
+                    MutableComponent text = new TextComponent(" + ").withStyle(ChatFormatting.GREEN);
+                    MutableComponent text2 = new TextComponent(criterion).withStyle(ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text.getString());
                 }
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                    IFormattableTextComponent text = new StringTextComponent(" x ").withStyle(TextFormatting.DARK_RED);
-                    IFormattableTextComponent text2 = new StringTextComponent(criterion).withStyle(TextFormatting.WHITE);
+                    MutableComponent text = new TextComponent(" x ").withStyle(ChatFormatting.DARK_RED);
+                    MutableComponent text2 = new TextComponent(criterion).withStyle(ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text.getString());
                 }
@@ -111,15 +111,15 @@ public class CriterionGrid {
         }
 
         if (!detailLevel.showUnobtained()) {
-            IFormattableTextComponent text = new StringTextComponent(" x ").withStyle(TextFormatting.DARK_RED);
-            IFormattableTextComponent text2 = new StringTextComponent(numUnobtained + " remaining").withStyle(TextFormatting.WHITE, TextFormatting.ITALIC);
+            MutableComponent text = new TextComponent(" x ").withStyle(ChatFormatting.DARK_RED);
+            MutableComponent text2 = new TextComponent(numUnobtained + " remaining").withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
         	text.append(text2);
             cellContents.add(text.getString());
         }
 
         int[] cellWidths = new int[cellContents.size()];
         for (int i = 0; i < cellWidths.length; i++) {
-            cellWidths[i] = renderer.width(cellContents.get(i));
+            cellWidths[i] = font.width(cellContents.get(i));
         }
 
         int numCols = 0;
@@ -127,7 +127,7 @@ public class CriterionGrid {
         CriterionGrid currGrid = null;
         do {
             numCols++;
-            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, renderer.lineHeight, numCols);
+            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, font.lineHeight, numCols);
             if (prevGrid != null && newGrid.numRows == prevGrid.numRows) {
                 // We increased the width without decreasing the height, which is pointless.
                 continue;

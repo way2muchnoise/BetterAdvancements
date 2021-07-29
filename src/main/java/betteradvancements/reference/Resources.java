@@ -1,7 +1,7 @@
 package betteradvancements.reference;
 
 import betteradvancements.BetterAdvancements;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public final class Resources {
     private static ResourceLocation resourceLocation(String location) {

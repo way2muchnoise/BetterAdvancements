@@ -4,8 +4,8 @@ import betteradvancements.api.IBetterDisplayInfo;
 import betteradvancements.util.ColorHelper;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.gui.advancements.AdvancementState;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
+import net.minecraft.resources.ResourceLocation;
 
 public class BetterDisplayInfo implements IBetterDisplayInfo {
     public static int defaultCompletedIconColor, defaultUncompletedIconColor;
@@ -190,32 +190,32 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         return this.completedTitleColor != minecraftCompletedTitleColor || this.unCompletedTitleColor != minecraftUncompletedTitleColor;
     }
 
-    public int getIconYMultiplier(AdvancementState state) {
+    public int getIconYMultiplier(AdvancementWidgetType state) {
         if (hasCustomIconColor()) {
             return 2;
         }
-        return state == AdvancementState.OBTAINED ? 0 : 1;
+        return state == AdvancementWidgetType.OBTAINED ? 0 : 1;
     }
 
-    public int getIconColor(AdvancementState state) {
+    public int getIconColor(AdvancementWidgetType state) {
         if (!hasCustomIconColor()) {
             return WHITE;
         }
-        return state == AdvancementState.OBTAINED ? getCompletedIconColor() : getUnCompletedIconColor();
+        return state == AdvancementWidgetType.OBTAINED ? getCompletedIconColor() : getUnCompletedIconColor();
     }
 
-    public int getTitleYMultiplier(AdvancementState state) {
+    public int getTitleYMultiplier(AdvancementWidgetType state) {
         if (hasCustomTitleColor()) {
             return 3;
         }
-        return state == AdvancementState.OBTAINED ? 0 : 1;
+        return state == AdvancementWidgetType.OBTAINED ? 0 : 1;
     }
 
-    public int getTitleColor(AdvancementState state) {
+    public int getTitleColor(AdvancementWidgetType state) {
         if (!hasCustomIconColor()) {
             return WHITE;
         }
-        return state == AdvancementState.OBTAINED ? getCompletedTitleColor() : getUnCompletedTitleColor();
+        return state == AdvancementWidgetType.OBTAINED ? getCompletedTitleColor() : getUnCompletedTitleColor();
     }
 
 }

@@ -1,15 +1,15 @@
 package betteradvancements.handler;
 
 import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButtonWidget;
+import betteradvancements.gui.BetterAdvancementsScreenButton;
 import betteradvancements.util.AdvancementComparer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.advancements.AdvancementsScreen;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
-import net.minecraft.client.multiplayer.ClientAdvancementManager;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.multiplayer.ClientAdvancements;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -37,9 +37,9 @@ public class GuiOpenHandler {
     @SubscribeEvent
     public void onGuiOpened(final GuiScreenEvent.InitGuiEvent.Post event) {
         if (event.getGui() instanceof InventoryScreen) {
-            if (BetterAdvancementsScreenButtonWidget.addToInventory) {
+            if (BetterAdvancementsScreenButton.addToInventory) {
                 InventoryScreen guiInventory = (InventoryScreen) event.getGui();
-                event.addWidget(new BetterAdvancementsScreenButtonWidget(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), new StringTextComponent("BA")));
+                event.addWidget(new BetterAdvancementsScreenButton(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), new TextComponent("BA")));
             }
         }
     }
@@ -49,8 +49,8 @@ public class GuiOpenHandler {
         if (event.getGui() instanceof BetterAdvancementsScreen) {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
-                ClientAdvancementManager manager = mc.player.connection.getAdvancements();
-                AdvancementList advancementList = manager.getAdvancements();
+                ClientAdvancements clientAdvancements = mc.player.connection.getAdvancements();
+                AdvancementList advancementList = clientAdvancements.getAdvancements();
                 Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
 
                 List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(a -> a.getId().toString()).collect(Collectors.toList());

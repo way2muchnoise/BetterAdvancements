@@ -38,7 +38,7 @@ repositories {
     }
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 sourceSets {
 	api
@@ -196,6 +196,7 @@ curseforge {
         changelog = System.getenv('CHANGELOG') == null ? '' : System.getenv('CHANGELOG')
         changelogType = 'markdown'
         releaseType =  'alpha'
+		addGameVersion "${version_minecraft}"
         mainArtifact (jar) {
             displayName = "${jar.archiveName}".replace(".jar", "")
         }

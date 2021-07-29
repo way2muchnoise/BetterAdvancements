@@ -1,9 +1,10 @@
 package betteradvancements.util;
 
 import betteradvancements.BetterAdvancements;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import org.apache.commons.io.IOUtils;
@@ -21,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class FolderUtil {
-    public static boolean findAdvancements(ResourceLocation location, ServerWorld world, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
+    public static boolean findAdvancements(ResourceLocation location, ServerLevel serverLevel, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
         ModContainer mod = ModList.get().getModContainerById(location.getNamespace()).orElse(null);
         try {
@@ -46,13 +47,13 @@ public class FolderUtil {
 
             Path root = null;
             if (source == null) {
-                if (world != null) {
-                    root = world.getServer().getServerDirectory().toPath().resolve("advancements/" + location.getNamespace());
+                if (serverLevel != null) {
+                    root = serverLevel.getServer().getServerDirectory().toPath().resolve("advancements/" + location.getNamespace());
                 }
             }
             else if (source.isFile()) {
                 try {
-                    fs = FileSystems.newFileSystem(source.toPath(), null);
+                    fs = FileSystems.newFileSystem(source.toURI(), null);
                     root = fs.getPath("/assets/" + mod.getModId() + "/advancements");
                 } catch (IOException e) {
                     BetterAdvancements.log.error("Error loading FileSystem from jar: ", e);

@@ -1,10 +1,10 @@
 package betteradvancements.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.advancements.AdvancementTabType;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.ItemStack;
 
 public class BetterAdvancementTabType {
     public static final BetterAdvancementTabType ABOVE = new BetterAdvancementTabType(0, 0, 28, 32, AdvancementTabType.ABOVE);
@@ -43,7 +43,7 @@ public class BetterAdvancementTabType {
         this.tabType = tabType;
     }
 
-    public void draw(AbstractGui gui, MatrixStack matrixStack, int x, int y, int width, int height, boolean selected, int index) {
+    public void draw(GuiComponent gui, PoseStack poseStack, int x, int y, int width, int height, boolean selected, int index) {
         int i = this.textureX;
         index %= getMax(width, height);
 
@@ -56,10 +56,10 @@ public class BetterAdvancementTabType {
         }
 
         int j = selected ? this.textureY + this.height : this.textureY;
-        gui.blit(matrixStack, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
+        gui.blit(poseStack, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
-    public void drawIcon(MatrixStack matrixStack, int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
+    public void drawIcon(PoseStack poseSta, int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
 
@@ -82,7 +82,7 @@ public class BetterAdvancementTabType {
                 j += 5;
         }
 
-        renderItem.renderAndDecorateItem(null, stack, i, j);
+        renderItem.renderAndDecorateFakeItem(stack, i, j);
     }
 
     public int getX(int index, int width, int height) {
