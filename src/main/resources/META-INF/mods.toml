@@ -18,3 +18,4 @@ displayName="Better Advancements" #mandatory
 description='''
 Improvements to the advancements screen.
 '''
+credits = "Thanks to Paint_Ninja for porting to 1.18" #optional
