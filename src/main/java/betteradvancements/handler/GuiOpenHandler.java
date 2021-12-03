@@ -36,9 +36,8 @@ public class GuiOpenHandler {
 
     @SubscribeEvent
     public void onGuiOpened(final ScreenEvent.InitScreenEvent.Post event) {
-        if (event.getScreen() instanceof InventoryScreen) {
+        if (event.getScreen() instanceof InventoryScreen guiInventory) {
             if (BetterAdvancementsScreenButton.addToInventory) {
-                InventoryScreen guiInventory = (InventoryScreen) event.getScreen();
                 event.addListener(new BetterAdvancementsScreenButton(guiInventory.getGuiLeft() + guiInventory.getXSize(), guiInventory.getGuiTop(), new TextComponent("BA")));
             }
         }

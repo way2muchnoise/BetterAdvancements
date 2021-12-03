@@ -68,7 +68,7 @@ public class FolderUtil {
 
             if (preprocessor != null) {
                 Boolean cont = preprocessor.apply(root);
-                if (cont == null || !cont.booleanValue())
+                if (cont == null || !cont)
                     return false;
             }
 

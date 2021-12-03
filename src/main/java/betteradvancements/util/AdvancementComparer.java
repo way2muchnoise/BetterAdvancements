@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 public class AdvancementComparer {
     public static Comparator<Advancement> sortByTitle() {
-        return new Comparator<Advancement>() {
+        return new Comparator<>() {
             @Override
             public int compare(Advancement a1, Advancement a2) {
                 if (a1 == a2) {

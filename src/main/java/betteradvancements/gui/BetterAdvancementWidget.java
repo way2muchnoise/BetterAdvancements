@@ -171,26 +171,11 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             
             if (!perpendicular) {
                 switch (this.screenScale) {
-                case 1: {
-                    width = drawInside ? 1.5 : 0.5;
-                    break;
-                }
-                case 2: {
-                    width = drawInside ? 2.25 : 0.75;
-                    break;
-                }
-                case 3: {
-                    width = drawInside ? 2 : 0.6666666666666667;
-                    break;
-                }
-                case 4: {
-                    width = drawInside ? 2.125 : 0.625;
-                    break;
-                }
-                default: {
-                    width = drawInside ? 3 : 1;
-                    break;
-                }
+                    case 1 -> width = drawInside ? 1.5 : 0.5;
+                    case 2 -> width = drawInside ? 2.25 : 0.75;
+                    case 3 -> width = drawInside ? 2 : 0.6666666666666667;
+                    case 4 -> width = drawInside ? 2.125 : 0.625;
+                    default -> width = drawInside ? 3 : 1;
                 }
                 if (drawInside) {
                     RenderUtil.drawRect(x1 - .75, y1 - .75, x2 - .75, y2 - .75, width, borderLineColor);
