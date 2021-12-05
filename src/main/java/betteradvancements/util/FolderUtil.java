@@ -1,7 +1,6 @@
 package betteradvancements.util;
 
 import betteradvancements.BetterAdvancements;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -68,7 +67,7 @@ public class FolderUtil {
 
             if (preprocessor != null) {
                 Boolean cont = preprocessor.apply(root);
-                if (cont == null || !cont.booleanValue())
+                if (cont == null || !cont)
                     return false;
             }
 

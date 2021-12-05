@@ -63,23 +63,23 @@ public class BetterAdvancementTabType {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
 
-        switch (tabType)
-        {
-            case ABOVE:
+        switch (tabType) {
+            case ABOVE -> {
                 i += 6;
                 j += 9;
-                break;
-            case BELOW:
+            }
+            case BELOW -> {
                 i += 6;
                 j += 6;
-                break;
-            case LEFT:
+            }
+            case LEFT -> {
                 i += 10;
                 j += 5;
-                break;
-            case RIGHT:
+            }
+            case RIGHT -> {
                 i += 6;
                 j += 5;
+            }
         }
 
         renderItem.renderAndDecorateFakeItem(stack, i, j);
@@ -87,36 +87,20 @@ public class BetterAdvancementTabType {
 
     public int getX(int index, int width, int height) {
         index %= getMax(width, height);
-        switch (tabType)
-        {
-            case ABOVE:
-                return (this.width + 4) * index;
-            case BELOW:
-                return (this.width + 4) * index;
-            case LEFT:
-                return -this.width + 4;
-            case RIGHT:
-                return width - 4;
-            default:
-                throw new UnsupportedOperationException("Don't know what this tab type is!" + this);
-        }
+        return switch (tabType) {
+            case ABOVE, BELOW -> (this.width + 4) * index;
+            case LEFT -> -this.width + 4;
+            case RIGHT -> width - 4;
+        };
     }
 
     public int getY(int index, int width, int height) {
         index %= getMax(width, height);
-        switch (tabType)
-        {
-            case ABOVE:
-                return -this.height + 4;
-            case BELOW:
-                return height - 4;
-            case LEFT:
-                return this.height * index;
-            case RIGHT:
-                return this.height * index;
-            default:
-                throw new UnsupportedOperationException("Don't know what this tab type is!" + this);
-        }
+        return switch (tabType) {
+            case ABOVE -> -this.height + 4;
+            case BELOW -> height - 4;
+            case LEFT, RIGHT -> this.height * index;
+        };
     }
 
     public boolean isMouseOver(int left, int top, int width, int height, int index, double mouseX, double mouseY) {
@@ -126,15 +110,10 @@ public class BetterAdvancementTabType {
     }
 
     private int getMax(int width, int height) {
-        switch (tabType) {
-            case LEFT:
-            case RIGHT:
-                return height / 32;
-            case ABOVE:
-            case BELOW:
-                return width / 32;
-            default:
-                return tabType.getMax();
-        }
+        return switch (tabType) {
+            case LEFT, RIGHT -> height / 32;
+            case ABOVE, BELOW -> width / 32;
+            default -> tabType.getMax();
+        };
     }
 }

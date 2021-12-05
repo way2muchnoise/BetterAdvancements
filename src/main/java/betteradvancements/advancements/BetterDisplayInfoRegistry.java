@@ -29,7 +29,6 @@ public class BetterDisplayInfoRegistry {
     }
 
     private void load(ResourceLocation location, ServerLevel serverLevel) {
-        JsonParser parser = new JsonParser();
         FolderUtil.findAdvancements(location, serverLevel, null,
             (root, file) ->
             {
@@ -50,7 +49,7 @@ public class BetterDisplayInfoRegistry {
 
                     try {
                         reader = Files.newBufferedReader(file);
-                        JsonObject advancement = parser.parse(reader).getAsJsonObject();
+                        JsonObject advancement = JsonParser.parseReader(reader).getAsJsonObject();
                         JsonObject betterDisplay = advancement.getAsJsonObject("better_display");
                         registry.put(key, new BetterDisplayInfo(key, betterDisplay));
                     } catch (JsonParseException jsonparseexception) {

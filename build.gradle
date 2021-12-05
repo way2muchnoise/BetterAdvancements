@@ -14,7 +14,6 @@ buildscript {
 
 plugins {
 	id "com.matthewprenger.cursegradle" version "1.4.0"
-	id "com.jfrog.bintray" version "1.8.4"
 }
 
 apply plugin: 'idea'
@@ -38,7 +37,7 @@ repositories {
     }
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 sourceSets {
 	api
@@ -225,21 +224,6 @@ publishing {
             artifact sourcesJar
             artifact apiJar
             artifact jar
-        }
-    }
-}
-
-bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
-    publications = ['MyPublication']
-    publish = true
-    pkg {
-        repo = 'dev'
-        name = 'BetterAdvancements'
-        version {
-            name = project.version
-            released = new Date()
         }
     }
 }

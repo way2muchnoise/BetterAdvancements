@@ -93,11 +93,7 @@ public class BetterAdvancementTab extends GuiComponent {
         RenderSystem.depthFunc(515);
         ResourceLocation resourcelocation = this.display.getBackground();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        if (resourcelocation != null) {
-            RenderSystem.setShaderTexture(0, resourcelocation);
-        } else {
-            RenderSystem.setShaderTexture(0, TextureManager.INTENTIONAL_MISSING_TEXTURE);
-        }
+        RenderSystem.setShaderTexture(0, resourcelocation != null ? resourcelocation : TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.scrollX % 16;
