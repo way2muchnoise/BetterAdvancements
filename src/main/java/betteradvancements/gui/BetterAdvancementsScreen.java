@@ -479,7 +479,13 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
     @Override
     public void onSelectedTabChanged(@Nullable Advancement advancement) {
+        if (this.selectedTab != null) {
+            this.selectedTab.storeScroll();
+        }
         this.selectedTab = this.tabs.get(advancement);
+        if (this.selectedTab != null) {
+            this.selectedTab.loadScroll();
+        }
     }
 
     @Override

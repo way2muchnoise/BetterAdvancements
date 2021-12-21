@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,6 +26,7 @@ import java.util.Map;
 @OnlyIn(Dist.CLIENT)
 public class BetterAdvancementTab extends GuiComponent {
     public static boolean doFade = true;
+    public static final Map<Advancement, Tuple<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
 
     private final Minecraft minecraft;
     private final BetterAdvancementsScreen screen;
@@ -209,5 +211,18 @@ public class BetterAdvancementTab extends GuiComponent {
 
     public BetterDisplayInfo getBetterDisplayInfo(Advancement advancement) {
         return betterDisplayInfos.get(advancement);
+    }
+
+    public void storeScroll() {
+        scrollHistory.put(this.advancement, new Tuple<>(scrollX, scrollY));
+    }
+
+    public void loadScroll() {
+        Tuple<Integer, Integer> scroll = scrollHistory.get(this.advancement);
+        if (scroll != null) {
+            this.centered = true;
+            this.scrollX = scroll.getA();
+            this.scrollY = scroll.getB();
+        }
     }
 }
