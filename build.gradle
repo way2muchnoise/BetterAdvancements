@@ -197,19 +197,19 @@ curseforge {
         releaseType =  'alpha'
 		addGameVersion "${version_minecraft}"
         mainArtifact (jar) {
-            displayName = "${jar.archiveFileName}".replace(".jar", "")
+            displayName = "${jar.archiveFileName.get()}".replace(".jar", "")
         }
         addArtifact (javadocJar) {
-            displayName = "${javadocJar.archiveFileName}".replace(".jar", "")
+            displayName = "${javadocJar.archiveFileName.get()}".replace(".jar", "")
         }
         addArtifact (sourcesJar) {
-            displayName = "${sourcesJar.archiveFileName}".replace(".jar", "")
+            displayName = "${sourcesJar.archiveFileName.get()}".replace(".jar", "")
         }
         addArtifact (apiJar) {
-            displayName = "${apiJar.archiveFileName}".replace(".jar", "")
+            displayName = "${apiJar.archiveFileName.get()}".replace(".jar", "")
         }
 		addArtifact (deobfJar) {
-			displayName = "${deobfJar.archiveFileName}".replace(".jar", "")
+			displayName = "${deobfJar.archiveFileName.get()}".replace(".jar", "")
 		}
     }
 }
