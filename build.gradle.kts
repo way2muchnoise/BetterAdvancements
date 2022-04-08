@@ -19,7 +19,7 @@ val specificationVersion: String by extra
 
 subprojects {
     //adds the build number to the end of the version string if on a build server
-    var buildNumber = project.findProperty("TRAVIS_BUILD_NUMBER")
+    var buildNumber = System.getenv("TRAVIS_BUILD_NUMBER")
     if (buildNumber == null) {
         buildNumber = "local"
     }

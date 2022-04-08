@@ -141,14 +141,17 @@ val sourcesJar = tasks.register<Jar>("sourcesJar") {
 
 tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 
-	apiToken = project.findProperty("CURSE_KEY") ?: "0"
+	apiToken = System.getenv("CURSE_KEY") ?: "0"
 
-	val mainFile = upload(curseProjectId, file("${project.buildDir}/libs/$baseArchivesName-$version.jar"))
+	val mainFile = upload(curseProjectId, tasks.jar.get())
 	mainFile.changelogType = CFG_Constants.CHANGELOG_MARKDOWN
-	mainFile.changelog = project.findProperty("CHANGELOG") ?: ""
+	mainFile.changelog = System.getenv("CHANGELOG") ?: ""
 	mainFile.releaseType = CFG_Constants.RELEASE_TYPE_ALPHA
 	mainFile.addJavaVersion("Java $modJavaVersion")
 	mainFile.addGameVersion(minecraftVersion)
+	mainFile.addRequirement("jei")
+	mainFile.withAdditionalFile(apiJar.get())
+	mainFile.withAdditionalFile(sourcesJar.get())
 
 	doLast {
 		project.ext.set("curse_file_url", "${curseHomepageLink}/files/${mainFile.curseFileId}")
