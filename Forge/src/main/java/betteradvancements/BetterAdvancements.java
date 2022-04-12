@@ -1,7 +1,7 @@
 package betteradvancements;
 
-import betteradvancements.config.Config;
-import betteradvancements.handler.GuiOpenHandler;
+import betteradvancements.forge.config.Config;
+import betteradvancements.forge.handler.GuiOpenHandler;
 import betteradvancements.reference.Constants;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;

@@ -1,4 +1,4 @@
-package betteradvancements.handler;
+package betteradvancements.forge.handler;
 
 import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButton;

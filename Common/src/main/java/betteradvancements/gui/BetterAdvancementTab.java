@@ -157,7 +157,7 @@ public class BetterAdvancementTab extends GuiComponent {
         if (advancement.getDisplay() == null) {
             return null;
         } else {
-            BetterAdvancementTabType advancementTabType = BetterAdvancementTabType.getTabType(width,height, index);
+            BetterAdvancementTabType advancementTabType = BetterAdvancementTabType.getTabType(width, height, index);
             if (advancementTabType == null) {
                 return null;
             } else {

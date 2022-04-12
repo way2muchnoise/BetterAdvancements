@@ -26,4 +26,4 @@ pluginManagement {
 val minecraftVersion: String by settings
 
 rootProject.name = "BetterAdvancements"
-include("CommonApi", "Common", "ForgeApi", "Forge")
+include("CommonApi", "Common", "FabricApi", "Fabric", "ForgeApi", "Forge")

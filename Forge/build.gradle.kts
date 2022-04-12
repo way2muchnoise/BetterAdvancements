@@ -4,7 +4,6 @@ import net.darkhax.curseforgegradle.Constants as CFG_Constants
 plugins {
 	java
 	idea
-	eclipse
 	`maven-publish`
 	id("net.minecraftforge.gradle") version("5.1.+")
 	id("org.parchmentmc.librarian.forgegradle") version("1.+")
@@ -19,10 +18,10 @@ val mappingsChannel: String by extra
 val mappingsVersion: String by extra
 val minecraftVersion: String by extra
 val modId: String by extra
+val modFileName: String by extra
 val modJavaVersion: String by extra
-val jUnitVersion: String by extra
 
-val baseArchivesName = "${modId}-${minecraftVersion}"
+val baseArchivesName = "${modFileName}-${minecraftVersion}"
 base {
 	archivesName.set(baseArchivesName)
 }
@@ -113,6 +112,7 @@ tasks.named<Jar>("jar") {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	finalizedBy("reobfJar")
 }
+
 val apiJar = tasks.register<Jar>("apiJar") {
 	from(project(":CommonApi").sourceSets.main.get().output)
 	from(project(":ForgeApi").sourceSets.main.get().output)
@@ -147,15 +147,11 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.changelogType = CFG_Constants.CHANGELOG_MARKDOWN
 	mainFile.changelog = System.getenv("CHANGELOG") ?: ""
 	mainFile.releaseType = CFG_Constants.RELEASE_TYPE_ALPHA
+	mainFile.addModLoader("Forge")
 	mainFile.addJavaVersion("Java $modJavaVersion")
 	mainFile.addGameVersion(minecraftVersion)
-	mainFile.addRequirement("jei")
 	mainFile.withAdditionalFile(apiJar.get())
 	mainFile.withAdditionalFile(sourcesJar.get())
-
-	doLast {
-		project.ext.set("curse_file_url", "${curseHomepageLink}/files/${mainFile.curseFileId}")
-	}
 }
 
 artifacts {

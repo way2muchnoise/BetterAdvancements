@@ -1,4 +1,4 @@
-package betteradvancements.config;
+package betteradvancements.forge.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.BetterAdvancementsScreen;

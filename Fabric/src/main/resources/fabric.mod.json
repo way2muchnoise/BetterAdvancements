@@ -1,0 +1,34 @@
+{
+    "schemaVersion": 1,
+    "id": "betteradvancements",
+    "version": "${version}",
+  
+    "name": "Better Advancements",
+    "description": "Improvements to the advancements screen.",
+    "authors": [
+      "${modAuthor}"
+    ],
+    "contact": {
+      "homepage": "${curseHomepageLink}",
+      "sources": "${githubUrl}"
+    },
+    "license": "\"Don't Be a Jerk\" non-commercial care-free license",
+    "environment": "*",
+    "entrypoints": {
+      "client" : [
+        "betteradvancements.BetterAdvancements"
+      ]
+    },
+    "mixins": [
+      "betteradvancements.mixins.json"
+    ],
+    "depends": {
+      "fabricloader": ">=0.13",
+      "fabric": "*",
+      "minecraft": "1.18.x",
+      "java": ">=17"
+    },
+    "suggests": {
+    },
+    "accessWidener": "betteradvancements.accesswidener"
+}

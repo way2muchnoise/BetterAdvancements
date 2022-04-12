@@ -1,4 +1,4 @@
-package betteradvancements.config;
+package betteradvancements.forge.config;
 
 import betteradvancements.reference.Constants;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;

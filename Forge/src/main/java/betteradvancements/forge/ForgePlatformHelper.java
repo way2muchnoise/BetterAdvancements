@@ -8,6 +8,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
     private final ForgeAdvancementVisitor advancementVisitor = new ForgeAdvancementVisitor();
 
     @Override
+    public String getPlatformName() {
+        return "Forge";
+    }
+
+    @Override
     public IEventHelper getEventHelper() {
         return eventHelper;
     }

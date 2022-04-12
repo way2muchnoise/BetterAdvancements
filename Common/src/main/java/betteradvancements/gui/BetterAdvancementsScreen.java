@@ -39,7 +39,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
     protected int internalWidth, internalHeight;
-    public static int uiScaling;
+    public static int uiScaling = 100;
     public static boolean showDebugCoordinates = false;
     public static boolean orderTabsAlphabetically = false;
     private BetterAdvancementWidget advConnectedToMouse = null;

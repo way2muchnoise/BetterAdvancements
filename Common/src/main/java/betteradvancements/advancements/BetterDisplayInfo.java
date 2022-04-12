@@ -8,19 +8,22 @@ import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
 import net.minecraft.resources.ResourceLocation;
 
 public class BetterDisplayInfo implements IBetterDisplayInfo {
-    public static int defaultCompletedIconColor, defaultUncompletedIconColor;
-    public static int defaultCompletedTitleColor, defaultUncompletedTitleColor;
     public static final String defaultMinecraftCompletedIconColor = "#DBA213", defaultMinecraftUncompletedIconColor = "#FFFFFF";
     public static final String defaultMinecraftCompletedTitleColor = "#DBA213", defaultMinecraftUncompletedTitleColor = "#0489C1";
-    public static boolean defaultDrawDirectLines;
-    public static int defaultCompletedLineColor;
-    public static int defaultUncompletedLineColor;
-    public static boolean defaultHideLines;
-    private static final int WHITE = ColorHelper.RGB(1F, 1F, 1F);
     private static final int minecraftCompletedIconColor = ColorHelper.RGB(defaultMinecraftCompletedIconColor);
     private static final int minecraftUncompletedIconColor = ColorHelper.RGB(defaultMinecraftUncompletedIconColor);
     private static final int minecraftCompletedTitleColor = ColorHelper.RGB(defaultMinecraftCompletedTitleColor);
     private static final int minecraftUncompletedTitleColor = ColorHelper.RGB(defaultMinecraftUncompletedTitleColor);
+    public static int defaultCompletedIconColor = minecraftCompletedIconColor;
+    public static int defaultUncompletedIconColor = minecraftUncompletedIconColor;
+    public static int defaultCompletedTitleColor = minecraftCompletedTitleColor;
+    public static int defaultUncompletedTitleColor = minecraftUncompletedTitleColor;
+    public static boolean defaultDrawDirectLines = false;
+    public static int defaultCompletedLineColor = ColorHelper.RGB("#FFFFFF");
+    public static int defaultUncompletedLineColor = ColorHelper.RGB("#FFFFFF");
+    public static boolean defaultHideLines = false;
+    private static final int WHITE = ColorHelper.RGB(1F, 1F, 1F);
+
 
     private ResourceLocation id;
     private int completedIconColor, unCompletedIconColor;
