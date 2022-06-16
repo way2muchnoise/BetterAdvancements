@@ -20,6 +20,10 @@ sourceSets {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compileOnly(
         group = "org.spongepowered",

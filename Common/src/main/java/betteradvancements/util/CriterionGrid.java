@@ -10,8 +10,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
@@ -93,16 +93,16 @@ public class CriterionGrid {
         for (String criterion : criteria.keySet()) {
             if (progress.getCriterion(criterion).isDone()) {
                 if (detailLevel.showObtained()) {
-                    MutableComponent text = new TextComponent(" + ").withStyle(ChatFormatting.GREEN);
-                    MutableComponent text2 = new TextComponent(criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
+                    MutableComponent text2 = Component.literal(criterion).withStyle(ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text.getString());
                 }
             }
             else {
                 if (detailLevel.showUnobtained()) {
-                    MutableComponent text = new TextComponent(" x ").withStyle(ChatFormatting.DARK_RED);
-                    MutableComponent text2 = new TextComponent(criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
+                    MutableComponent text2 = Component.literal(criterion).withStyle(ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text.getString());
                 }
@@ -111,8 +111,8 @@ public class CriterionGrid {
         }
 
         if (!detailLevel.showUnobtained()) {
-            MutableComponent text = new TextComponent(" x ").withStyle(ChatFormatting.DARK_RED);
-            MutableComponent text2 = new TextComponent(numUnobtained + " remaining").withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
+            MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
+            MutableComponent text2 = Component.literal(numUnobtained + " remaining").withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
         	text.append(text2);
             cellContents.add(text.getString());
         }

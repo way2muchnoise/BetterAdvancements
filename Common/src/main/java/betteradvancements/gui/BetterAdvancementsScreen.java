@@ -14,8 +14,6 @@ import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
@@ -27,9 +25,9 @@ import java.util.Map;
 
 @OnlyIn(Dist.CLIENT)
 public class BetterAdvancementsScreen extends Screen implements ClientAdvancements.Listener {
-    private static final Component VERY_SAD_LABEL = new TranslatableComponent("advancements.sad_label");
-    private static final Component NO_ADVANCEMENTS_LABEL = new TranslatableComponent("advancements.empty");
-    private static final Component TITLE = new TranslatableComponent("gui.advancements");
+    private static final Component VERY_SAD_LABEL = Component.translatable("advancements.sad_label");
+    private static final Component NO_ADVANCEMENTS_LABEL = Component.translatable("advancements.empty");
+    private static final Component TITLE =Component.translatable("gui.advancements");
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
     private static final int SIDE = 30, TOP = 40, BOTTOM = 30, PADDING = 9;
     private static final float MIN_ZOOM = 1, MAX_ZOOM = 2, ZOOM_STEP = 0.2F;
@@ -405,7 +403,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (selectedTab != null) {
             windowTitle = FormattedCharSequence.composite(
                 windowTitle,
-                new TextComponent(" - ").getVisualOrderText(),
+                  Component.literal(" - ").getVisualOrderText(),
                 selectedTab.getTitle().getVisualOrderText()
             );
         }
