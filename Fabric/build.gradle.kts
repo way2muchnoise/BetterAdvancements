@@ -14,8 +14,8 @@ val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
 val clothVersion: String by extra
 val modMenuVersion: String by extra
-val mappingsChannel: String by extra
-val mappingsVersion: String by extra
+val mappingsParchmentMinecraftVersion: String by extra
+val mappingsParchmentVersion: String by extra
 val minecraftVersion: String by extra
 val modId: String by extra
 val modFileName: String by extra
@@ -26,14 +26,14 @@ base {
 	archivesName.set(baseArchivesName)
 }
 
-val dependencyProjects: List<Project> = listOf(
-	project(":Common"),
-	project(":CommonApi"),
-	project(":FabricApi"),
+val dependencyProjects: List<ProjectDependency> = listOf(
+	project.dependencies.project(":Common"),
+	project.dependencies.project(":CommonApi"),
+	project.dependencies.project(":FabricApi", configuration = "namedElements")
 )
 
 dependencyProjects.forEach {
-	project.evaluationDependsOn(it.path)
+	project.evaluationDependsOn(it.dependencyProject.path)
 }
 
 sourceSets {
@@ -49,11 +49,15 @@ java {
 repositories {
 	maven("https://maven.shedaniel.me/")
 	maven("https://maven.terraformersmc.com/releases/")
+	maven("https://maven.parchmentmc.org/")
 }
 
 dependencies {
 	minecraft("com.mojang:minecraft:${minecraftVersion}")
-	mappings(loom.officialMojangMappings())
+	mappings(loom.layered {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-${mappingsParchmentMinecraftVersion}:${mappingsParchmentVersion}@zip")
+	})
 	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${clothVersion}") {
@@ -61,18 +65,14 @@ dependencies {
 	}
 	modImplementation("com.terraformersmc:modmenu:${modMenuVersion}")
 	dependencyProjects.forEach {
-		if (it.path.contains("Fabric")) {
-			implementation(project(path = it.path, configuration = "namedElements"))
-		} else {
-			implementation(it)
-		}
+		implementation(it)
 	}
 }
 
 tasks.named<Jar>("jar") {
 	from(sourceSets.main.get().output)
 	for (p in dependencyProjects) {
-		from(p.sourceSets.main.get().output)
+		from(p.dependencyProject.sourceSets.main.get().output)
 	}
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

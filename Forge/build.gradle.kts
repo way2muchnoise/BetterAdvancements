@@ -15,7 +15,8 @@ val curseHomepageLink: String by extra
 val curseProjectId: String by extra
 val forgeVersion: String by extra
 val mappingsChannel: String by extra
-val mappingsVersion: String by extra
+val mappingsParchmentMinecraftVersion: String by extra
+val mappingsParchmentVersion: String by extra
 val minecraftVersion: String by extra
 val modId: String by extra
 val modFileName: String by extra
@@ -29,14 +30,14 @@ base {
 sourceSets {
 }
 
-val dependencyProjects: List<Project> = listOf(
-	project(":Common"),
-	project(":CommonApi"),
-	project(":ForgeApi"),
+val dependencyProjects: List<ProjectDependency> = listOf(
+	project.dependencies.project(":Common"),
+	project.dependencies.project(":CommonApi"),
+	project.dependencies.project(":ForgeApi"),
 )
 
 dependencyProjects.forEach {
-	project.evaluationDependsOn(it.path)
+	project.evaluationDependsOn(it.dependencyProject.path)
 }
 
 java {
@@ -57,7 +58,8 @@ dependencies {
 }
 
 minecraft {
-	mappings(mappingsChannel, mappingsVersion)
+	mappings(mappingsChannel, "${mappingsParchmentMinecraftVersion}-${mappingsParchmentVersion}-${minecraftVersion}")
+	// mappings("official", minecraftVersion)
 
 	accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 
@@ -70,7 +72,7 @@ minecraft {
 				create(modId) {
 					source(sourceSets.main.get())
 					for (p in dependencyProjects) {
-						source(p.sourceSets.main.get())
+						source(p.dependencyProject.sourceSets.main.get())
 					}
 				}
 			}
@@ -95,7 +97,7 @@ minecraft {
 				create(modId) {
 					source(sourceSets.main.get())
 					for (p in dependencyProjects) {
-						source(p.sourceSets.main.get())
+						source(p.dependencyProject.sourceSets.main.get())
 					}
 				}
 			}
@@ -106,7 +108,7 @@ minecraft {
 tasks.named<Jar>("jar") {
 	from(sourceSets.main.get().output)
 	for (p in dependencyProjects) {
-		from(p.sourceSets.main.get().output)
+		from(p.dependencyProject.sourceSets.main.get().output)
 	}
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -131,7 +133,7 @@ val apiJar = tasks.register<Jar>("apiJar") {
 val sourcesJar = tasks.register<Jar>("sourcesJar") {
 	from(sourceSets.main.get().allJava)
 	for (p in dependencyProjects) {
-		from(p.sourceSets.main.get().allJava)
+		from(p.dependencyProject.sourceSets.main.get().allJava)
 	}
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
