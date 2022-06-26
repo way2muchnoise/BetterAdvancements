@@ -12,6 +12,8 @@ val curseHomepageLink: String by extra
 val curseProjectId: String by extra
 val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
+val clothVersion: String by extra
+val modMenuVersion: String by extra
 val mappingsChannel: String by extra
 val mappingsVersion: String by extra
 val minecraftVersion: String by extra
@@ -44,11 +46,20 @@ java {
 	}
 }
 
+repositories {
+	maven("https://maven.shedaniel.me/")
+	maven("https://maven.terraformersmc.com/releases/")
+}
+
 dependencies {
 	minecraft("com.mojang:minecraft:${minecraftVersion}")
 	mappings(loom.officialMojangMappings())
 	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
+	modApi("me.shedaniel.cloth:cloth-config-fabric:${clothVersion}") {
+		exclude("net.fabricmc.fabric-api")
+	}
+	modImplementation("com.terraformersmc:modmenu:${modMenuVersion}")
 	dependencyProjects.forEach {
 		if (it.path.contains("Fabric")) {
 			implementation(project(path = it.path, configuration = "namedElements"))

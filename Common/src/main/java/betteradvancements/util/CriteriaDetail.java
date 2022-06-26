@@ -51,4 +51,8 @@ public enum CriteriaDetail {
     	    .map(x -> "\n    " + x.getName() + ": " + x.comment)
     	    .collect(Collectors.joining());
     }
+
+	public static List<CriteriaDetail> valuesAsList() {
+		return Arrays.asList(CriteriaDetail.values());
+	}
 }

@@ -17,6 +17,9 @@
     "entrypoints": {
       "client" : [
         "betteradvancements.BetterAdvancements"
+      ],
+      "modmenu": [
+        "betteradvancements.fabric.config.BetterAdvancementsModMenu"
       ]
     },
     "mixins": [
