@@ -16,14 +16,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-@OnlyIn(Dist.CLIENT)
 public class BetterAdvancementsScreen extends Screen implements ClientAdvancements.Listener {
     private static final Component VERY_SAD_LABEL = Component.translatable("advancements.sad_label");
     private static final Component NO_ADVANCEMENTS_LABEL = Component.translatable("advancements.empty");

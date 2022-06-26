@@ -1,8 +1,8 @@
 pluginManagement {
 	repositories {
-		maven("https://maven.minecraftforge.net")
-		maven("https://maven.parchmentmc.org")
-		maven("https://maven.blamejared.com")
+		maven("https://maven.minecraftforge.net/")
+		maven("https://maven.parchmentmc.org/")
+		maven("https://maven.blamejared.com/")
 		gradlePluginPortal()
 		maven("https://maven.fabricmc.net/") {
 			name = "Fabric"

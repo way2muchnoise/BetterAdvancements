@@ -21,15 +21,11 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class BetterAdvancementWidget extends GuiComponent implements IBetterAdvancementEntryGui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;

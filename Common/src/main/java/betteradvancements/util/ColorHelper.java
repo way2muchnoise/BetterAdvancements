@@ -72,4 +72,8 @@ public class ColorHelper {
         if (!colour.startsWith("#") || !(colour.length() == 7)) throw new IllegalArgumentException("Use #RRGGBB format");
         return RGB(Integer.parseInt(colour.substring(1, 3), 16), Integer.parseInt(colour.substring(3, 5), 16), Integer.parseInt(colour.substring(5, 7), 16));
     }
+
+    public static String asRGBString(int colour) {
+        return "#" + Integer.toHexString(colour).toUpperCase().substring(2);
+    }
 }
