@@ -18,14 +18,18 @@ public class Config {
 
     @SubscribeEvent
     public void onLoad(final ModConfigEvent.Loading configEvent) {
-        Constants.log.debug("Loaded {} config file {}", Constants.ID, configEvent.getConfig().getFileName());
-        ConfigValues.pushChanges();
+        if (configEvent.getConfig().getModId().equals(Constants.ID)) {
+            Constants.log.debug("Loaded {} config file {}", Constants.ID, configEvent.getConfig().getFileName());
+            ConfigValues.pushChanges();
+        }
     }
 
     @SubscribeEvent
     public void onFileChange(final ModConfigEvent.Reloading configEvent) {
-        Constants.log.debug("Reloaded {} config file {}", Constants.ID, configEvent.getConfig().getFileName());
-        ((CommentedFileConfig)configEvent.getConfig().getConfigData()).load();
-        ConfigValues.pushChanges();
+        if (configEvent.getConfig().getModId().equals(Constants.ID)) {
+            Constants.log.debug("Reloaded {} config file {}", Constants.ID, configEvent.getConfig().getFileName());
+            ((CommentedFileConfig) configEvent.getConfig().getConfigData()).load();
+            ConfigValues.pushChanges();
+        }
     }
 }
