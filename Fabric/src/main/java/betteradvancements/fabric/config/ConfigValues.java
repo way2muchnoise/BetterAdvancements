@@ -85,8 +85,8 @@ public class ConfigValues {
             DropdownMenuBuilder.TopCellElementBuilder.of(CriterionGrid.detailLevel, CriteriaDetail::fromName),
             DropdownMenuBuilder.CellCreatorBuilder.of(t -> Component.literal(t.getName()))
         )
-            .setDefaultValue(CriteriaDetail.DEFAULT)
             .setSelections(CriteriaDetail.valuesAsList())
+            .setDefaultValue(CriteriaDetail.DEFAULT)
             .setSaveConsumer(newValue -> CriterionGrid.detailLevel = newValue)
             .setTooltip(Component.literal(CriteriaDetail.comments()))
             .build();
