@@ -11,7 +11,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -26,7 +25,7 @@ public class GuiOpenHandler {
     }
 
     @SubscribeEvent
-    public void onGuiOpen(ScreenOpenEvent event) {
+    public void onGuiOpen(ScreenEvent.Opening event) {
         if (event.getScreen() instanceof AdvancementsScreen) {
             event.setCanceled(true);
             Minecraft mc = Minecraft.getInstance();
@@ -35,7 +34,7 @@ public class GuiOpenHandler {
     }
 
     @SubscribeEvent
-    public void onGuiOpened(final ScreenEvent.InitScreenEvent.Post event) {
+    public void onGuiOpened(final ScreenEvent.Init.Post event) {
         if (event.getScreen() instanceof InventoryScreen) {
             if (BetterAdvancementsScreenButton.addToInventory) {
                 InventoryScreen guiInventory = (InventoryScreen) event.getScreen();
@@ -45,7 +44,7 @@ public class GuiOpenHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH) // put on HIGH to be before Triumph sorting, giving them priority
-    public void onGuiAboutToOpen(final ScreenEvent.InitScreenEvent.Pre event) {
+    public void onGuiAboutToOpen(final ScreenEvent.Init.Pre event) {
         if (event.getScreen() instanceof BetterAdvancementsScreen) {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
