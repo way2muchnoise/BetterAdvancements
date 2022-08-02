@@ -82,9 +82,8 @@ public class ConfigValues {
         category.addEntry(uiScaling);
 
         detailLevel = builder.startDropdownMenu(Component.literal("criteriaDetail"),
-            DropdownMenuBuilder.TopCellElementBuilder.of(CriterionGrid.detailLevel, CriteriaDetail::fromName),
-            DropdownMenuBuilder.CellCreatorBuilder.of(t -> Component.literal(t.getName()))
-        )
+                CriterionGrid.detailLevel, CriteriaDetail::fromName, o -> (Component.literal(o.getName()))
+            )
             .setSelections(CriteriaDetail.valuesAsList())
             .setDefaultValue(CriteriaDetail.DEFAULT)
             .setSaveConsumer(newValue -> CriterionGrid.detailLevel = newValue)
