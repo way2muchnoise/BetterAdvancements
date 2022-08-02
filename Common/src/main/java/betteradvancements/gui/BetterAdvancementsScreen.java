@@ -8,7 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.client.gui.chat.NarratorChatListener;
+import net.minecraft.client.GameNarrator;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -40,7 +40,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     private BetterAdvancementWidget advConnectedToMouse = null;
 
     public BetterAdvancementsScreen(ClientAdvancements clientAdvancements) {
-        super(NarratorChatListener.NO_TITLE);
+        super(GameNarrator.NO_TITLE);
         this.clientAdvancements = clientAdvancements;
     }
 

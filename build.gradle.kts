@@ -75,4 +75,9 @@ subprojects {
             ))
         }
     }
+
+    repositories {
+        // Sponge mirrors a lot of maven repos, using as fallback
+        maven("https://repo.spongepowered.org/repository/maven-public/")
+    }
 }
