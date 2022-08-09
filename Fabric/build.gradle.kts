@@ -140,6 +140,5 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.addJavaVersion("Java $modJavaVersion")
 	mainFile.addGameVersion(minecraftVersion)
 	mainFile.withAdditionalFile(apiJar.get())
-	mainFile.withAdditionalFile(tasks.remapJar.get())
 	mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
