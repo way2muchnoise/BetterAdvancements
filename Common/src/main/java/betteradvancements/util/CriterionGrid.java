@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.CriterionProgress;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -91,7 +92,8 @@ public class CriterionGrid {
         int numUnobtained = 0;
         List<String> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
-            if (progress.getCriterion(criterion).isDone()) {
+            CriterionProgress criterionProgress = progress.getCriterion(criterion);
+            if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = new TextComponent(" + ").withStyle(ChatFormatting.GREEN);
                     MutableComponent text2 = new TextComponent(criterion).withStyle(ChatFormatting.WHITE);
