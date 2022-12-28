@@ -14,11 +14,16 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
@@ -78,7 +83,11 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
         else {
             maxWidth =  titleWidth;
         }
-        this.description = this.findOptimalLines(displayInfo.getDescription(), maxWidth);
+        this.description = Language.getInstance().getVisualOrder(
+            this.findOptimalLines(ComponentUtils.mergeStyles(
+                displayInfo.getDescription().copy(),
+                Style.EMPTY.withColor(displayInfo.getFrame().getChatColor())
+            ), maxWidth));
 
         for (FormattedCharSequence line : this.description) {
             maxWidth = Math.max(maxWidth, mc.font.width(line));
@@ -87,18 +96,19 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
         this.width = maxWidth + 8;
     }
 
-    private List<FormattedCharSequence> findOptimalLines(Component line, int width) {
+    private List<FormattedText> findOptimalLines(Component line, int width) {
         if (line.getString().isEmpty()) {
             return Collections.emptyList();
         } else {
-            List<FormattedCharSequence> list = this.minecraft.font.split(line, width);
+            StringSplitter stringsplitter = this.minecraft.font.getSplitter();
+            List<FormattedText> list = stringsplitter.splitLines(line, width, Style.EMPTY);
             if (list.size() > 1) {
                 width = Math.max(width, betterAdvancementTabGui.getScreen().internalWidth / 4);
-                list = this.minecraft.font.split(line, width);
+                list = stringsplitter.splitLines(line, width, Style.EMPTY);
             }
             while (list.size() > 5 && width < WIDGET_WIDTH * 1.5 && width < betterAdvancementTabGui.getScreen().internalWidth / 2.5) {
                 width += width / 4;
-                list = this.minecraft.font.split(line, width);
+                list = stringsplitter.splitLines(line, width, Style.EMPTY);
             }
             return list;
         }
@@ -363,7 +373,7 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             yOffset = scrollY + this.y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
-            this.minecraft.font.drawShadow(poseStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.font.lineHeight), -5592406);
+            this.minecraft.font.draw(poseStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.font.lineHeight), -5592406);
         }
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;
