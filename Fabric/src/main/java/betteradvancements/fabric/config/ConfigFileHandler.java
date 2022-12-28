@@ -2,6 +2,7 @@ package betteradvancements.fabric.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.BetterAdvancementTab;
+import betteradvancements.gui.BetterAdvancementTabType;
 import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButton;
 import betteradvancements.reference.Constants;
@@ -72,6 +73,9 @@ public class ConfigFileHandler {
         if (root.has("defaultUncompletedLineColor")) {
             BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(root.get("defaultUncompletedLineColor").getAsString());
         }
+        if (root.has("onlyUseAboveAdvancementTabs")) {
+            BetterAdvancementTabType.onlyUseAbove = root.get("onlyUseAboveAdvancementTabs").getAsBoolean();
+        }
     }
 
     public static void writeToConfig() {
@@ -92,6 +96,7 @@ public class ConfigFileHandler {
         root.addProperty("defaultHideLines", BetterDisplayInfo.defaultHideLines);
         root.addProperty("defaultCompletedLineColor", ColorHelper.asRGBString(BetterDisplayInfo.defaultCompletedLineColor));
         root.addProperty("defaultUncompletedLineColor", ColorHelper.asRGBString(BetterDisplayInfo.defaultUncompletedLineColor));
+        root.addProperty("onlyUseAboveAdvancementTabs", BetterAdvancementTabType.onlyUseAbove);
 
         try (FileWriter file = new FileWriter(getConfigFile())) {
             file.write(new GsonBuilder().setPrettyPrinting().create().toJson(root));

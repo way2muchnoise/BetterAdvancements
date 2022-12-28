@@ -6,27 +6,34 @@ import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.List;
+
 public class BetterAdvancementTabType {
     public static final BetterAdvancementTabType ABOVE = new BetterAdvancementTabType(0, 0, 28, 32, AdvancementTabType.ABOVE);
     public static final BetterAdvancementTabType BELOW = new BetterAdvancementTabType(84, 0, 28, 32, AdvancementTabType.BELOW);
     public static final BetterAdvancementTabType LEFT = new BetterAdvancementTabType(0, 64, 32, 28, AdvancementTabType.LEFT);
     public static final BetterAdvancementTabType RIGHT = new BetterAdvancementTabType(96, 64, 32, 28, AdvancementTabType.RIGHT);
+    // Below is not included in all as we will not be using it to leave space for pagination
+    public static final List<BetterAdvancementTabType> ALL = List.of(ABOVE, RIGHT, LEFT);
+
+    public static boolean onlyUseAbove = false;
 
     public static BetterAdvancementTabType getTabType(int width, int height, int index) {
-        int horizontal = width / 32;
-        int vertical = height / 32;
+        int indexOnPage = index % getMaxTabs(width, height);
 
-        if (index < horizontal) {
+        int tabsAbove = ABOVE.getMax(width, height);
+        int tabsRight = RIGHT.getMax(width, height);
+        int tabsLeft = LEFT.getMax(width, height);
+
+        if (indexOnPage < tabsAbove) {
             return ABOVE;
-        } else if (index < 2 * horizontal) {
-            return BELOW;
-        } else if (index < 2 * horizontal + vertical) {
+        } else if (indexOnPage < tabsAbove + tabsRight) {
             return RIGHT;
-        } else if (index < 2 * horizontal + 2 * vertical) {
+        } else if (indexOnPage < tabsAbove + tabsRight + tabsLeft) {
             return LEFT;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private final int textureX;
@@ -59,7 +66,7 @@ public class BetterAdvancementTabType {
         gui.blit(poseStack, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
     }
 
-    public void drawIcon(PoseStack poseSta, int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
+    public void drawIcon(PoseStack poseStack, int left, int top, int width, int height, int index, ItemRenderer renderItem, ItemStack stack) {
         int i = left + this.getX(index, width, height);
         int j = top + this.getY(index, width, height);
 
@@ -115,5 +122,13 @@ public class BetterAdvancementTabType {
             case ABOVE, BELOW -> width / 32;
             default -> tabType.getMax();
         };
+    }
+
+    public static int getMaxTabs(int width, int height) {
+        if (onlyUseAbove) {
+            return ABOVE.getMax(width, height);
+        }
+
+        return ALL.stream().mapToInt(tab -> tab.getMax(width, height)).sum();
     }
 }

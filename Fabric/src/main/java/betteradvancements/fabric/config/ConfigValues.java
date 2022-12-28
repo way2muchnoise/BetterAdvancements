@@ -2,6 +2,7 @@ package betteradvancements.fabric.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.gui.BetterAdvancementTab;
+import betteradvancements.gui.BetterAdvancementTabType;
 import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButton;
 import betteradvancements.util.ColorHelper;
@@ -13,7 +14,6 @@ import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
 import me.shedaniel.clothconfig2.gui.entries.ColorEntry;
 import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
 import me.shedaniel.clothconfig2.gui.entries.IntegerSliderEntry;
-import me.shedaniel.clothconfig2.impl.builders.DropdownMenuBuilder;
 import net.minecraft.network.chat.Component;
 
 public class ConfigValues {
@@ -36,6 +36,8 @@ public class ConfigValues {
     public static BooleanListEntry defaultHideLines;
     public static ColorEntry defaultCompletedLineColor;
     public static ColorEntry defaultUncompletedLineColor;
+
+    public static BooleanListEntry onlyUseAboveAdvancementTabs;
 
     public static void build(ConfigCategory category, ConfigEntryBuilder builder) {
         defaultUncompletedIconColor = builder.startAlphaColorField(Component.literal("defaultUncompletedIconColor"), BetterDisplayInfo.defaultUncompletedIconColor)
@@ -121,5 +123,11 @@ public class ConfigValues {
             .setSaveConsumer(newValue -> BetterDisplayInfo.defaultUncompletedLineColor = newValue)
             .build();
         category.addEntry(defaultUncompletedLineColor);
+
+        onlyUseAboveAdvancementTabs = builder.startBooleanToggle(Component.literal("onlyUseAboveAdvancementTabs"), BetterAdvancementTabType.onlyUseAbove)
+            .setDefaultValue(false)
+            .setSaveConsumer(newValue -> BetterAdvancementTabType.onlyUseAbove = newValue)
+            .build();
+        category.addEntry(onlyUseAboveAdvancementTabs);
     }
 }

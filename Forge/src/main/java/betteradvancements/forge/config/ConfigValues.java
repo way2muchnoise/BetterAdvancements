@@ -1,6 +1,7 @@
 package betteradvancements.forge.config;
 
 import betteradvancements.advancements.BetterDisplayInfo;
+import betteradvancements.gui.BetterAdvancementTabType;
 import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementTab;
 import betteradvancements.gui.BetterAdvancementsScreenButton;
@@ -30,6 +31,8 @@ public class ConfigValues {
     public static ForgeConfigSpec.ConfigValue<String> defaultCompletedLineColor;
     public static ForgeConfigSpec.ConfigValue<String>  defaultUncompletedLineColor;
 
+    public static ForgeConfigSpec.BooleanValue onlyUseAboveAdvancementTabs;
+
     public static ForgeConfigSpec build() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
@@ -51,6 +54,8 @@ public class ConfigValues {
         defaultHideLines = builder.define("defaultHideLines", false);
         defaultCompletedLineColor = builder.define("defaultCompletedLineColor", "#FFFFFF");
         defaultUncompletedLineColor = builder.define("defaultUncompletedLineColor", "#FFFFFF");
+
+        onlyUseAboveAdvancementTabs = builder.define("onlyUseAboveAdvancementTabs", false);
 
         return builder.build();
     }
@@ -74,5 +79,7 @@ public class ConfigValues {
         BetterDisplayInfo.defaultHideLines = defaultHideLines.get();
         BetterDisplayInfo.defaultCompletedLineColor = ColorHelper.RGB(defaultCompletedLineColor.get());
         BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(defaultUncompletedLineColor.get());
+
+        BetterAdvancementTabType.onlyUseAbove = onlyUseAboveAdvancementTabs.get();
     }
 }

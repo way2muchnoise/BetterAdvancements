@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.GameNarrator;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -31,6 +32,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     private final ClientAdvancements clientAdvancements;
     private final Map<Advancement, BetterAdvancementTab> tabs = Maps.newLinkedHashMap();
     private BetterAdvancementTab selectedTab;
+    private static int tabPage, maxPages;
     private float zoom = MIN_ZOOM;
     private boolean isScrolling;
     protected int internalWidth, internalHeight;
@@ -62,6 +64,24 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         } else {
             this.clientAdvancements.setSelectedTab(this.selectedTab == null ? null : this.selectedTab.getAdvancement(), true);
         }
+
+        int left = SIDE + (width - internalWidth) / 2;
+        int top = TOP + (height - internalHeight) / 2;
+
+        int right = internalWidth - SIDE + (width - internalWidth) / 2;
+        int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
+
+        int width = right - left;
+        int height = bottom - top;
+
+        int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
+
+        if (this.tabs.size() > maxTabs) {
+            addRenderableWidget(new Button(left, bottom + 4, 20, 20, Component.literal("<"), b -> tabPage = Math.max(tabPage - 1, 0)));
+            addRenderableWidget(new Button(right - 20, bottom + 4, 20, 20, Component.literal(">"), b -> tabPage = Math.min(tabPage + 1, maxPages)));
+            maxPages = this.tabs.size() / maxTabs;
+            tabPage = Math.min(tabPage, maxPages);
+        }
     }
 
     /**
@@ -82,10 +102,20 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (modifiers == 0) {
             int left = SIDE + (width - internalWidth) / 2;
             int top = TOP + (height - internalHeight) / 2;
-            for (BetterAdvancementTab betterAdvancementTabGui : this.tabs.values()) {
-                if (betterAdvancementTabGui.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
-                    this.clientAdvancements.setSelectedTab(betterAdvancementTabGui.getAdvancement(), true);
-                    return true;
+
+            int right = internalWidth - SIDE + (width - internalWidth) / 2;
+            int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
+
+            int width = right - left;
+            int height = bottom - top;
+
+            int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
+            int skip = tabPage * maxTabs;
+
+            for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
+                if (tab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
+                    this.clientAdvancements.setSelectedTab(tab.getAdvancement(), true);
+                    break;
                 }
             }
         }
@@ -167,18 +197,31 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
      * Draws the screen and all the components in it.
      */
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
         int right = internalWidth - SIDE + (width - internalWidth) / 2;
         int bottom = internalHeight - SIDE + (height - internalHeight) / 2;
 
+        int width = right - left;
+        int height = bottom - top;
+
+        int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
+        int skip = tabPage * maxTabs;
+
         this.renderBackground(poseStack);
-        this.renderInside(poseStack, mouseX, mouseY, left, top, right, bottom);
-        this.renderWindow(poseStack, left, top, right, bottom);
+        if (maxPages != 0) {
+            Component page = Component.literal(String.format("%d / %d", tabPage + 1, maxPages + 1));
+            int textWidth = this.font.width(page);
+            this.font.drawShadow(poseStack, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
+            super.render(poseStack, mouseX, mouseY, partialTicks);
+        }
+        this.renderInside(poseStack, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
+        this.renderWindow(poseStack, left, top, right, bottom, maxTabs, skip);
         //Don't draw tool tips if dragging an advancement
         if (this.advConnectedToMouse == null) {
-            this.renderToolTips(poseStack, mouseX, mouseY, left, top, right, bottom);
+            this.renderToolTips(poseStack, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
         }
         
         //Draw guide lines to all advancements at 45 or 90 degree angles.
@@ -325,7 +368,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
     }
 
-    private void renderInside(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom) {
+    private void renderInside(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         BetterAdvancementTab betterAdvancementTab = this.selectedTab;
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
@@ -352,7 +395,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
     }
 
-    public void renderWindow(PoseStack poseStack, int left, int top, int right, int bottom) {
+    public void renderWindow(PoseStack poseStack, int left, int top, int right, int bottom, int maxTabs, int skip) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -374,22 +417,20 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         // Bottom right corner
         this.blit(poseStack, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
 
-
+        int width = right - left;
+        int height = bottom - top;
 
         if (this.tabs.size() > 1) {
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, Resources.Gui.TABS);
 
-            int width = right - left;
-            int height = bottom - top;
-
-            for (BetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
                 tab.drawTab(poseStack, left, top, width, height, tab == this.selectedTab);
             }
 
             RenderSystem.defaultBlendFunc();
 
-            for (BetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
                 tab.drawIcon(poseStack, left, top, width, height, this.itemRenderer);
             }
 
@@ -407,7 +448,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         this.font.draw(poseStack, windowTitle, left + 8, top + 6, 4210752);
     }
 
-    private void renderToolTips(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom) {
+    private void renderToolTips(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
@@ -426,7 +467,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int height = bottom - top;
 
         if (this.tabs.size() > 1) {
-            for (BetterAdvancementTab tab : this.tabs.values()) {
+            for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
                 if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
                     this.renderTooltip(poseStack, tab.getTitle(), mouseX, mouseY);
                 }
