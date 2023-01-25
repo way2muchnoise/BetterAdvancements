@@ -26,13 +26,13 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
             Minecraft mc  = Minecraft.getInstance();
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, Resources.Gui.TABS);
-            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            this.blit(poseStack, this.x, this.y, 56, 0, 28, 32);
+            this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight();
+            this.blit(poseStack, this.getX(), this.getY(), 56, 0, 28, 32);
             if (this.isHovered) {
                 mc.screen.renderTooltip(poseStack, Component.literal("Advancements"), mouseX, mouseY);
             }
             RenderSystem.defaultBlendFunc();
-            mc.getItemRenderer().renderAndDecorateFakeItem(new ItemStack(Items.BOOK), this.x + 6, this.y + 10);
+            mc.getItemRenderer().renderAndDecorateFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
         }
     }
 
@@ -42,7 +42,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 }

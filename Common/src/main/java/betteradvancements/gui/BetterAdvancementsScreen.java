@@ -77,8 +77,9 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
 
         if (this.tabs.size() > maxTabs) {
-            addRenderableWidget(new Button(left, bottom + 4, 20, 20, Component.literal("<"), b -> tabPage = Math.max(tabPage - 1, 0)));
-            addRenderableWidget(new Button(right - 20, bottom + 4, 20, 20, Component.literal(">"), b -> tabPage = Math.min(tabPage + 1, maxPages)));
+
+            addRenderableWidget(Button.builder(Component.literal("<"), b -> tabPage = Math.max(tabPage - 1, 0)).pos(left, bottom + 4).size(20, 20).build());
+            addRenderableWidget(Button.builder(Component.literal(">"), b -> tabPage = Math.min(tabPage + 1, maxPages)).pos(right - 20, bottom + 4).size(20, 20).build());
             maxPages = this.tabs.size() / maxTabs;
             tabPage = Math.min(tabPage, maxPages);
         }
