@@ -164,7 +164,7 @@ modrinth {
 	versionType.set("alpha")
 	uploadFile.set(tasks.jar.get())
 	gameVersions.add(minecraftVersion)
-	additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get()))
+	// additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
 tasks.modrinth.get().dependsOn(tasks.jar)
 
