@@ -162,7 +162,7 @@ modrinth {
 	token.set(System.getenv("MODRINTH_TOKEN") ?: "0")
 	projectId.set(modrinthProjectId)
 	versionNumber.set("${project.version}")
-	versionName.set("${project.version} for Fabric $minecraftVersion")
+	versionName.set("${project.version} for Forge $minecraftVersion")
 	versionType.set("alpha")
 	uploadFile.set(tasks.jar.get())
 	gameVersions.add(minecraftVersion)

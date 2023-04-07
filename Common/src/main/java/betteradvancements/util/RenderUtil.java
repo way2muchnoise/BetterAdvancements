@@ -37,7 +37,7 @@ public class RenderUtil {
         Tesselator tesselator = RenderSystem.renderThreadTesselator();
         BufferBuilder bufferbuilder = tesselator.getBuilder();
         RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
+        // RenderSystem.disableTexture();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderUtil.setColor(color);
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
@@ -47,7 +47,7 @@ public class RenderUtil {
         bufferbuilder.vertex(x2 + width, xHigh ? y2 : y2 + width, 0.0D).endVertex();
         bufferbuilder.vertex(x + width, xHigh ? y : y + width, 0.0D).endVertex();
         tesselator.end();
-        RenderSystem.enableTexture();
+        // RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 }

@@ -89,7 +89,7 @@ public class BetterAdvancementTabType {
             }
         }
 
-        renderItem.renderAndDecorateFakeItem(stack, i, j);
+        renderItem.renderAndDecorateFakeItem(poseStack, stack, i, j);
     }
 
     public int getX(int index, int width, int height) {

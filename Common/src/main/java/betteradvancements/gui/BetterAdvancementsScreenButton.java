@@ -32,7 +32,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
                 mc.screen.renderTooltip(poseStack, Component.literal("Advancements"), mouseX, mouseY);
             }
             RenderSystem.defaultBlendFunc();
-            mc.getItemRenderer().renderAndDecorateFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
+            mc.getItemRenderer().renderAndDecorateFakeItem(poseStack, new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
         }
     }
 

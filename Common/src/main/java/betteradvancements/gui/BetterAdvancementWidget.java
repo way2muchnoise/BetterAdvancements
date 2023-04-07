@@ -240,7 +240,7 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
             this.blit(poseStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
-            this.minecraft.getItemRenderer().renderAndDecorateFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+            this.minecraft.getItemRenderer().renderAndDecorateFakeItem(poseStack, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
         for (BetterAdvancementWidget betterAdvancementWidget : this.children) {
@@ -387,7 +387,7 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             }
         }
 
-        this.minecraft.getItemRenderer().renderAndDecorateFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+        this.minecraft.getItemRenderer().renderAndDecorateFakeItem(poseStack, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
     }
 
     protected void render9Sprite(PoseStack poseStack, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
