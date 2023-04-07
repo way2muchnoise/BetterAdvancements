@@ -5,11 +5,13 @@ plugins {
 	java
 	id("fabric-loom") version ("1.0-SNAPSHOT")
 	id("net.darkhax.curseforgegradle") version("1.0.11")
+	id("com.modrinth.minotaur") version("2.+")
 }
 
 // gradle.properties
 val curseHomepageLink: String by extra
 val curseProjectId: String by extra
+val modrinthProjectId: String by extra
 val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
 val clothVersion: String by extra
@@ -142,3 +144,13 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.withAdditionalFile(apiJar.get())
 	mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
+
+modrinth {
+	token.set(System.getenv("MODRINTH_TOKEN") ?: "0")
+	projectId.set(modrinthProjectId)
+	versionType.set("alpha")
+	uploadFile.set(tasks.remapJar.get())
+	gameVersions.add(minecraftVersion)
+	additionalFiles.addAll(arrayOf(apiJar.get(), tasks.remapSourcesJar.get()))
+}
+tasks.modrinth.get().dependsOn(tasks.remapJar)

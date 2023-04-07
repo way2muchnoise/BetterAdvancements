@@ -8,11 +8,13 @@ plugins {
 	id("net.minecraftforge.gradle") version("5.1.+")
 	id("org.parchmentmc.librarian.forgegradle") version("1.+")
 	id("net.darkhax.curseforgegradle") version("1.0.11")
+	id("com.modrinth.minotaur") version("2.+")
 }
 
 // gradle.properties
 val curseHomepageLink: String by extra
 val curseProjectId: String by extra
+val modrinthProjectId: String by extra
 val forgeVersion: String by extra
 val mappingsChannel: String by extra
 val mappingsParchmentMinecraftVersion: String by extra
@@ -155,6 +157,16 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.withAdditionalFile(apiJar.get())
 	mainFile.withAdditionalFile(sourcesJar.get())
 }
+
+modrinth {
+	token.set(System.getenv("MODRINTH_TOKEN") ?: "0")
+	projectId.set(modrinthProjectId)
+	versionType.set("alpha")
+	uploadFile.set(tasks.jar.get())
+	gameVersions.add(minecraftVersion)
+	additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get()))
+}
+tasks.modrinth.get().dependsOn(tasks.jar)
 
 artifacts {
 	archives(apiJar.get())
