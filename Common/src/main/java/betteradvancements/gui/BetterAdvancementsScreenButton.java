@@ -42,7 +42,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
     }
 
     @Override
-    public void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 }
