@@ -5,15 +5,14 @@ import betteradvancements.reference.Resources;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.GameNarrator;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
 import net.minecraft.util.FormattedCharSequence;
@@ -197,7 +196,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     /**
      * Draws the screen and all the components in it.
      */
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
@@ -211,18 +210,18 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
         int skip = tabPage * maxTabs;
 
-        this.renderBackground(poseStack);
+        this.renderBackground(guiGraphics);
         if (maxPages != 0) {
             Component page = Component.literal(String.format("%d / %d", tabPage + 1, maxPages + 1));
             int textWidth = this.font.width(page);
-            this.font.drawShadow(poseStack, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
-            super.render(poseStack, mouseX, mouseY, partialTicks);
+            guiGraphics.drawString(this.font, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
+            super.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
-        this.renderInside(poseStack, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
-        this.renderWindow(poseStack, left, top, right, bottom, maxTabs, skip);
+        this.renderInside(guiGraphics, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
+        this.renderWindow(guiGraphics, left, top, right, bottom, maxTabs, skip);
         //Don't draw tool tips if dragging an advancement
         if (this.advConnectedToMouse == null) {
-            this.renderToolTips(poseStack, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
+            this.renderToolTips(guiGraphics, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
         }
         
         //Draw guide lines to all advancements at 45 or 90 degree angles.
@@ -355,7 +354,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
                 int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - font.lineHeight + 1;
 
-                font.draw(poseStack, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
+                guiGraphics.drawString(font, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
             } else {
                 //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
                 int xMouse = mouseX - left - PADDING;
@@ -364,12 +363,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
 
-                font.draw(poseStack, currentX + "," + currentY, mouseX, mouseY - font.lineHeight, 0x000000);
+                guiGraphics.drawString(font, currentX + "," + currentY, mouseX, mouseY - font.lineHeight, 0x000000);
             }
         }
     }
 
-    private void renderInside(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
+    private void renderInside(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         BetterAdvancementTab betterAdvancementTab = this.selectedTab;
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
@@ -380,59 +379,45 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int height = boxBottom - boxTop;
 
         if (betterAdvancementTab == null) {
-            fill(poseStack, boxLeft, boxTop, boxRight, boxBottom, -16777216);
-            this.font.draw(poseStack, NO_ADVANCEMENTS_LABEL, boxLeft + (width - this.font.width(NO_ADVANCEMENTS_LABEL)) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
-            this.font.draw(poseStack, VERY_SAD_LABEL, boxLeft + (width - this.font.width(VERY_SAD_LABEL)) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
+            guiGraphics.fill(boxLeft, boxTop, boxRight, boxBottom, -16777216);
+            guiGraphics.drawString(this.font, NO_ADVANCEMENTS_LABEL, boxLeft + (width - this.font.width(NO_ADVANCEMENTS_LABEL)) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
+            guiGraphics.drawString(this.font, VERY_SAD_LABEL, boxLeft + (width - this.font.width(VERY_SAD_LABEL)) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
         } else {
-            PoseStack viewMatrixPoseStack = RenderSystem.getModelViewStack();
-            viewMatrixPoseStack.pushPose();
-            viewMatrixPoseStack.translate(boxLeft, boxTop, 0.0F);
-            RenderSystem.applyModelViewMatrix();
-            betterAdvancementTab.drawContents(poseStack, width, height);
-            viewMatrixPoseStack.popPose();
-            RenderSystem.applyModelViewMatrix();
-            RenderSystem.depthFunc(515);
-            RenderSystem.disableDepthTest();
+            betterAdvancementTab.drawContents(guiGraphics, boxLeft, boxTop, width, height);
         }
     }
 
-    public void renderWindow(PoseStack poseStack, int left, int top, int right, int bottom, int maxTabs, int skip) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+    public void renderWindow(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int maxTabs, int skip) {
         RenderSystem.enableBlend();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, Resources.Gui.WINDOW);
         // Top left corner
-        this.blit(poseStack, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
+        guiGraphics.blit(Resources.Gui.WINDOW, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE);
         // Top side
-        RenderUtil.renderRepeating(this, poseStack, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Top right corner
-        this.blit(poseStack, right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
+        guiGraphics.blit(Resources.Gui.WINDOW, right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE);
         // Left side
-        RenderUtil.renderRepeating(this, poseStack, left, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
+        RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Right side
-        RenderUtil.renderRepeating(this, poseStack, right - CORNER_SIZE, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, WIDTH - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
+        RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, right - CORNER_SIZE, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, WIDTH - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Bottom left corner
-        this.blit(poseStack, left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
+        guiGraphics.blit(Resources.Gui.WINDOW, left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
         // Bottom side
-        RenderUtil.renderRepeating(this, poseStack, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
+        RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Bottom right corner
-        this.blit(poseStack, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
+        guiGraphics.blit(Resources.Gui.WINDOW, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE);
 
         int width = right - left;
         int height = bottom - top;
 
         if (this.tabs.size() > 1) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, Resources.Gui.TABS);
-
             for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
-                tab.drawTab(poseStack, left, top, width, height, tab == this.selectedTab);
+                tab.drawTab(guiGraphics, left, top, width, height, tab == this.selectedTab);
             }
 
             RenderSystem.defaultBlendFunc();
 
             for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
-                tab.drawIcon(poseStack, left, top, width, height, this.itemRenderer);
+                tab.drawIcon(guiGraphics, left, top, width, height);
             }
 
             RenderSystem.disableBlend();
@@ -446,22 +431,19 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 selectedTab.getTitle().getVisualOrderText()
             );
         }
-        this.font.draw(poseStack, windowTitle, left + 8, top + 6, 4210752);
+        guiGraphics.drawString(this.font, windowTitle, left + 8, top + 6, 4210752, false);
     }
 
-    private void renderToolTips(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
+    private void renderToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         if (this.selectedTab != null) {
-            PoseStack viewMatrixPoseStack = RenderSystem.getModelViewStack();
-            viewMatrixPoseStack.pushPose();
-            viewMatrixPoseStack.translate(left + PADDING, top + 2*PADDING, 400.0D);
-            RenderSystem.applyModelViewMatrix();
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(left + PADDING, top + 2*PADDING, 400.0D);
             RenderSystem.enableDepthTest();
-            this.selectedTab.drawToolTips(poseStack,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
+            this.selectedTab.drawToolTips(guiGraphics,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
             RenderSystem.disableDepthTest();
-            viewMatrixPoseStack.popPose();
-            RenderSystem.applyModelViewMatrix();
+            guiGraphics.pose().popPose();
         }
 
         int width = right - left;
@@ -470,7 +452,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (this.tabs.size() > 1) {
             for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
                 if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
-                    this.renderTooltip(poseStack, tab.getTitle(), mouseX, mouseY);
+                    guiGraphics.renderTooltip(this.font, tab.getTitle(), mouseX, mouseY);
                 }
             }
         }

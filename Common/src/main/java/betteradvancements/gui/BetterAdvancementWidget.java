@@ -9,16 +9,14 @@ import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -31,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class BetterAdvancementWidget extends GuiComponent implements IBetterAdvancementEntryGui {
+public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     protected static final int ADVANCEMENT_SIZE = 26;
     private static final int CORNER_SIZE = 10;
     private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 26, TITLE_SIZE = 32, ICON_OFFSET = 128, ICON_SIZE = 26;
@@ -131,13 +129,13 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
         }
     }
 
-    public void drawConnectivity(PoseStack poseStack, int scrollX, int scrollY, boolean drawInside) {
+    public void drawConnectivity(GuiGraphics guiGraphics, int scrollX, int scrollY, boolean drawInside) {
         //Check if connections should be drawn at all
         if (!this.betterDisplayInfo.hideLines()) {
             //Draw connection to parent
             if (this.parent != null) {
                 
-                this.drawConnection(poseStack, this.parent, scrollX, scrollY, drawInside);
+                this.drawConnection(guiGraphics, this.parent, scrollX, scrollY, drawInside);
             }
             
             //Create and post event to get extra connections
@@ -148,20 +146,20 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
                 final BetterAdvancementWidget parentGui = this.betterAdvancementTabGui.getWidget(parent);
                 
                 if (parentGui != null) {
-                    this.drawConnection(poseStack, parentGui, scrollX, scrollY, drawInside);
+                    this.drawConnection(guiGraphics, parentGui, scrollX, scrollY, drawInside);
                 }
             }
         }
         //Draw child connections
         for (BetterAdvancementWidget betterAdvancementWidget : this.children) {
-            betterAdvancementWidget.drawConnectivity(poseStack, scrollX, scrollY, drawInside);
+            betterAdvancementWidget.drawConnectivity(guiGraphics, scrollX, scrollY, drawInside);
         }
     }
     
     /**
      * Draws connection line between this advancement and the advancement supplied in parent.
      */
-    public void drawConnection(PoseStack poseStack, BetterAdvancementWidget parent, int scrollX, int scrollY, boolean drawInside) {
+    public void drawConnection(GuiGraphics guiGraphics, BetterAdvancementWidget parent, int scrollX, int scrollY, boolean drawInside) {
         int innerLineColor = this.advancementProgress != null && this.advancementProgress.isDone() ? betterDisplayInfo.getCompletedLineColor() : betterDisplayInfo.getUnCompletedLineColor();
         int borderLineColor = 0xFF000000;
         
@@ -208,23 +206,23 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             int endY = scrollY + this.y + ADVANCEMENT_SIZE / 2;
             
             if (drawInside) {
-                this.hLine(poseStack, endXHalf, startX, startY - 1, borderLineColor);
-                this.hLine(poseStack, endXHalf + 1, startX, startY, borderLineColor);
-                this.hLine(poseStack, endXHalf, startX, startY + 1, borderLineColor);
-                this.hLine(poseStack, endX, endXHalf - 1, endY - 1, borderLineColor);
-                this.hLine(poseStack, endX, endXHalf - 1, endY, borderLineColor);
-                this.hLine(poseStack, endX, endXHalf - 1, endY + 1, borderLineColor);
-                this.vLine(poseStack, endXHalf - 1, endY, startY, borderLineColor);
-                this.vLine(poseStack, endXHalf + 1, endY, startY, borderLineColor);
+                guiGraphics.hLine(endXHalf, startX, startY - 1, borderLineColor);
+                guiGraphics.hLine(endXHalf + 1, startX, startY, borderLineColor);
+                guiGraphics.hLine(endXHalf, startX, startY + 1, borderLineColor);
+                guiGraphics.hLine(endX, endXHalf - 1, endY - 1, borderLineColor);
+                guiGraphics.hLine(endX, endXHalf - 1, endY, borderLineColor);
+                guiGraphics.hLine(endX, endXHalf - 1, endY + 1, borderLineColor);
+                guiGraphics.vLine(endXHalf - 1, endY, startY, borderLineColor);
+                guiGraphics.vLine(endXHalf + 1, endY, startY, borderLineColor);
             } else {
-                this.hLine(poseStack, endXHalf, startX, startY, innerLineColor);
-                this.hLine(poseStack, endX, endXHalf, endY, innerLineColor);
-                this.vLine(poseStack, endXHalf, endY, startY, innerLineColor);
+                guiGraphics.hLine(endXHalf, startX, startY, innerLineColor);
+                guiGraphics.hLine(endX, endXHalf, endY, innerLineColor);
+                guiGraphics.vLine(endXHalf, endY, startY, innerLineColor);
             }
         }
     }
 
-    public void draw(PoseStack poseStack, int scrollX, int scrollY) {
+    public void draw(GuiGraphics guiGraphics, int scrollX, int scrollY) {
         if (!this.displayInfo.isHidden() || this.advancementProgress != null && this.advancementProgress.isDone()) {
             float f = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
             AdvancementWidgetType advancementState;
@@ -235,16 +233,14 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
                 advancementState = AdvancementWidgetType.UNOBTAINED;
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, Resources.Gui.WIDGETS);
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            this.blit(poseStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
-            this.minecraft.getItemRenderer().renderAndDecorateFakeItem(poseStack, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+            guiGraphics.blit(Resources.Gui.WIDGETS, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
+            guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
         for (BetterAdvancementWidget betterAdvancementWidget : this.children) {
-            betterAdvancementWidget.draw(poseStack, scrollX, scrollY);
+            betterAdvancementWidget.draw(guiGraphics, scrollX, scrollY);
         }
     }
 
@@ -257,7 +253,7 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
         this.children.add(betterAdvancementEntryScreen);
     }
 
-    public void drawHover(PoseStack poseStack, int scrollX, int scrollY, float fade, int left, int top) {
+    public void drawHover(GuiGraphics guiGraphics, int scrollX, int scrollY, float fade, int left, int top) {
         this.refreshHover();
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.betterAdvancementTabGui.getScreen().internalWidth;
         String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
@@ -304,9 +300,6 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
         }
 
         int k = this.width - j;
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, Resources.Gui.WIDGETS);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
         int drawY = scrollY + this.y;
         int drawX;
@@ -327,42 +320,42 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
 
         if (!this.description.isEmpty()) {
             if (drawTop) {
-                this.render9Sprite(poseStack, drawX, drawY + ADVANCEMENT_SIZE - boxHeight, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
+                this.render9Sprite(guiGraphics, drawX, drawY + ADVANCEMENT_SIZE - boxHeight, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
             } else {
-                this.render9Sprite(poseStack, drawX, drawY, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
+                this.render9Sprite(guiGraphics, drawX, drawY, this.width, boxHeight, CORNER_SIZE, WIDGET_WIDTH, WIDGET_HEIGHT, 0, 52);
             }
         }
 
         // Title left side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleLeft));
         int left_side = Math.min(j, WIDGET_WIDTH - 16);
-        this.blit(poseStack, drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
+        guiGraphics.blit(Resources.Gui.WIDGETS, drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
         if (left_side < j) {
-            this.blit(poseStack, drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
+            guiGraphics.blit(Resources.Gui.WIDGETS, drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
         }
         // Title right side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleRight));
         int right_side = Math.min(k, WIDGET_WIDTH - 16);
-        this.blit(poseStack, drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
+        guiGraphics.blit(Resources.Gui.WIDGETS, drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
         if (right_side < k) {
             // + and - 2 is to create some overlap in the drawing when it extends past the max length of the texture
-            this.blit(poseStack, drawX + j + right_side - 2, drawY, WIDGET_WIDTH - k + right_side - 2, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side + 2, WIDGET_HEIGHT);
+            guiGraphics.blit(Resources.Gui.WIDGETS, drawX + j + right_side - 2, drawY, WIDGET_WIDTH - k + right_side - 2, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side + 2, WIDGET_HEIGHT);
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        this.blit(poseStack, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
+        guiGraphics.blit(Resources.Gui.WIDGETS, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
-            this.minecraft.font.drawShadow(poseStack, this.title, (float) (drawX + 5), (float) (scrollY + this.y + 9), -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, drawX + 5, scrollY + this.y + 9, -1);
 
             if (s != null) {
-                this.minecraft.font.drawShadow(poseStack, s, (float) (scrollX + this.x - i), (float) (scrollY + this.y + 9), -1);
+                guiGraphics.drawString(this.minecraft.font, s, scrollX + this.x - i, scrollY + this.y + 9, -1);
             }
         } else {
-            this.minecraft.font.drawShadow(poseStack, this.title, (float) (scrollX + this.x + 32), (float) (scrollY + this.y + 9), -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, scrollX + this.x + 32, scrollY + this.y + 9, -1);
 
             if (s != null) {
-                this.minecraft.font.drawShadow(poseStack, s, (float) (scrollX + this.x + this.width - i - 5), (float) (scrollY + this.y + 9), -1);
+                guiGraphics.drawString(this.minecraft.font, s, scrollX + this.x + this.width - i - 5, scrollY + this.y + 9, -1);
             }
         }
 
@@ -373,7 +366,7 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             yOffset = scrollY + this.y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
-            this.minecraft.font.draw(poseStack, this.description.get(k1), (float) (drawX + 5), (float) (yOffset + k1 * this.minecraft.font.lineHeight), -5592406);
+            guiGraphics.drawString(this.minecraft.font, this.description.get(k1), drawX + 5, yOffset + k1 * this.minecraft.font.lineHeight, -5592406, false);
         }
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;
@@ -381,34 +374,34 @@ public class BetterAdvancementWidget extends GuiComponent implements IBetterAdva
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
                 CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
                 for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
-                    this.minecraft.font.draw(poseStack, col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406);
+                    guiGraphics.drawString(this.minecraft.font, col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
                 }
                 xOffset += col.width;
             }
         }
 
-        this.minecraft.getItemRenderer().renderAndDecorateFakeItem(poseStack, this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+        guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
     }
 
-    protected void render9Sprite(PoseStack poseStack, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
+    protected void render9Sprite(GuiGraphics guiGraphics, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
         // Top left corner
-        this.blit(poseStack, x, y, textureX, textureY, textureHeight, textureHeight);
+        guiGraphics.blit(Resources.Gui.WIDGETS, x, y, textureX, textureY, textureHeight, textureHeight);
         // Top side
-        RenderUtil.renderRepeating(this, poseStack, x + textureHeight, y, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY, textureWidth - textureHeight - textureHeight, textureDistance);
+        RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + textureHeight, y, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY, textureWidth - textureHeight - textureHeight, textureDistance);
         // Top right corner
-        this.blit(poseStack, x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight);
+        guiGraphics.blit(Resources.Gui.WIDGETS, x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight);
         // Bottom left corner
-        this.blit(poseStack, x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        guiGraphics.blit(Resources.Gui.WIDGETS, x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
         // Bottom side
-        RenderUtil.renderRepeating(this, poseStack, x + textureHeight, y + height - textureHeight, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY + textureDistance - textureHeight, textureWidth - textureHeight - textureHeight, textureDistance);
+        RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + textureHeight, y + height - textureHeight, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY + textureDistance - textureHeight, textureWidth - textureHeight - textureHeight, textureDistance);
         // Bottom right corner
-        this.blit(poseStack, x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        guiGraphics.blit(Resources.Gui.WIDGETS, x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
         // Left side
-        RenderUtil.renderRepeating(this, poseStack, x, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
+        RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
         // Center
-        RenderUtil.renderRepeating(this, poseStack, x + textureHeight, y + textureHeight, width - textureHeight - textureHeight, height - textureHeight - textureHeight, textureX + textureHeight, textureY + textureHeight, textureWidth - textureHeight - textureHeight, textureDistance - textureHeight - textureHeight);
+        RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + textureHeight, y + textureHeight, width - textureHeight - textureHeight, height - textureHeight - textureHeight, textureX + textureHeight, textureY + textureHeight, textureWidth - textureHeight - textureHeight, textureDistance - textureHeight - textureHeight);
         // Right side
-        RenderUtil.renderRepeating(this, poseStack, x + width - textureHeight, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX + textureWidth - textureHeight, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
+        RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + width - textureHeight, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX + textureWidth - textureHeight, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
     }
 
     public boolean isMouseOver(double scrollX, double scrollY, double mouseX, double mouseY) {

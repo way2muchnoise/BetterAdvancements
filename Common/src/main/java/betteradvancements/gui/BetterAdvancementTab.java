@@ -3,14 +3,10 @@ package betteradvancements.gui;
 import betteradvancements.advancements.BetterDisplayInfo;
 import betteradvancements.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -20,8 +16,9 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.Map;
+import java.util.Objects;
 
-public class BetterAdvancementTab extends GuiComponent {
+public class BetterAdvancementTab {
     public static boolean doFade = true;
     public static final Map<Advancement, Tuple<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
 
@@ -65,36 +62,26 @@ public class BetterAdvancementTab extends GuiComponent {
         return this.title;
     }
 
-    public void drawTab(PoseStack poseStack, int left, int top, int width, int height, boolean selected) {
-        this.type.draw(this, poseStack, left, top, width, height, selected, this.index);
+    public void drawTab(GuiGraphics guiGraphics, int left, int top, int width, int height, boolean selected) {
+        this.type.draw(guiGraphics, left, top, width, height, selected, this.index);
     }
 
-    public void drawIcon(PoseStack poseStack, int left, int top,int width, int height, ItemRenderer renderItem) {
-        this.type.drawIcon(poseStack, left, top, width, height, this.index, renderItem, this.icon);
+    public void drawIcon(GuiGraphics guiGraphics, int left, int top,int width, int height) {
+        this.type.drawIcon(guiGraphics, left, top, width, height, this.index, this.icon);
     }
 
-    public void drawContents(PoseStack poseStack, int width, int height) {
+    public void drawContents(GuiGraphics guiGraphics, int left, int top, int width, int height) {
         if (!this.centered) {
             this.scrollX = (width - (this.maxX + this.minX)) / 2;
             this.scrollY = (height - (this.maxY + this.minY)) / 2;
             this.centered = true;
         }
 
-        poseStack.pushPose();
-        poseStack.translate(0.0D, 0.0D, 950.0D);
-        RenderSystem.enableDepthTest();
-        RenderSystem.colorMask(false, false, false, false);
-        fill(poseStack, 4680, 2260, -4680, -2260, -16777216);
-        RenderSystem.colorMask(true, true, true, true);
-        poseStack.translate(0.0D, 0.0D, -950.0D);
-        RenderSystem.depthFunc(518);
-        fill(poseStack, width, height, 0, 0, -16777216);
-        RenderSystem.depthFunc(515);
-        ResourceLocation resourcelocation = this.display.getBackground();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, resourcelocation != null ? resourcelocation : TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        guiGraphics.enableScissor(left, top, left + width, top + height);
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(left, top, 0);
+        ResourceLocation resourcelocation = Objects.requireNonNullElse(this.display.getBackground(), TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
 
@@ -102,41 +89,36 @@ public class BetterAdvancementTab extends GuiComponent {
         for (; k <= 1 + width / 16; k++) {
             int l = -1;
             for (;l <= height / 16; l++) {
-                blit(poseStack, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
+                guiGraphics.blit(resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
             }
-            blit(poseStack, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
+            guiGraphics.blit(resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
         }
 
 
-        this.root.drawConnectivity(poseStack, this.scrollX, this.scrollY, true);
-        this.root.drawConnectivity(poseStack, this.scrollX, this.scrollY, false);
-        this.root.draw(poseStack, this.scrollX, this.scrollY);
-        RenderSystem.depthFunc(518);
-        poseStack.translate(0.0D, 0.0D, -950.0D);
-        RenderSystem.colorMask(false, false, false, false);
-        fill(poseStack, 4680, 2260, -4680, -2260, -16777216);
-        RenderSystem.colorMask(true, true, true, true);
-        RenderSystem.depthFunc(515);
-        poseStack.popPose();
+        this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, true);
+        this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, false);
+        this.root.draw(guiGraphics, this.scrollX, this.scrollY);
+        guiGraphics.pose().popPose();
+        guiGraphics.disableScissor();
     }
 
-    public void drawToolTips(PoseStack poseStack, int mouseX, int mouseY, int left, int top, int width, int height) {
-        poseStack.pushPose();
-        poseStack.translate(0.0D, 0.0D, -200.0D);
-        fill(poseStack, 0, 0, width, height, Mth.floor(this.fade * 255.0F) << 24);
+    public void drawToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.pose().translate(0.0D, 0.0D, -200.0D);
+        guiGraphics.fill(0, 0, width, height, Mth.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
         if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
             for (BetterAdvancementWidget betterAdvancementWidget : this.guis.values()) {
                 if (betterAdvancementWidget.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
                     flag = true;
-                    betterAdvancementWidget.drawHover(poseStack, this.scrollX, this.scrollY, this.fade, left, top);
+                    betterAdvancementWidget.drawHover(guiGraphics, this.scrollX, this.scrollY, this.fade, left, top);
                     break;
                 }
             }
         }
 
-        poseStack.popPose();
+        guiGraphics.pose().popPose();
 
         if (doFade && flag) {
             this.fade = Mth.clamp(this.fade + 0.02F, 0.0F, 0.3F);

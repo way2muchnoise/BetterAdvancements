@@ -3,12 +3,13 @@ package betteradvancements.util;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 
 public class RenderUtil {
     private RenderUtil() {}
 
-    public static void renderRepeating(GuiComponent guiComponent, PoseStack poseStack, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
+    public static void renderRepeating(ResourceLocation texture, GuiGraphics guiGraphics, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         for (int i = 0; i < width; i += textureWidth) {
             int drawX = x + i;
             int drawWidth = Math.min(textureWidth, width - i);
@@ -16,7 +17,7 @@ public class RenderUtil {
             for (int l = 0; l < height; l += textureHeight) {
                 int drawY = y + l;
                 int drawHeight = Math.min(textureHeight, height - l);
-                guiComponent.blit(poseStack, drawX, drawY, textureX, textureY, drawWidth, drawHeight);
+                guiGraphics.blit(texture, drawX, drawY, textureX, textureY, drawWidth, drawHeight);
             }
         }
     }
