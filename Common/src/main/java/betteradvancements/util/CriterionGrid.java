@@ -85,7 +85,7 @@ public class CriterionGrid {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
-        Map<String, Criterion> criteria = advancement.getCriteria();
+        Map<String, Criterion<?>> criteria = advancement.criteria();
         if (criteria.size() <= 1) {
             return CriterionGrid.empty;
         }

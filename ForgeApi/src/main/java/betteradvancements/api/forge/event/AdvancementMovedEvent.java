@@ -3,6 +3,7 @@ package betteradvancements.api.forge.event;
 import betteradvancements.api.IBetterAdvancementEntryGui;
 import betteradvancements.api.event.IAdvancementMovedEvent;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementNode;
 import net.minecraftforge.eventbus.api.Event;
 
 /**
@@ -12,7 +13,7 @@ public class AdvancementMovedEvent extends Event implements IAdvancementMovedEve
     /**
      * Advancement that has been moved.
      */
-    private final Advancement advancement;
+    private final AdvancementNode advancement;
     /*
      * Coordinates the advancement was moved to.
      */
@@ -24,7 +25,7 @@ public class AdvancementMovedEvent extends Event implements IAdvancementMovedEve
         this.y = gui.getY();
     }
     
-    public Advancement getAdvancement() {
+    public AdvancementNode getAdvancement() {
         return this.advancement;
     }
     

@@ -4,7 +4,8 @@ import betteradvancements.gui.BetterAdvancementsScreen;
 import betteradvancements.gui.BetterAdvancementsScreenButton;
 import betteradvancements.util.AdvancementComparer;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementList;
+import net.minecraft.advancements.AdvancementNode;
+import net.minecraft.advancements.AdvancementTree;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -16,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class GuiOpenHandler {
     public static final GuiOpenHandler instance = new GuiOpenHandler();
@@ -49,17 +51,17 @@ public class GuiOpenHandler {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
                 ClientAdvancements clientAdvancements = mc.player.connection.getAdvancements();
-                AdvancementList advancementList = clientAdvancements.getAdvancements();
-                Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
+                AdvancementTree advancementTree = clientAdvancements.getTree();
+                Set<AdvancementNode> roots = (Set<AdvancementNode>) advancementTree.roots();
 
-                List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(a -> a.getId().toString()).collect(Collectors.toList());
+                List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(n -> n.holder().id().toString()).toList();
 
-                List<Advancement> advancements = new ArrayList<>(roots);
+                List<AdvancementNode> advancements = new ArrayList<>(roots);
                 roots.clear();
 
                 for (String location : advancementLocations) {
-                    for (Advancement advancement : advancements) {
-                        if (advancement.getId().toString().equals(location)) {
+                    for (AdvancementNode advancement : advancements) {
+                        if (advancement.holder().id().toString().equals(location)) {
                             roots.add(advancement);
                         }
                     }

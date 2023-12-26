@@ -2,6 +2,8 @@ package betteradvancements.api.fabric.event;
 
 import betteradvancements.api.event.IAdvancementDrawConnectionsEvent;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,22 +17,22 @@ public class AdvancementDrawConnectionsEvent implements IAdvancementDrawConnecti
     /**
      * Advancement having its connection lines drawn.
      */
-    private final Advancement advancement;
+    private final AdvancementNode advancement;
     /**
      * Extra connections to draw lines to.
      */
-    private final List<Advancement> extraConnections;
+    private final List<AdvancementHolder> extraConnections;
 
-    public AdvancementDrawConnectionsEvent(Advancement advancement) {
+    public AdvancementDrawConnectionsEvent(AdvancementNode advancement) {
         this.advancement = advancement;
         this.extraConnections = new ArrayList<>();
     }
 
-    public Advancement getAdvancement() {
+    public AdvancementNode getAdvancement() {
         return this.advancement;
     }
 
-    public List<Advancement> getExtraConnections() {
+    public List<AdvancementHolder> getExtraConnections() {
         return this.extraConnections;
     }
 }

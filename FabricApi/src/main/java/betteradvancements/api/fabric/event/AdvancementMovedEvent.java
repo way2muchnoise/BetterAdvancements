@@ -3,6 +3,7 @@ package betteradvancements.api.fabric.event;
 import betteradvancements.api.IBetterAdvancementEntryGui;
 import betteradvancements.api.event.IAdvancementMovedEvent;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementNode;
 
 /**
  *  Event fired after an advancement has been moved in the gui and the mouse button has been released.
@@ -11,7 +12,7 @@ public class AdvancementMovedEvent implements IAdvancementMovedEvent {
     /**
      * Advancement that has been moved.
      */
-    private final Advancement advancement;
+    private final AdvancementNode advancement;
     /*
      * Coordinates the advancement was moved to.
      */
@@ -23,7 +24,7 @@ public class AdvancementMovedEvent implements IAdvancementMovedEvent {
         this.y = gui.getY();
     }
 
-    public Advancement getAdvancement() {
+    public AdvancementNode getAdvancement() {
         return this.advancement;
     }
 

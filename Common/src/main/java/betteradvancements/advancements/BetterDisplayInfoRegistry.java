@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.commons.io.FilenameUtils;
@@ -20,12 +22,12 @@ import java.util.Map;
 public class BetterDisplayInfoRegistry {
     private final Map<ResourceLocation, BetterDisplayInfo> registry;
 
-    public BetterDisplayInfoRegistry(Advancement advancement) {
+    public BetterDisplayInfoRegistry(AdvancementNode advancementNode) {
         registry = new HashMap<>();
     }
 
-    public BetterDisplayInfo get(Advancement advancement) {
-        return registry.getOrDefault(advancement.getId(), new BetterDisplayInfo(advancement));
+    public BetterDisplayInfo get(AdvancementHolder advancementHolder) {
+        return registry.getOrDefault(advancementHolder.id(), new BetterDisplayInfo(advancementHolder));
     }
 
     private void load(ResourceLocation location, ServerLevel serverLevel) {

@@ -9,9 +9,7 @@ import betteradvancements.util.CriterionGrid;
 import betteradvancements.util.RenderUtil;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,7 +33,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     private static final int WIDGET_WIDTH = 256, WIDGET_HEIGHT = 26, TITLE_SIZE = 32, ICON_OFFSET = 128, ICON_SIZE = 26;
 
     private final BetterAdvancementTab betterAdvancementTabGui;
-    private final Advancement advancement;
+    private final AdvancementNode advancementNode;
     protected final BetterDisplayInfo betterDisplayInfo;
     private final DisplayInfo displayInfo;
     private final String title;
@@ -49,10 +47,10 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     protected int x, y;
     private final int screenScale;
 
-    public BetterAdvancementWidget(BetterAdvancementTab betterAdvancementTabGui, Minecraft mc, Advancement advancement, DisplayInfo displayInfo) {
+    public BetterAdvancementWidget(BetterAdvancementTab betterAdvancementTabGui, Minecraft mc, AdvancementNode advancementNode, DisplayInfo displayInfo) {
         this.betterAdvancementTabGui = betterAdvancementTabGui;
-        this.advancement = advancement;
-        this.betterDisplayInfo = betterAdvancementTabGui.getBetterDisplayInfo(advancement);
+        this.advancementNode = advancementNode;
+        this.betterDisplayInfo = betterAdvancementTabGui.getBetterDisplayInfo(this.advancementNode);
         this.displayInfo = displayInfo;
         this.minecraft = mc;
         this.title = displayInfo.getTitle().getString(163);
@@ -65,14 +63,14 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     private void refreshHover() {
         Minecraft mc = this.minecraft;
         int k = 0;
-        if (advancement.getMaxCriteraRequired() > 1) {
+        if (this.advancementNode.advancement().criteria().size() > 1) {
             // Add some space for the requirement counter
-            int strLengthRequirementCount = String.valueOf(advancement.getMaxCriteraRequired()).length();
+            int strLengthRequirementCount = String.valueOf(this.advancementNode.advancement().criteria().size()).length();
             k = mc.font.width("  ") + mc.font.width("0") * strLengthRequirementCount * 2 + mc.font.width("/");
         }
         int titleWidth = 29 + mc.font.width(this.title) + k;
         BetterAdvancementsScreen screen = betterAdvancementTabGui.getScreen();
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(advancement, advancementProgress, screen.width / 2, mc.font);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.advancement(), advancementProgress, screen.width / 2, mc.font);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
@@ -113,17 +111,13 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     }
 
     @Nullable
-    private BetterAdvancementWidget getFirstVisibleParent(Advancement advancementIn) {
-        while (true) {
-            advancementIn = advancementIn.getParent();
+    private BetterAdvancementWidget getFirstVisibleParent(AdvancementNode advancement) {
+        do {
+            advancement = advancement.parent();
+        } while(advancement != null && advancement.advancement().display().isEmpty());
 
-            if (advancementIn == null || advancementIn.getDisplay() != null) {
-                break;
-            }
-        }
-
-        if (advancementIn != null && advancementIn.getDisplay() != null) {
-            return this.betterAdvancementTabGui.getWidget(advancementIn);
+        if (advancement != null && !advancement.advancement().display().isEmpty()) {
+            return this.betterAdvancementTabGui.getWidget(advancement.holder());
         } else {
             return null;
         }
@@ -139,10 +133,10 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
             }
             
             //Create and post event to get extra connections
-            IAdvancementDrawConnectionsEvent event = Services.PLATFORM.getEventHelper().postAdvancementDrawConnectionsEvent(this.advancement);
+            IAdvancementDrawConnectionsEvent event = Services.PLATFORM.getEventHelper().postAdvancementDrawConnectionsEvent(this.advancementNode);
 
             //Draw extra connections from event
-            for (Advancement parent : event.getExtraConnections()) {
+            for (AdvancementHolder parent : event.getExtraConnections()) {
                 final BetterAdvancementWidget parentGui = this.betterAdvancementTabGui.getWidget(parent);
                 
                 if (parentGui != null) {
@@ -235,7 +229,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            guiGraphics.blit(Resources.Gui.WIDGETS, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
+            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
             guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
@@ -256,7 +250,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     public void drawHover(GuiGraphics guiGraphics, int scrollX, int scrollY, float fade, int left, int top) {
         this.refreshHover();
         boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.betterAdvancementTabGui.getScreen().internalWidth;
-        String s = this.advancementProgress == null ? null : this.advancementProgress.getProgressText();
+        String s = this.advancementProgress == null || this.advancementProgress.getProgressText() == null ? null : this.advancementProgress.getProgressText().getString();
         int i = s == null ? 0 : this.minecraft.font.width(s);
         boolean drawTop;
         
@@ -343,7 +337,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        guiGraphics.blit(Resources.Gui.WIDGETS, scrollX + this.x + 3, scrollY + this.y, this.displayInfo.getFrame().getTexture(), ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
+        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
 
         if (drawLeft) {
             guiGraphics.drawString(this.minecraft.font, this.title, drawX + 5, scrollY + this.y + 9, -1);
@@ -417,8 +411,8 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     }
 
     public void attachToParent() {
-        if (this.parent == null && this.advancement.getParent() != null) {
-            this.parent = this.getFirstVisibleParent(this.advancement);
+        if (this.parent == null && advancementNode.advancement().parent().isPresent()) {
+            this.parent = this.getFirstVisibleParent(advancementNode);
 
             if (this.parent != null) {
                 this.parent.addGuiAdvancement(this);
@@ -437,7 +431,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     }
 
     @Override
-    public Advancement getAdvancement() {
-        return this.advancement;
+    public AdvancementNode getAdvancement() {
+        return this.advancementNode;
     }
 }

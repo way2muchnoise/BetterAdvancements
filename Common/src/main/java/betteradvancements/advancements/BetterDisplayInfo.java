@@ -4,6 +4,8 @@ import betteradvancements.api.IBetterDisplayInfo;
 import betteradvancements.util.ColorHelper;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -34,13 +36,18 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     private boolean hideLines;
     private boolean allowDragging;
 
-    public BetterDisplayInfo(Advancement advancement) {
-        this(advancement.getId());
-        if (advancement instanceof IBetterDisplayInfo) {
-            parseIBetterDisplayInfo((IBetterDisplayInfo) advancement);
-        }
-        if (advancement.getDisplay() instanceof IBetterDisplayInfo) {
-            parseIBetterDisplayInfo((IBetterDisplayInfo) advancement.getDisplay());
+    public BetterDisplayInfo(AdvancementHolder advancementHolder) {
+        this(advancementHolder.id());
+        Advancement advancement = advancementHolder.value();
+//        TODO: Fix checking this
+//        if (advancement instanceof IBetterDisplayInfo) {
+//            parseIBetterDisplayInfo((IBetterDisplayInfo) advancement);
+//        }
+        if (advancement.display().isPresent()) {
+            DisplayInfo displayInfo = advancement.display().get();
+            if (displayInfo instanceof IBetterDisplayInfo){
+                parseIBetterDisplayInfo((IBetterDisplayInfo) displayInfo);
+            }
         }
     }
 

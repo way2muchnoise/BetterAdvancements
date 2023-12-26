@@ -8,11 +8,6 @@ import net.minecraft.resources.ResourceLocation;
  */
 public interface IBetterDisplayInfo {
     /**
-     * @return The resource location this information is about
-     */
-    ResourceLocation getId();
-
-    /**
      * The background color of the icon when an advancement is completed
      *
      * @return an integer color value or -1 to default
