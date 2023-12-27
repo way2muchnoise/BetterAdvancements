@@ -4,7 +4,7 @@ import net.darkhax.curseforgegradle.Constants as CFG_Constants
 plugins {
 	java
 	id("fabric-loom") version ("1.0-SNAPSHOT")
-	id("net.darkhax.curseforgegradle") version("1.0.11")
+	id("net.darkhax.curseforgegradle") version("1.1.18")
 	id("com.modrinth.minotaur") version("2.+")
 }
 

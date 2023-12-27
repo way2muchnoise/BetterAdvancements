@@ -7,7 +7,7 @@ plugins {
 	id("maven-publish")
 	id("net.minecraftforge.gradle") version("[6.0,6.2)")
 	id("org.parchmentmc.librarian.forgegradle") version("1.+")
-	id("net.darkhax.curseforgegradle") version("1.0.11")
+	id("net.darkhax.curseforgegradle") version("1.1.18")
 	id("com.modrinth.minotaur") version("2.+")
 }
 
