@@ -1,6 +1,5 @@
 import net.neoforged.gradle.dsl.common.runs.run.Run
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
-import okio.`-DeprecatedOkio`.source
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
@@ -26,7 +25,7 @@ val modId: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
 
-val baseArchivesName = "${modFileName}-${minecraftVersion}"
+val baseArchivesName = "${modFileName}-NeoForge-${minecraftVersion}"
 base {
     archivesName.set(baseArchivesName)
 }
@@ -109,7 +108,7 @@ tasks.named<Jar>("jar") {
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    finalizedBy("reobfJar")
+    // finalizedBy("reobfJar")
 }
 
 val apiJar = tasks.register<Jar>("apiJar") {
@@ -123,7 +122,7 @@ val apiJar = tasks.register<Jar>("apiJar") {
     from(project(":NeoForgeApi").sourceSets.main.get().allJava)
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    finalizedBy("reobfJar")
+    // finalizedBy("reobfJar")
     archiveClassifier.set("api")
 }
 
@@ -134,7 +133,7 @@ val sourcesJar = tasks.register<Jar>("sourcesJar") {
     }
 
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    finalizedBy("reobfJar")
+    // finalizedBy("reobfJar")
     archiveClassifier.set("sources")
 }
 

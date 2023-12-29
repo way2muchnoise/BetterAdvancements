@@ -24,7 +24,7 @@ val modId: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
 
-val baseArchivesName = "${modFileName}-${minecraftVersion}"
+val baseArchivesName = "${modFileName}-Forge-${minecraftVersion}"
 base {
 	archivesName.set(baseArchivesName)
 }
