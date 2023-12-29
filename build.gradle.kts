@@ -1,12 +1,22 @@
+plugins {
+    // Fixes conflicts between both VanillaGradle and NeoGradle trying to apply this plugin
+    id("org.jetbrains.gradle.plugin.idea-ext") version ("1.1.7")
+    // Side-Step class-loading issues
+    id("net.neoforged.gradle.userdev") apply (false)
+}
+
 // gradle.properties
 val curseHomepageLink: String by extra
 val curseProjectId: String by extra
 val forgeVersion: String by extra
 val forgeVersionRange: String by extra
+val loaderVersionRange: String by extra
 var fabricVersion: String by extra
 var fabricLoaderVersion: String by extra
+val neoforgeVersion: String by extra
+val neoforgeVersionRange: String by extra
+val neoforgeLoaderVersionRange: String by extra
 val githubUrl: String by extra
-val loaderVersionRange: String by extra
 val mappingsChannel: String by extra
 val mappingsVersion: String by extra
 val minecraftVersion: String by extra
@@ -69,6 +79,8 @@ subprojects {
                 "minecraftVersionRange" to minecraftVersionRange,
                 "forgeVersionRange" to forgeVersionRange,
                 "loaderVersionRange" to loaderVersionRange,
+                "neoforgeVersionRange" to neoforgeVersionRange,
+                "neoforgeLoaderVersionRange" to neoforgeLoaderVersionRange,
                 "githubUrl" to githubUrl,
                 "curseHomepageLink" to curseHomepageLink,
                 "modAuthor" to modAuthor,

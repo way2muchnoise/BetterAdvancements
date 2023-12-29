@@ -10,6 +10,11 @@ pluginManagement {
 		maven("https://repo.spongepowered.org/repository/maven-public/") {
 			name = "Sponge Snapshots"
 		}
+		maven("https://maven.neoforged.net/releases")
+	}
+	plugins {
+		id("net.neoforged.gradle.common") version("7.0.72")
+		id("net.neoforged.gradle.userdev") version("7.0.72")
 	}
 	resolutionStrategy {
 		eachPlugin {
@@ -26,4 +31,9 @@ pluginManagement {
 val minecraftVersion: String by settings
 
 rootProject.name = "BetterAdvancements"
-include("CommonApi", "Common", "FabricApi", "Fabric", "ForgeApi", "Forge")
+include(
+		"CommonApi", "Common",
+		"FabricApi", "Fabric",
+		"ForgeApi", "Forge",
+		"NeoForgeApi", "NeoForge"
+)

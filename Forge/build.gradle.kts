@@ -32,14 +32,14 @@ base {
 sourceSets {
 }
 
-val dependencyProjects: List<ProjectDependency> = listOf(
-	project.dependencies.project(":Common"),
-	project.dependencies.project(":CommonApi"),
-	project.dependencies.project(":ForgeApi"),
+val dependencyProjects: List<Project> = listOf(
+	project(":Common"),
+	project(":CommonApi"),
+	project(":ForgeApi"),
 )
 
 dependencyProjects.forEach {
-	project.evaluationDependsOn(it.dependencyProject.path)
+	project.evaluationDependsOn(it.path)
 }
 
 java {
@@ -77,7 +77,7 @@ minecraft {
 				create(modId) {
 					source(sourceSets.main.get())
 					for (p in dependencyProjects) {
-						source(p.dependencyProject.sourceSets.main.get())
+						source(p.sourceSets.main.get())
 					}
 				}
 			}
@@ -103,7 +103,7 @@ minecraft {
 				create(modId) {
 					source(sourceSets.main.get())
 					for (p in dependencyProjects) {
-						source(p.dependencyProject.sourceSets.main.get())
+						source(p.sourceSets.main.get())
 					}
 				}
 			}
@@ -114,7 +114,7 @@ minecraft {
 tasks.named<Jar>("jar") {
 	from(sourceSets.main.get().output)
 	for (p in dependencyProjects) {
-		from(p.dependencyProject.sourceSets.main.get().output)
+		from(p.sourceSets.main.get().output)
 	}
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -139,7 +139,7 @@ val apiJar = tasks.register<Jar>("apiJar") {
 val sourcesJar = tasks.register<Jar>("sourcesJar") {
 	from(sourceSets.main.get().allJava)
 	for (p in dependencyProjects) {
-		from(p.dependencyProject.sourceSets.main.get().allJava)
+		from(p.sourceSets.main.get().allJava)
 	}
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
