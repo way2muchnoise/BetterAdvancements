@@ -214,6 +214,10 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         return state == AdvancementWidgetType.OBTAINED ? getCompletedIconColor() : getUnCompletedIconColor();
     }
 
+    public int defaultIconColor() {
+        return WHITE;
+    }
+
     public int getTitleYMultiplier(AdvancementWidgetType state) {
         if (hasCustomTitleColor()) {
             return 3;
