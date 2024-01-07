@@ -95,8 +95,9 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.addModLoader("NeoForge")
     mainFile.addJavaVersion("Java $modJavaVersion")
     mainFile.addGameVersion(minecraftVersion)
-    mainFile.withAdditionalFile(apiJar.get())
-    mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
+    //TODO: Figure out how to upload correct files
+//    mainFile.withAdditionalFile(apiJar.get())
+//    mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
 
 modrinth {
@@ -105,6 +106,7 @@ modrinth {
     versionNumber.set("${project.version}")
     versionName.set("${project.version} for NeoForge $minecraftVersion")
     versionType.set("alpha")
+    changelog.set(System.getenv("CHANGELOG") ?: "")
     uploadFile.set(tasks.remapJar.get())
     gameVersions.add(minecraftVersion)
     // additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
