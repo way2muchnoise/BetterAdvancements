@@ -227,7 +227,8 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(advancementState), ICON_SIZE, ICON_SIZE);
+            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+            RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
             guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
 
@@ -335,7 +336,8 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_OFFSET + ICON_SIZE * betterDisplayInfo.getIconYMultiplier(stateIcon), ICON_SIZE, ICON_SIZE);
+        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+        RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
 
         if (drawLeft) {
             guiGraphics.drawString(this.minecraft.font, this.title, drawX + 5, scrollY + this.y + 9, -1);
