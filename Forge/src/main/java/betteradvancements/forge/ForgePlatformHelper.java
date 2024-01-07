@@ -1,7 +1,7 @@
 package betteradvancements.forge;
 
-import betteradvancements.platform.IEventHelper;
-import betteradvancements.platform.IPlatformHelper;
+import betteradvancements.common.platform.IEventHelper;
+import betteradvancements.common.platform.IPlatformHelper;
 
 public class ForgePlatformHelper implements IPlatformHelper {
     private final ForgeEventHelper eventHelper = new ForgeEventHelper();

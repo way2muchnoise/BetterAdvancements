@@ -1,8 +1,7 @@
 package betteradvancements.api.fabric.event;
 
-import betteradvancements.api.IBetterAdvancementEntryGui;
-import betteradvancements.api.event.IAdvancementMovedEvent;
-import net.minecraft.advancements.Advancement;
+import betteradvancements.common.api.IBetterAdvancementEntryGui;
+import betteradvancements.common.api.event.IAdvancementMovedEvent;
 import net.minecraft.advancements.AdvancementNode;
 
 /**

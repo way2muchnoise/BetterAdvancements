@@ -1,9 +1,8 @@
 package betteradvancements.forge.handler;
 
-import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButton;
-import betteradvancements.util.AdvancementComparer;
-import net.minecraft.advancements.Advancement;
+import betteradvancements.common.gui.BetterAdvancementsScreen;
+import betteradvancements.common.gui.BetterAdvancementsScreenButton;
+import betteradvancements.common.util.AdvancementComparer;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementTree;
 import net.minecraft.client.Minecraft;
@@ -16,8 +15,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class GuiOpenHandler {
     public static final GuiOpenHandler instance = new GuiOpenHandler();

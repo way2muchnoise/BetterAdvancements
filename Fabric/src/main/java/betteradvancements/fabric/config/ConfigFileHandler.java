@@ -1,14 +1,14 @@
 package betteradvancements.fabric.config;
 
-import betteradvancements.advancements.BetterDisplayInfo;
-import betteradvancements.gui.BetterAdvancementTab;
-import betteradvancements.gui.BetterAdvancementTabType;
-import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButton;
-import betteradvancements.reference.Constants;
-import betteradvancements.util.ColorHelper;
-import betteradvancements.util.CriteriaDetail;
-import betteradvancements.util.CriterionGrid;
+import betteradvancements.common.advancements.BetterDisplayInfo;
+import betteradvancements.common.gui.BetterAdvancementTab;
+import betteradvancements.common.gui.BetterAdvancementTabType;
+import betteradvancements.common.gui.BetterAdvancementsScreen;
+import betteradvancements.common.gui.BetterAdvancementsScreenButton;
+import betteradvancements.common.reference.Constants;
+import betteradvancements.common.util.ColorHelper;
+import betteradvancements.common.util.CriteriaDetail;
+import betteradvancements.common.util.CriterionGrid;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

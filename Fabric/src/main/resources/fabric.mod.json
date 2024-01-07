@@ -16,7 +16,7 @@
     "environment": "*",
     "entrypoints": {
       "client" : [
-        "betteradvancements.BetterAdvancements"
+        "betteradvancements.fabric.BetterAdvancements"
       ],
       "modmenu": [
         "betteradvancements.fabric.config.BetterAdvancementsModMenu"

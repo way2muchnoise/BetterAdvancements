@@ -1,8 +1,8 @@
 package betteradvancements.neoforge.handler;
 
-import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButton;
-import betteradvancements.util.AdvancementComparer;
+import betteradvancements.common.gui.BetterAdvancementsScreen;
+import betteradvancements.common.gui.BetterAdvancementsScreenButton;
+import betteradvancements.common.util.AdvancementComparer;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementTree;
 import net.minecraft.client.Minecraft;

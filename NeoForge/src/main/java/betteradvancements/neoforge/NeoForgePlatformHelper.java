@@ -1,7 +1,7 @@
 package betteradvancements.neoforge;
 
-import betteradvancements.platform.IEventHelper;
-import betteradvancements.platform.IPlatformHelper;
+import betteradvancements.common.platform.IEventHelper;
+import betteradvancements.common.platform.IPlatformHelper;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
     private final NeoForgeEventHelper eventHelper = new NeoForgeEventHelper();

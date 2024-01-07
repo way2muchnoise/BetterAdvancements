@@ -1,13 +1,7 @@
-import net.neoforged.gradle.dsl.common.runs.run.Run
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
-    id("java")
-    id("idea")
-    id("maven-publish")
-    id("net.neoforged.gradle.userdev")
-    // id("org.parchmentmc.librarian.forgegradle") version("1.+")
     id("net.darkhax.curseforgegradle") version("1.1.18")
     id("com.modrinth.minotaur") version("2.+")
 }
@@ -17,124 +11,78 @@ val curseHomepageLink: String by extra
 val curseProjectId: String by extra
 val modrinthProjectId: String by extra
 val neoforgeVersion: String by extra
-val mappingsChannel: String by extra
-val mappingsParchmentMinecraftVersion: String by extra
-val mappingsParchmentVersion: String by extra
 val minecraftVersion: String by extra
 val modId: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
+val mappingsParchmentMinecraftVersion: String by extra
+val mappingsParchmentVersion: String by extra
 
+val dependencyProjects: List<String> = listOf(":Common", ":CommonApi", ":NeoForgeApi",)
 val baseArchivesName = "${modFileName}-NeoForge-${minecraftVersion}"
 base {
     archivesName.set(baseArchivesName)
 }
 
-sourceSets {
+architectury {
+    // Create the IDE launch configurations for this subproject.
+    platformSetupLoomIde()
+    // Set up Architectury for Forge.
+    neoForge()
 }
 
-val dependencyProjects: List<Project> = listOf(
-        project(":Common"),
-        project(":CommonApi"),
-        project(":NeoForgeApi"),
-)
-
-dependencyProjects.forEach {
-    project.evaluationDependsOn(it.path)
+loom {
+    accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(modJavaVersion))
-    }
+repositories {
+    maven("https://maven.neoforged.net/releases/")
 }
 
 dependencies {
-    implementation(
-            group = "net.neoforged",
-            name = "neoforge",
-            version = "${neoforgeVersion}"
-    )
-    dependencyProjects.forEach {
-        implementation(it)
+    neoForge("net.neoforged:neoforge:${neoforgeVersion}")
+
+    implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
+    shadowImplementation(project(":Common", configuration = "transformProductionNeoForge")) { isTransitive = false }
+
+    implementation(project(":NeoForgeApi", configuration = "namedElements"))
+    shadowImplementation(project(":CommonApi")) { isTransitive = false }
+    shadowImplementation(project(":NeoForgeApi")) { isTransitive = false }
+
+    // Need to make sure the API packages are loaded while during run in IDE
+    forgeRuntimeLibrary(project(":CommonApi", configuration = "namedElements"))
+    forgeRuntimeLibrary(project(":NeoForgeApi", configuration = "namedElements"))
+}
+
+tasks {
+    remapJar {
+        // Convert the access widener to a NeoForge access transformer.
+        atAccessWideners.add("betteradvancements.accesswidener")
     }
 }
 
-minecraft {
-    // mappings(mappingsChannel, "${mappingsParchmentMinecraftVersion}-${mappingsParchmentVersion}-${minecraftVersion}")
-    // mappings("official", minecraftVersion)
-
-    accessTransformers {
-        file("src/main/resources/META-INF/accesstransformer.cfg")
-    }
-}
-
-fun commonRunProperties(run: Run) {
-    run.modSources(sourceSets.main.get())
-    for (p in dependencyProjects) {
-        run.modSources(p.sourceSets.main.get())
-    }
-}
-
-runs {
-    create("client") {
-        systemProperty("forge.logging.console.level", "debug")
-        workingDirectory(file("run/client/Dev"))
-        commonRunProperties(this)
-    }
-    create("client_01") {
-        configure("client")
-        workingDirectory(file("run/client/Player01"))
-        programArguments("--username", "Player01")
-        commonRunProperties(this)
-    }
-    create("client_02") {
-        configure("client")
-        workingDirectory(file("run/client/Player02"))
-        programArguments("--username", "Player02")
-        commonRunProperties(this)
-    }
-    create("server") {
-        systemProperty("forge.logging.console.level", "debug")
-        workingDirectory(file("run/server"))
-        commonRunProperties(this)
-    }
-}
-
-tasks.named<Jar>("jar") {
-    from(sourceSets.main.get().output)
-    for (p in dependencyProjects) {
-        from(p.sourceSets.main.get().output)
-    }
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // finalizedBy("reobfJar")
-}
 
 val apiJar = tasks.register<Jar>("apiJar") {
     from(project(":CommonApi").sourceSets.main.get().output)
     from(project(":NeoForgeApi").sourceSets.main.get().output)
 
-    // TODO: when FG bug is fixed, remove allJava from the api jar.
-    // https://github.com/MinecraftForge/ForgeGradle/issues/369
-    // Gradle should be able to pull them from the -sources jar.
-    from(project(":CommonApi").sourceSets.main.get().allJava)
-    from(project(":NeoForgeApi").sourceSets.main.get().allJava)
-
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // finalizedBy("reobfJar")
     archiveClassifier.set("api")
 }
 
-val sourcesJar = tasks.register<Jar>("sourcesJar") {
-    from(sourceSets.main.get().allJava)
-    for (p in dependencyProjects) {
-        from(p.sourceSets.main.get().allJava)
-    }
+artifacts {
+    archives(apiJar.get())
+    archives(tasks.jar.get())
+    archives(tasks.remapJar.get())
+    archives(tasks.remapSourcesJar.get())
+}
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    // finalizedBy("reobfJar")
-    archiveClassifier.set("sources")
+tasks.withType<Jar> {
+    destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
+}
+
+tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
+    destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 
 tasks.register<TaskPublishCurseForge>("publishCurseForge") {
@@ -149,7 +97,7 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
     mainFile.addJavaVersion("Java $modJavaVersion")
     mainFile.addGameVersion(minecraftVersion)
     mainFile.withAdditionalFile(apiJar.get())
-    mainFile.withAdditionalFile(sourcesJar.get())
+    mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
 
 modrinth {
@@ -163,38 +111,3 @@ modrinth {
     // additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
 tasks.modrinth.get().dependsOn(tasks.jar)
-
-artifacts {
-    archives(apiJar.get())
-    archives(sourcesJar.get())
-    archives(tasks.jar.get())
-}
-
-tasks.withType<Jar> {
-    destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
-}
-
-publishing {
-    publications {
-        register<MavenPublication>("maven") {
-            artifactId = baseArchivesName
-            artifact(apiJar.get())
-            artifact(sourcesJar.get())
-            artifact(tasks.jar.get())
-        }
-    }
-    repositories {
-        val deployDir = project.findProperty("DEPLOY_DIR")
-        if (deployDir != null) {
-            maven(deployDir)
-        }
-    }
-}
-
-idea {
-    module {
-        for (fileName in listOf("run", "out", "logs")) {
-            excludeDirs.add(file(fileName))
-        }
-    }
-}

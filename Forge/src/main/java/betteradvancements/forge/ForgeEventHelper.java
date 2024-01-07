@@ -1,11 +1,11 @@
 package betteradvancements.forge;
 
-import betteradvancements.api.IBetterAdvancementEntryGui;
-import betteradvancements.api.event.IAdvancementDrawConnectionsEvent;
-import betteradvancements.api.event.IAdvancementMovedEvent;
-import betteradvancements.api.forge.event.AdvancementDrawConnectionsEvent;
-import betteradvancements.api.forge.event.AdvancementMovedEvent;
-import betteradvancements.platform.IEventHelper;
+import betteradvancements.common.api.IBetterAdvancementEntryGui;
+import betteradvancements.common.api.event.IAdvancementDrawConnectionsEvent;
+import betteradvancements.common.api.event.IAdvancementMovedEvent;
+import betteradvancements.forge.api.event.AdvancementDrawConnectionsEvent;
+import betteradvancements.forge.api.event.AdvancementMovedEvent;
+import betteradvancements.common.platform.IEventHelper;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraftforge.common.MinecraftForge;
 

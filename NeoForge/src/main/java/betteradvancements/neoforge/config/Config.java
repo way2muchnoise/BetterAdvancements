@@ -1,6 +1,6 @@
 package betteradvancements.neoforge.config;
 
-import betteradvancements.reference.Constants;
+import betteradvancements.common.reference.Constants;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.config.ModConfigEvent;

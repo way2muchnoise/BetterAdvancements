@@ -1,7 +1,6 @@
 package betteradvancements.api.fabric.event;
 
-import betteradvancements.api.event.IAdvancementDrawConnectionsEvent;
-import net.minecraft.advancements.Advancement;
+import betteradvancements.common.api.event.IAdvancementDrawConnectionsEvent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 

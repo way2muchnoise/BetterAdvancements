@@ -1,13 +1,13 @@
 package betteradvancements.fabric.config;
 
-import betteradvancements.advancements.BetterDisplayInfo;
-import betteradvancements.gui.BetterAdvancementTab;
-import betteradvancements.gui.BetterAdvancementTabType;
-import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButton;
-import betteradvancements.util.ColorHelper;
-import betteradvancements.util.CriteriaDetail;
-import betteradvancements.util.CriterionGrid;
+import betteradvancements.common.advancements.BetterDisplayInfo;
+import betteradvancements.common.gui.BetterAdvancementTab;
+import betteradvancements.common.gui.BetterAdvancementTabType;
+import betteradvancements.common.gui.BetterAdvancementsScreen;
+import betteradvancements.common.gui.BetterAdvancementsScreenButton;
+import betteradvancements.common.util.ColorHelper;
+import betteradvancements.common.util.CriteriaDetail;
+import betteradvancements.common.util.CriterionGrid;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;

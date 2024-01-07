@@ -1,6 +1,6 @@
 package betteradvancements.fabric;
 
-import betteradvancements.platform.IAdvancementVisitor;
+import betteradvancements.common.platform.IAdvancementVisitor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 

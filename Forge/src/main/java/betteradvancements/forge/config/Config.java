@@ -1,6 +1,6 @@
 package betteradvancements.forge.config;
 
-import betteradvancements.reference.Constants;
+import betteradvancements.common.reference.Constants;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;

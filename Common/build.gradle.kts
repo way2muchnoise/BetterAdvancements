@@ -1,40 +1,14 @@
-plugins {
-    java
-    id("org.spongepowered.gradle.vanilla") version "0.2.1-SNAPSHOT"
-}
-
 // gradle.properties
-val minecraftVersion: String by extra
+val platforms: String by extra
 
-val dependencyProjects: List<Project> = listOf(
-    project(":CommonApi"),
-)
-
-dependencyProjects.forEach {
-    project.evaluationDependsOn(it.path)
+architectury {
+    common(platforms.split(","))
 }
 
-minecraft {
-    version(minecraftVersion)
-    // no runs are configured for Common
-    accessWideners(file("src/main/resources/betteradvancements.accesswidener"))
-}
-
-sourceSets {
-
-}
-
-repositories {
-    mavenCentral()
+loom {
+    accessWidenerPath.set(file("src/main/resources/betteradvancements.accesswidener"))
 }
 
 dependencies {
-    compileOnly(
-        group = "org.spongepowered",
-        name = "mixin",
-        version = "0.8.5"
-    )
-    dependencyProjects.forEach {
-        implementation(it)
-    }
+    api(project(":CommonApi", configuration = "namedElements"))
 }

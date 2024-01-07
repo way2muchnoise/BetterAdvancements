@@ -2,11 +2,6 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
-	id("java")
-	id("idea")
-	id("maven-publish")
-	id("net.minecraftforge.gradle") version("[6.0,6.2)")
-	id("org.parchmentmc.librarian.forgegradle") version("1.+")
 	id("net.darkhax.curseforgegradle") version("1.1.18")
 	id("com.modrinth.minotaur") version("2.+")
 }
@@ -16,135 +11,73 @@ val curseHomepageLink: String by extra
 val curseProjectId: String by extra
 val modrinthProjectId: String by extra
 val forgeVersion: String by extra
-val mappingsChannel: String by extra
-val mappingsParchmentMinecraftVersion: String by extra
-val mappingsParchmentVersion: String by extra
 val minecraftVersion: String by extra
-val modId: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
 
+val dependencyProjects: List<String> = listOf(":Common", ":CommonApi", ":ForgeApi",)
 val baseArchivesName = "${modFileName}-Forge-${minecraftVersion}"
 base {
 	archivesName.set(baseArchivesName)
 }
 
-sourceSets {
+architectury {
+	// Create the IDE launch configurations for this subproject.
+	platformSetupLoomIde()
+	// Set up Architectury for Forge.
+	forge()
 }
 
-val dependencyProjects: List<Project> = listOf(
-	project(":Common"),
-	project(":CommonApi"),
-	project(":ForgeApi"),
-)
+loom {
+	// Make the Forge project use the common access widener.
+	accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
 
-dependencyProjects.forEach {
-	project.evaluationDependsOn(it.path)
-}
-
-java {
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(modJavaVersion))
+	forge {
+		// Enable Loom's AW -> AT conversion for Forge.
+		// This will make remapJar convert the common AW to a Forge access transformer.
+		convertAccessWideners.set(true)
+		// Add an "extra" converted access widener which comes from outside the project.
+		// The path is relative to the mod jar's root.
+		extraAccessWideners.add("betteradvancements.accesswidener")
 	}
 }
 
 dependencies {
-	"minecraft"(
-		group = "net.minecraftforge",
-		name = "forge",
-		version = "${minecraftVersion}-${forgeVersion}"
-	)
-	dependencyProjects.forEach {
-		implementation(it)
-	}
-}
+	forge("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
 
-minecraft {
-	mappings(mappingsChannel, "${mappingsParchmentMinecraftVersion}-${mappingsParchmentVersion}-${minecraftVersion}")
-	// mappings("official", minecraftVersion)
+	implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
+	shadowImplementation(project(":Common", configuration = "transformProductionForge")) { isTransitive = false }
 
-	copyIdeResources.set(true)
+	implementation(project(":ForgeApi", configuration = "namedElements"))
+	shadowImplementation(project(":CommonApi")) { isTransitive = false }
+	shadowImplementation(project(":ForgeApi")) { isTransitive = false }
 
-	accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
-
-	runs {
-		val client = create("client") {
-			taskName("runClientDev")
-			property("forge.logging.console.level", "debug")
-			workingDirectory(file("run/client/Dev"))
-			ideaModule("BetterAdvancements.Forge.main")
-			mods {
-				create(modId) {
-					source(sourceSets.main.get())
-					for (p in dependencyProjects) {
-						source(p.sourceSets.main.get())
-					}
-				}
-			}
-		}
-		create("client_01") {
-			taskName("runClientPlayer01")
-			parent(client)
-			workingDirectory(file("run/client/Player01"))
-			args("--username", "Player01")
-		}
-		create("client_02") {
-			taskName("runClientPlayer02")
-			parent(client)
-			workingDirectory(file("run/client/Player02"))
-			args("--username", "Player02")
-		}
-		create("server") {
-			taskName("Server")
-			property("forge.logging.console.level", "debug")
-			workingDirectory(file("run/server"))
-			ideaModule("BetterAdvancements.Forge.main")
-			mods {
-				create(modId) {
-					source(sourceSets.main.get())
-					for (p in dependencyProjects) {
-						source(p.sourceSets.main.get())
-					}
-				}
-			}
-		}
-	}
-}
-
-tasks.named<Jar>("jar") {
-	from(sourceSets.main.get().output)
-	for (p in dependencyProjects) {
-		from(p.sourceSets.main.get().output)
-	}
-
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	finalizedBy("reobfJar")
+	// Need to make sure the API packages are loaded while during run in IDE
+	forgeRuntimeLibrary(project(":CommonApi", configuration = "namedElements"))
+	forgeRuntimeLibrary(project(":ForgeApi", configuration = "namedElements"))
 }
 
 val apiJar = tasks.register<Jar>("apiJar") {
 	from(project(":CommonApi").sourceSets.main.get().output)
 	from(project(":ForgeApi").sourceSets.main.get().output)
 
-	// TODO: when FG bug is fixed, remove allJava from the api jar.
-	// https://github.com/MinecraftForge/ForgeGradle/issues/369
-	// Gradle should be able to pull them from the -sources jar.
-	from(project(":CommonApi").sourceSets.main.get().allJava)
-	from(project(":ForgeApi").sourceSets.main.get().allJava)
-
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	finalizedBy("reobfJar")
 	archiveClassifier.set("api")
 }
 
-val sourcesJar = tasks.register<Jar>("sourcesJar") {
-	from(sourceSets.main.get().allJava)
-	for (p in dependencyProjects) {
-		from(p.sourceSets.main.get().allJava)
-	}
+artifacts {
+	archives(apiJar.get())
+	archives(tasks.jar.get())
+	archives(tasks.remapJar.get())
+	archives(tasks.remapSourcesJar.get())
+}
 
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-	finalizedBy("reobfJar")
-	archiveClassifier.set("sources")
+tasks.withType<Jar> {
+	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
+}
+
+tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
+	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 
 tasks.register<TaskPublishCurseForge>("publishCurseForge") {
@@ -159,7 +92,7 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.addJavaVersion("Java $modJavaVersion")
 	mainFile.addGameVersion(minecraftVersion)
 	mainFile.withAdditionalFile(apiJar.get())
-	mainFile.withAdditionalFile(sourcesJar.get())
+	mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
 
 modrinth {
@@ -173,38 +106,3 @@ modrinth {
 	// additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
 tasks.modrinth.get().dependsOn(tasks.jar)
-
-artifacts {
-	archives(apiJar.get())
-	archives(sourcesJar.get())
-	archives(tasks.jar.get())
-}
-
-tasks.withType<Jar> {
-	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
-}
-
-publishing {
-	publications {
-		register<MavenPublication>("maven") {
-			artifactId = baseArchivesName
-			artifact(apiJar.get())
-			artifact(sourcesJar.get())
-			artifact(tasks.jar.get())
-		}
-	}
-	repositories {
-		val deployDir = project.findProperty("DEPLOY_DIR")
-		if (deployDir != null) {
-			maven(deployDir)
-		}
-	}
-}
-
-idea {
-	module {
-		for (fileName in listOf("run", "out", "logs")) {
-			excludeDirs.add(file(fileName))
-		}
-	}
-}
