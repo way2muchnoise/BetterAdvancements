@@ -61,7 +61,6 @@ val apiJar = tasks.register<Jar>("apiJar") {
 
 artifacts {
 	archives(apiJar.get())
-	archives(tasks.jar.get())
 	archives(tasks.remapJar.get())
 	archives(tasks.remapSourcesJar.get())
 }

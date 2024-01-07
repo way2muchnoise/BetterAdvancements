@@ -72,7 +72,6 @@ val apiJar = tasks.register<Jar>("apiJar") {
 
 artifacts {
     archives(apiJar.get())
-    archives(tasks.jar.get())
     archives(tasks.remapJar.get())
     archives(tasks.remapSourcesJar.get())
 }
@@ -89,7 +88,7 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 
     apiToken = System.getenv("CURSE_KEY") ?: "0"
 
-    val mainFile = upload(curseProjectId, tasks.jar.get())
+    val mainFile = upload(curseProjectId, tasks.remapJar.get())
     mainFile.changelogType = CFG_Constants.CHANGELOG_MARKDOWN
     mainFile.changelog = System.getenv("CHANGELOG") ?: ""
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_ALPHA
@@ -106,7 +105,7 @@ modrinth {
     versionNumber.set("${project.version}")
     versionName.set("${project.version} for NeoForge $minecraftVersion")
     versionType.set("alpha")
-    uploadFile.set(tasks.jar.get())
+    uploadFile.set(tasks.remapJar.get())
     gameVersions.add(minecraftVersion)
     // additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
