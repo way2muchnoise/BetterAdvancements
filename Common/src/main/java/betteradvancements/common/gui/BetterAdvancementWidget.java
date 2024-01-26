@@ -81,7 +81,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         this.description = Language.getInstance().getVisualOrder(
             this.findOptimalLines(ComponentUtils.mergeStyles(
                 displayInfo.getDescription().copy(),
-                Style.EMPTY.withColor(displayInfo.getFrame().getChatColor())
+                Style.EMPTY.withColor(displayInfo.getType().getChatColor())
             ), maxWidth));
 
         for (FormattedCharSequence line : this.description) {
@@ -227,7 +227,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
             RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
             guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
@@ -336,7 +336,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getFrame()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
         RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
 
         if (drawLeft) {

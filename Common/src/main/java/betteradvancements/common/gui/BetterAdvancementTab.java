@@ -81,7 +81,7 @@ public class BetterAdvancementTab {
         guiGraphics.enableScissor(left, top, left + width, top + height);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(left, top, 0);
-        ResourceLocation resourcelocation = Objects.requireNonNullElse(this.display.getBackground(), TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        ResourceLocation resourcelocation = this.display.getBackground().orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
