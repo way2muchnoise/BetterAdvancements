@@ -15,12 +15,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Setup
+      # Setup
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Create changelog
-        run: echo "CHANGELOG=$(git log ${{ github.event.before }}...${{ github.event.after }} --pretty=format:"\[[%h](https://github.com/$GITHUB_REPOSITORY/commit/%H)\] %s (%cn)  ")" >> "$GITHUB_ENV"
+        run: |
+          {
+            echo 'CHANGELOG<<EOF'
+            git log ${{ github.event.before }}...${{ github.event.after }} --pretty=format:"\[[%h](https://github.com/$GITHUB_REPOSITORY/commit/%H)\] %s (%cn)  "
+            echo ""
+            echo EOF
+          } >> "$GITHUB_ENV"
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
