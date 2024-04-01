@@ -15,7 +15,6 @@ val minecraftVersion: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
 
-val dependencyProjects: List<String> = listOf(":Common", ":CommonApi", ":ForgeApi",)
 val baseArchivesName = "${modFileName}-Forge-${minecraftVersion}"
 base {
 	archivesName.set(baseArchivesName)

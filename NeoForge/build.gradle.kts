@@ -18,7 +18,6 @@ val modJavaVersion: String by extra
 val mappingsParchmentMinecraftVersion: String by extra
 val mappingsParchmentVersion: String by extra
 
-val dependencyProjects: List<String> = listOf(":Common", ":CommonApi", ":NeoForgeApi",)
 val baseArchivesName = "${modFileName}-NeoForge-${minecraftVersion}"
 base {
     archivesName.set(baseArchivesName)
