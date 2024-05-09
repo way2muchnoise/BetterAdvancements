@@ -24,6 +24,8 @@ Improvements to the advancements screen.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.betteradvancements]]
+# A file name (in the root of the mod JAR) containing a logo for display
+logoFile="icon.png" #optional
 modId="forge" #mandatory
 mandatory=true #mandatory
 versionRange="${forgeVersionRange}" #mandatory
