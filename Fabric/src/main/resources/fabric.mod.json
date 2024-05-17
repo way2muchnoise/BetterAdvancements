@@ -13,6 +13,7 @@
       "sources": "${githubUrl}"
     },
     "license": "\"Don't Be a Jerk\" non-commercial care-free license",
+      "icon": "icon.png",
     "environment": "*",
     "entrypoints": {
       "client" : [
