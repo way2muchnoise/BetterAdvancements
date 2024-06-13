@@ -2,6 +2,7 @@ package betteradvancements.common.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionProgress;
@@ -81,7 +82,7 @@ public class CriterionGrid {
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
-    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
+    public static CriterionGrid findOptimalCriterionGrid(AdvancementHolder holder, Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
@@ -93,10 +94,11 @@ public class CriterionGrid {
         List<String> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
             CriterionProgress criterionProgress = progress.getCriterion(criterion);
+            String criterionKey = "betteradvancements.criterion." + holder.id() + "." + criterion;
             if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
-                    MutableComponent text2 = Component.literal(criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text.getString());
                 }
@@ -104,7 +106,7 @@ public class CriterionGrid {
             else {
                 if (detailLevel.showUnobtained()) {
                     MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-                    MutableComponent text2 = Component.literal(criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text.getString());
                 }
@@ -114,7 +116,7 @@ public class CriterionGrid {
 
         if (!detailLevel.showUnobtained()) {
             MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-            MutableComponent text2 = Component.literal(numUnobtained + " remaining").withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
+            MutableComponent text2 = Component.translatable("betteradvancements.remaining", numUnobtained).withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
         	text.append(text2);
             cellContents.add(text.getString());
         }

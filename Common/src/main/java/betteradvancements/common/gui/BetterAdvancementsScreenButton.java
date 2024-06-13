@@ -27,7 +27,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight();
             guiGraphics.blit(Resources.Gui.TABS, this.getX(), this.getY(), 56, 0, 28, 32);
             if (this.isHovered) {
-                guiGraphics.renderTooltip(mc.font, Component.literal("Advancements"), mouseX, mouseY);
+                guiGraphics.renderTooltip(mc.font, Component.translatable("gui.advancements"), mouseX, mouseY);
             }
             RenderSystem.defaultBlendFunc();
             guiGraphics.renderFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
