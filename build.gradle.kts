@@ -61,8 +61,8 @@ subprojects {
     // Set Java version.
     extensions.configure<JavaPluginExtension> {
         withSourcesJar()
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     architectury {
@@ -121,7 +121,7 @@ subprojects {
             // this will ensure that this task is redone when the versions change.
             inputs.property("version", version)
 
-            filesMatching(listOf("META-INF/mods.toml", "pack.mcmeta", "fabric.mod.json")) {
+            filesMatching(listOf("META-INF/mods.toml", "META-INF/neoforge.mods.toml", "pack.mcmeta", "fabric.mod.json")) {
                 expand(mapOf(
                         "modId" to modId,
                         "modName" to modName,

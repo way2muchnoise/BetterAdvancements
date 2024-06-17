@@ -10,7 +10,7 @@
     ],
     "contact": {
       "homepage": "${curseHomepageLink}",
-      "sources": "${githubUrl}"
+      "sources": "https://github.com/${githubUrl}"
     },
     "license": "\"Don't Be a Jerk\" non-commercial care-free license",
       "icon": "icon.png",
