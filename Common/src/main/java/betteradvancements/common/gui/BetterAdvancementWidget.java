@@ -69,7 +69,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         int titleWidth = 29 + mc.font.width(this.title) + k;
         BetterAdvancementsScreen screen = betterAdvancementTabGui.getScreen();
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.advancement(), advancementProgress, screen.width / 2, mc.font);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.holder(), this.advancementNode.advancement(), advancementProgress, screen.width / 2, mc.font);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
