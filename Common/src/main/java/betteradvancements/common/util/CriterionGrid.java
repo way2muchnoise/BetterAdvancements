@@ -21,7 +21,7 @@ public class CriterionGrid {
     public static boolean requiresShift = false;
     private static final CriterionGrid empty = new CriterionGrid();
 
-    private final List<String> cellContents;
+    private final List<Component> cellContents;
     private final int[] cellWidths;
     private final int fontHeight;
     private final int numColumns;
@@ -41,7 +41,7 @@ public class CriterionGrid {
         this.height = 0;
     }
 
-    public CriterionGrid(List<String> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
+    public CriterionGrid(List<Component> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
         this.cellContents = cellContents;
         this.cellWidths = cellWidths;
         this.fontHeight = fontHeight;
@@ -53,15 +53,14 @@ public class CriterionGrid {
         this.columns = new ArrayList<>();
         this.width = 0;
         for (int c = 0; c < this.numColumns; c++) {
-            List<String> column = new ArrayList<>();
+            List<Component> column = new ArrayList<>();
             int columnWidth = 0;
             for (int r = 0; r < this.numRows; r++) {
                 int cellIndex = c * this.numRows + r;
                 if (cellIndex >= this.cellContents.size()) {
                     break;
                 }
-                String str = this.cellContents.get(cellIndex);
-                column.add(str);
+                column.add(this.cellContents.get(cellIndex));
                 columnWidth = Math.max(columnWidth, this.cellWidths[cellIndex]);
             }
             this.columns.add(new Column(column, columnWidth));
@@ -70,15 +69,7 @@ public class CriterionGrid {
         this.height = this.numRows * this.fontHeight;
     }
 
-    public class Column {
-        public final List<String> cells;
-        public final int width;
-
-        public Column(List<String> cells, int width) {
-            this.cells = cells;
-            this.width = width;
-        }
-    }
+    public record Column(List<Component> cells, int width) {}
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
@@ -91,7 +82,7 @@ public class CriterionGrid {
             return CriterionGrid.empty;
         }
         int numUnobtained = 0;
-        List<String> cellContents = new ArrayList<>();
+        List<Component> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
             CriterionProgress criterionProgress = progress.getCriterion(criterion);
             String criterionKey = "betteradvancements.criterion." + holder.id() + "." + criterion;
@@ -100,7 +91,7 @@ public class CriterionGrid {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
                     MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
                     text.append(text2);
-                    cellContents.add(text.getString());
+                    cellContents.add(text);
                 }
             }
             else {
@@ -108,7 +99,7 @@ public class CriterionGrid {
                     MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
                     MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
                 	text.append(text2);
-                    cellContents.add(text.getString());
+                    cellContents.add(text);
                 }
                 numUnobtained++;
             }
@@ -118,7 +109,7 @@ public class CriterionGrid {
             MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
             MutableComponent text2 = Component.translatable("betteradvancements.remaining", numUnobtained).withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
         	text.append(text2);
-            cellContents.add(text.getString());
+            cellContents.add(text);
         }
 
         int[] cellWidths = new int[cellContents.size()];

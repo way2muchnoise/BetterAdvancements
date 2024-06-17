@@ -367,10 +367,10 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
             yOffset += this.description.size() * this.minecraft.font.lineHeight;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
                 CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
-                for (int rowIndex = 0; rowIndex < col.cells.size(); rowIndex++) {
-                    guiGraphics.drawString(this.minecraft.font, col.cells.get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
+                for (int rowIndex = 0; rowIndex < col.cells().size(); rowIndex++) {
+                    guiGraphics.drawString(this.minecraft.font, col.cells().get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
                 }
-                xOffset += col.width;
+                xOffset += col.width();
             }
         }
 
