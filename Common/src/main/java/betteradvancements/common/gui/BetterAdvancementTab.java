@@ -3,8 +3,7 @@ package betteradvancements.common.gui;
 import betteradvancements.common.advancements.BetterDisplayInfo;
 import betteradvancements.common.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementNode;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,22 +16,21 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 public class BetterAdvancementTab {
     public static boolean doFade = true;
-    public static final Map<AdvancementHolder, Tuple<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
+    public static final Map<Advancement, Tuple<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
 
     private final Minecraft minecraft;
     private final BetterAdvancementsScreen screen;
     private final BetterAdvancementTabType type;
     private final int index;
-    private final AdvancementNode rootNode;
+    private final Advancement advancement;
     private final DisplayInfo display;
     private final ItemStack icon;
     private final Component title;
     private final BetterAdvancementWidget root;
-    protected final Map<AdvancementHolder, BetterAdvancementWidget> widgets = Maps.newLinkedHashMap();
+    protected final Map<Advancement, BetterAdvancementWidget> widgets = Maps.newLinkedHashMap();
     private final BetterDisplayInfoRegistry betterDisplayInfos;
 
     protected int scrollX, scrollY;
@@ -41,22 +39,22 @@ public class BetterAdvancementTab {
     private float fade;
     private boolean centered;
 
-    public BetterAdvancementTab(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, BetterAdvancementTabType type, int index, AdvancementNode advancementNode, DisplayInfo displayInfo) {
+    public BetterAdvancementTab(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, BetterAdvancementTabType type, int index, Advancement advancement, DisplayInfo displayInfo) {
         this.minecraft = mc;
         this.screen = betterAdvancementsScreen;
         this.type = type;
         this.index = index;
-        this.rootNode = advancementNode;
+        this.advancement = advancement;
         this.display = displayInfo;
         this.icon = displayInfo.getIcon();
         this.title = displayInfo.getTitle();
-        this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancementNode);
-        this.root = new BetterAdvancementWidget(this, mc, advancementNode, displayInfo);
-        this.addWidget(this.root, advancementNode.holder());
+        this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancement);
+        this.root = new BetterAdvancementWidget(this, mc, advancement, displayInfo);
+        this.addWidget(this.root, advancement);
     }
 
-    public AdvancementNode getRootNode() {
-        return this.rootNode;
+    public Advancement getAdvancement() {
+        return this.advancement;
     }
 
     public Component getTitle() {
@@ -81,7 +79,7 @@ public class BetterAdvancementTab {
         guiGraphics.enableScissor(left, top, left + width, top + height);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(left, top, 0);
-        ResourceLocation resourcelocation = this.display.getBackground().orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        ResourceLocation resourcelocation = Objects.requireNonNullElse(this.display.getBackground(), TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
@@ -132,16 +130,15 @@ public class BetterAdvancementTab {
         return this.type.isMouseOver(left, top, width, height, this.index, mouseX, mouseY);
     }
 
-    public static BetterAdvancementTab create(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, int index, AdvancementNode advancementNode, int width, int height) {
-        Optional<DisplayInfo> optional = advancementNode.advancement().display();
-        if (optional.isEmpty()) {
+    public static BetterAdvancementTab create(Minecraft mc, BetterAdvancementsScreen betterAdvancementsScreen, int index, Advancement advancement, int width, int height) {
+        if (advancement.getDisplay() == null) {
             return null;
         } else {
             BetterAdvancementTabType advancementTabType = BetterAdvancementTabType.getTabType(width, height, index);
             if (advancementTabType == null) {
                 return null;
             } else {
-                return new BetterAdvancementTab(mc, betterAdvancementsScreen, advancementTabType, index, advancementNode, optional.get());
+                return new BetterAdvancementTab(mc, betterAdvancementsScreen, advancementTabType, index, advancement, advancement.getDisplay());
             }
 
         }
@@ -157,16 +154,15 @@ public class BetterAdvancementTab {
         }
     }
 
-    public void addAdvancement(AdvancementNode advancementNode) {
-        Optional<DisplayInfo> optional = advancementNode.advancement().display();
-        if (optional.isPresent()) {
-            BetterAdvancementWidget betterAdvancementEntryScreen = new BetterAdvancementWidget(this, this.minecraft, advancementNode, optional.get());
-            this.addWidget(betterAdvancementEntryScreen, advancementNode.holder());
+    public void addAdvancement(Advancement advancement) {
+        if (advancement.getDisplay() != null) {
+            BetterAdvancementWidget betterAdvancementEntryScreen = new BetterAdvancementWidget(this, this.minecraft, advancement, advancement.getDisplay());
+            this.addWidget(betterAdvancementEntryScreen, advancement);
         }
     }
 
-    private void addWidget(BetterAdvancementWidget betterAdvancementEntryScreen, AdvancementHolder advancementHolder) {
-        this.widgets.put(advancementHolder, betterAdvancementEntryScreen);
+    private void addWidget(BetterAdvancementWidget betterAdvancementEntryScreen, Advancement advancement) {
+        this.widgets.put(advancement, betterAdvancementEntryScreen);
         int left = betterAdvancementEntryScreen.getX();
         int right = left + 28;
         int top = betterAdvancementEntryScreen.getY();
@@ -181,24 +177,24 @@ public class BetterAdvancementTab {
         }
     }
 
-    public BetterAdvancementWidget getWidget(AdvancementHolder advancementHolder) {
-        return this.widgets.get(advancementHolder);
+    public BetterAdvancementWidget getWidget(Advancement advancement) {
+        return this.widgets.get(advancement);
     }
 
     public BetterAdvancementsScreen getScreen() {
         return this.screen;
     }
 
-    public BetterDisplayInfo getBetterDisplayInfo(AdvancementNode advancementNode) {
-        return betterDisplayInfos.get(advancementNode.holder());
+    public BetterDisplayInfo getBetterDisplayInfo(Advancement advancement) {
+        return betterDisplayInfos.get(advancement);
     }
 
     public void storeScroll() {
-        scrollHistory.put(this.rootNode.holder(), new Tuple<>(scrollX, scrollY));
+        scrollHistory.put(this.advancement, new Tuple<>(scrollX, scrollY));
     }
 
     public void loadScroll() {
-        Tuple<Integer, Integer> scroll = scrollHistory.get(this.rootNode.holder());
+        Tuple<Integer, Integer> scroll = scrollHistory.get(this.advancement);
         if (scroll != null) {
             this.centered = true;
             this.scrollX = scroll.getA();

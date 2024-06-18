@@ -2,9 +2,9 @@ package betteradvancements.neoforge.config;
 
 import betteradvancements.common.reference.Constants;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.event.config.ModConfigEvent;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 public class Config {
     public static Config instance = new Config();
@@ -13,7 +13,7 @@ public class Config {
 
     }
 
-    public static final ModConfigSpec CLIENT = ConfigValues.build();
+    public static final ForgeConfigSpec CLIENT = ConfigValues.build();
 
     @SubscribeEvent
     public void onLoad(final ModConfigEvent.Loading configEvent) {

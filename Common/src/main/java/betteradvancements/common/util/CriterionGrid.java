@@ -2,7 +2,6 @@ package betteradvancements.common.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.CriterionProgress;
@@ -73,11 +72,11 @@ public class CriterionGrid {
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
-    public static CriterionGrid findOptimalCriterionGrid(AdvancementHolder holder, Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
+    public static CriterionGrid findOptimalCriterionGrid(Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
-        Map<String, Criterion<?>> criteria = advancement.criteria();
+        Map<String, Criterion> criteria = advancement.getCriteria();
         if (criteria.size() <= 1) {
             return CriterionGrid.empty;
         }
@@ -85,7 +84,7 @@ public class CriterionGrid {
         List<Component> cellContents = new ArrayList<>();
         for (String criterion : criteria.keySet()) {
             CriterionProgress criterionProgress = progress.getCriterion(criterion);
-            String criterionKey = "betteradvancements.criterion." + holder.id() + "." + criterion;
+            String criterionKey = "betteradvancements.criterion." + advancement.getId() + "." + criterion;
             if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);

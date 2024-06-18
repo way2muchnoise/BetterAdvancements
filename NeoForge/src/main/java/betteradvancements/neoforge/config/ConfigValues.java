@@ -8,33 +8,33 @@ import betteradvancements.common.gui.BetterAdvancementsScreenButton;
 import betteradvancements.common.util.ColorHelper;
 import betteradvancements.common.util.CriteriaDetail;
 import betteradvancements.common.util.CriterionGrid;
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ConfigValues {
 
-    public static ModConfigSpec.ConfigValue<String> defaultUncompletedIconColor;
-    public static ModConfigSpec.ConfigValue<String> defaultUncompletedTitleColor;
-    public static ModConfigSpec.ConfigValue<String> defaultCompletedIconColor;
-    public static ModConfigSpec.ConfigValue<String> defaultCompletedTitleColor;
+    public static ForgeConfigSpec.ConfigValue<String> defaultUncompletedIconColor;
+    public static ForgeConfigSpec.ConfigValue<String> defaultUncompletedTitleColor;
+    public static ForgeConfigSpec.ConfigValue<String> defaultCompletedIconColor;
+    public static ForgeConfigSpec.ConfigValue<String> defaultCompletedTitleColor;
 
-    public static ModConfigSpec.BooleanValue doFade;
-    public static ModConfigSpec.BooleanValue showDebugCoordinates;
-    public static ModConfigSpec.BooleanValue orderTabsAlphabetically;
-    public static ModConfigSpec.IntValue uiScaling;
+    public static ForgeConfigSpec.BooleanValue doFade;
+    public static ForgeConfigSpec.BooleanValue showDebugCoordinates;
+    public static ForgeConfigSpec.BooleanValue orderTabsAlphabetically;
+    public static ForgeConfigSpec.IntValue uiScaling;
 
-    public static ModConfigSpec.ConfigValue<String> detailLevel;
-    public static ModConfigSpec.BooleanValue requiresShift;
-    public static ModConfigSpec.BooleanValue addToInventory;
+    public static ForgeConfigSpec.ConfigValue<String> detailLevel;
+    public static ForgeConfigSpec.BooleanValue requiresShift;
+    public static ForgeConfigSpec.BooleanValue addToInventory;
 
-    public static ModConfigSpec.BooleanValue defaultDrawDirectLines;
-    public static ModConfigSpec.BooleanValue defaultHideLines;
-    public static ModConfigSpec.ConfigValue<String> defaultCompletedLineColor;
-    public static ModConfigSpec.ConfigValue<String>  defaultUncompletedLineColor;
+    public static ForgeConfigSpec.BooleanValue defaultDrawDirectLines;
+    public static ForgeConfigSpec.BooleanValue defaultHideLines;
+    public static ForgeConfigSpec.ConfigValue<String> defaultCompletedLineColor;
+    public static ForgeConfigSpec.ConfigValue<String>  defaultUncompletedLineColor;
 
-    public static ModConfigSpec.BooleanValue onlyUseAboveAdvancementTabs;
+    public static ForgeConfigSpec.BooleanValue onlyUseAboveAdvancementTabs;
 
-    public static ModConfigSpec build() {
-        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
+    public static ForgeConfigSpec build() {
+        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 
         defaultUncompletedIconColor = builder.define("defaultUncompletedIconColor", BetterDisplayInfo.defaultMinecraftUncompletedIconColor);
         defaultUncompletedTitleColor = builder.define("defaultUncompletedTitleColor", BetterDisplayInfo.defaultMinecraftUncompletedTitleColor);

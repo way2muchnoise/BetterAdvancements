@@ -27,7 +27,7 @@ architectury {
     // Create the IDE launch configurations for this subproject.
     platformSetupLoomIde()
     // Set up Architectury for Forge.
-    neoForge()
+    forge()
 }
 
 loom {
@@ -39,10 +39,10 @@ repositories {
 }
 
 dependencies {
-    neoForge("net.neoforged:neoforge:${neoforgeVersion}")
+    forge("net.neoforged:forge:${minecraftVersion}-${neoforgeVersion}")
 
     implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
-    shadowImplementation(project(":Common", configuration = "transformProductionNeoForge")) { isTransitive = false }
+    shadowImplementation(project(":Common", configuration = "transformProductionForge")) { isTransitive = false }
 
     implementation(project(":NeoForgeApi", configuration = "namedElements"))
     shadowImplementation(project(":CommonApi")) { isTransitive = false }

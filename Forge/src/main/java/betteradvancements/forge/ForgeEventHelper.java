@@ -6,7 +6,7 @@ import betteradvancements.common.api.event.IAdvancementMovedEvent;
 import betteradvancements.forge.api.event.AdvancementDrawConnectionsEvent;
 import betteradvancements.forge.api.event.AdvancementMovedEvent;
 import betteradvancements.common.platform.IEventHelper;
-import net.minecraft.advancements.AdvancementNode;
+import net.minecraft.advancements.Advancement;
 import net.minecraftforge.common.MinecraftForge;
 
 public class ForgeEventHelper implements IEventHelper {
@@ -18,7 +18,7 @@ public class ForgeEventHelper implements IEventHelper {
     }
 
     @Override
-    public IAdvancementDrawConnectionsEvent postAdvancementDrawConnectionsEvent(AdvancementNode advancement) {
+    public IAdvancementDrawConnectionsEvent postAdvancementDrawConnectionsEvent(Advancement advancement) {
         final AdvancementDrawConnectionsEvent event = new AdvancementDrawConnectionsEvent(advancement);
         MinecraftForge.EVENT_BUS.post(event);
         return event;

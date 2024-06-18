@@ -5,8 +5,8 @@ import betteradvancements.common.reference.Constants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;

@@ -29,8 +29,8 @@ displayTest="NONE"
 
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.betteradvancements]]
-modId="neoforge" #mandatory
-type="required" #mandatory
+modId="forge" #mandatory
+mandatory=true #mandatory
 versionRange="${neoforgeVersionRange}" #mandatory
 # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 ordering="NONE"
@@ -39,7 +39,7 @@ side="CLIENT"
 
 [[dependencies.betteradvancements]]
 modId="minecraft" #mandatory
-type="required" #mandatory
+mandatory=true #mandatory
 versionRange="${minecraftVersionRange}" #mandatory
 # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 ordering="NONE"

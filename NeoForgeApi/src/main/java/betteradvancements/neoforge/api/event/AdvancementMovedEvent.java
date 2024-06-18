@@ -2,8 +2,8 @@ package betteradvancements.neoforge.api.event;
 
 import betteradvancements.common.api.IBetterAdvancementEntryGui;
 import betteradvancements.common.api.event.IAdvancementMovedEvent;
-import net.minecraft.advancements.AdvancementNode;
-import net.neoforged.bus.api.Event;
+import net.minecraft.advancements.Advancement;
+import net.minecraftforge.eventbus.api.Event;
 
 /**
  *  Event fired after an advancement has been moved in the gui and the mouse button has been released.
@@ -12,7 +12,7 @@ public class AdvancementMovedEvent extends Event implements IAdvancementMovedEve
     /**
      * Advancement that has been moved.
      */
-    private final AdvancementNode advancement;
+    private final Advancement advancement;
     /*
      * Coordinates the advancement was moved to.
      */
@@ -24,7 +24,7 @@ public class AdvancementMovedEvent extends Event implements IAdvancementMovedEve
         this.y = gui.getY();
     }
     
-    public AdvancementNode getAdvancement() {
+    public Advancement getAdvancement() {
         return this.advancement;
     }
     

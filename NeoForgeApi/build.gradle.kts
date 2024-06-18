@@ -1,9 +1,10 @@
 // gradle.properties
 val neoforgeVersion: String by extra
+val minecraftVersion: String by extra
 
 architectury {
     // Set up Architectury for NeoForge.
-    neoForge()
+    forge()
 }
 
 repositories {
@@ -11,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    neoForge("net.neoforged:neoforge:${neoforgeVersion}")
+    forge("net.neoforged:forge:${minecraftVersion}-${neoforgeVersion}")
     api(project(":CommonApi", configuration = "namedElements"))
 }
 
