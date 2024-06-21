@@ -2,9 +2,7 @@ import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
 plugins {
-	java
-	id("fabric-loom") version ("1.0-SNAPSHOT")
-	id("net.darkhax.curseforgegradle") version("1.0.11")
+	id("net.darkhax.curseforgegradle") version("1.1.18")
 	id("com.modrinth.minotaur") version("2.+")
 }
 
@@ -16,8 +14,6 @@ val fabricVersion: String by extra
 val fabricLoaderVersion: String by extra
 val clothVersion: String by extra
 val modMenuVersion: String by extra
-val mappingsParchmentMinecraftVersion: String by extra
-val mappingsParchmentVersion: String by extra
 val minecraftVersion: String by extra
 val modId: String by extra
 val modFileName: String by extra
@@ -28,66 +24,36 @@ base {
 	archivesName.set(baseArchivesName)
 }
 
-val dependencyProjects: List<ProjectDependency> = listOf(
-	project.dependencies.project(":Common"),
-	project.dependencies.project(":CommonApi"),
-	project.dependencies.project(":FabricApi", configuration = "namedElements")
-)
-
-dependencyProjects.forEach {
-	project.evaluationDependsOn(it.dependencyProject.path)
+architectury {
+	// Create the IDE launch configurations for this subproject.
+	platformSetupLoomIde()
+	// Set up Architectury for Fabric.
+	fabric()
 }
 
-sourceSets {
-}
-
-java {
-	withSourcesJar()
-	toolchain {
-		languageVersion.set(JavaLanguageVersion.of(modJavaVersion))
-	}
-}
-
-repositories {
-	maven("https://maven.shedaniel.me/")
-	maven("https://maven.terraformersmc.com/releases/")
-	maven("https://maven.parchmentmc.org/")
+loom {
+	accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:${minecraftVersion}")
-	mappings(loom.layered {
-		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-${mappingsParchmentMinecraftVersion}:${mappingsParchmentVersion}@zip")
-	})
 	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${clothVersion}") {
 		exclude("net.fabricmc.fabric-api")
 	}
 	modImplementation("com.terraformersmc:modmenu:${modMenuVersion}")
-	dependencyProjects.forEach {
-		implementation(it)
-	}
-}
 
-tasks.named<Jar>("jar") {
-	from(sourceSets.main.get().output)
-	for (p in dependencyProjects) {
-		from(p.dependencyProject.sourceSets.main.get().output)
-	}
-	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
+	shadowImplementation(project(":Common", configuration = "transformProductionFabric")) { isTransitive = false }
+
+	implementation(project(":FabricApi", configuration = "namedElements"))
+	shadowImplementation(project(":CommonApi")) { isTransitive = false }
+	shadowImplementation(project(":FabricApi")) { isTransitive = false }
 }
 
 val apiJar = tasks.register<Jar>("apiJar") {
 	from(project(":CommonApi").sourceSets.main.get().output)
 	from(project(":FabricApi").sourceSets.main.get().output)
-
-	// TODO: when FG bug is fixed, remove allJava from the api jar.
-	// https://github.com/MinecraftForge/ForgeGradle/issues/369
-	// Gradle should be able to pull them from the -sources jar.
-	from(project(":CommonApi").sourceSets.main.get().allJava)
-	from(project(":FabricApi").sourceSets.main.get().allJava)
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 	archiveClassifier.set("api")
@@ -95,7 +61,6 @@ val apiJar = tasks.register<Jar>("apiJar") {
 
 artifacts {
 	archives(apiJar.get())
-	archives(tasks.jar.get())
 	archives(tasks.remapJar.get())
 	archives(tasks.remapSourcesJar.get())
 }
@@ -106,24 +71,6 @@ tasks.withType<Jar> {
 
 tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
 	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
-}
-
-loom {
-	accessWidenerPath.set(file("../Common/src/main/resources/betteradvancements.accesswidener"))
-	runs {
-		create("FabricClient") {
-			client()
-			configName = "Fabric Client"
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-		create("FabricServer") {
-			server()
-			configName = "Fabric Server"
-			ideConfigGenerated(true)
-			runDir("run")
-		}
-	}
 }
 
 tasks.withType<ProcessResources> {
@@ -141,8 +88,9 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 	mainFile.addModLoader("Fabric")
 	mainFile.addJavaVersion("Java $modJavaVersion")
 	mainFile.addGameVersion(minecraftVersion)
-	mainFile.withAdditionalFile(apiJar.get())
-	mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
+	//TODO: Figure out how to upload correct files
+//	mainFile.withAdditionalFile(apiJar.get())
+//	mainFile.withAdditionalFile(tasks.remapSourcesJar.get())
 }
 
 modrinth {
@@ -151,6 +99,7 @@ modrinth {
 	versionNumber.set("${project.version}")
 	versionName.set("${project.version} for Fabric $minecraftVersion")
 	versionType.set("alpha")
+	changelog.set(System.getenv("CHANGELOG") ?: "")
 	uploadFile.set(tasks.remapJar.get())
 	gameVersions.add(minecraftVersion)
 	// additionalFiles.addAll(arrayOf(apiJar.get(), tasks.remapSourcesJar.get())) // TODO: Figure out how to upload these

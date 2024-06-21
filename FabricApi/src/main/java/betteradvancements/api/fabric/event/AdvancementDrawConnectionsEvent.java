@@ -1,6 +1,6 @@
 package betteradvancements.api.fabric.event;
 
-import betteradvancements.api.event.IAdvancementDrawConnectionsEvent;
+import betteradvancements.common.api.event.IAdvancementDrawConnectionsEvent;
 import net.minecraft.advancements.Advancement;
 
 import java.util.ArrayList;

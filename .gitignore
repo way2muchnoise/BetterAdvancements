@@ -27,15 +27,18 @@ out
 *.iws
 *.iml
 .idea/*
-!.idea/scopes
 
 # gradle
 build
 .gradle
 
+# Architectury
+.architectury-transformer
+
 # other
 eclipse
 run
+
 
 ## minecraft
 /config/

@@ -1,7 +1,7 @@
 package betteradvancements.forge;
 
-import betteradvancements.platform.IAdvancementVisitor;
-import betteradvancements.reference.Constants;
+import betteradvancements.common.platform.IAdvancementVisitor;
+import betteradvancements.common.reference.Constants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeManager;

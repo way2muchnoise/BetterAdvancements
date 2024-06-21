@@ -1,8 +1,8 @@
 package betteradvancements.forge.handler;
 
-import betteradvancements.gui.BetterAdvancementsScreen;
-import betteradvancements.gui.BetterAdvancementsScreenButton;
-import betteradvancements.util.AdvancementComparer;
+import betteradvancements.common.gui.BetterAdvancementsScreen;
+import betteradvancements.common.gui.BetterAdvancementsScreenButton;
+import betteradvancements.common.util.AdvancementComparer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementList;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GuiOpenHandler {
     public static final GuiOpenHandler instance = new GuiOpenHandler();
@@ -49,10 +48,10 @@ public class GuiOpenHandler {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
                 ClientAdvancements clientAdvancements = mc.player.connection.getAdvancements();
-                AdvancementList advancementList = clientAdvancements.getAdvancements();
-                Set<Advancement> roots = (Set<Advancement>) advancementList.getRoots();
+                AdvancementList advancementTree = clientAdvancements.getAdvancements();
+                Set<Advancement> roots = (Set<Advancement>) advancementTree.getRoots();
 
-                List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(a -> a.getId().toString()).collect(Collectors.toList());
+                List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(n -> n.getId().toString()).toList();
 
                 List<Advancement> advancements = new ArrayList<>(roots);
                 roots.clear();

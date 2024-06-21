@@ -1,8 +1,8 @@
 package betteradvancements.fabric;
 
-import betteradvancements.platform.IAdvancementVisitor;
-import betteradvancements.platform.IEventHelper;
-import betteradvancements.platform.IPlatformHelper;
+import betteradvancements.common.platform.IAdvancementVisitor;
+import betteradvancements.common.platform.IEventHelper;
+import betteradvancements.common.platform.IPlatformHelper;
 
 public class FabricPlatformHelper implements IPlatformHelper {
     private final FabricEventHelper eventHelper = new FabricEventHelper();
