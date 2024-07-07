@@ -43,7 +43,7 @@ public class BetterDisplayInfoRegistry {
                     return true;
 
                 String name = FilenameUtils.removeExtension(relative).replaceAll("\\\\", "/");
-                ResourceLocation key = new ResourceLocation(location.getNamespace(), name);
+                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), name);
 
                 if (!registry.containsKey(key)) {
                     BufferedReader reader = null;

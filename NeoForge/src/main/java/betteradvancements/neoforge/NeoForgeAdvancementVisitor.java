@@ -48,7 +48,7 @@ public class NeoForgeAdvancementVisitor implements IAdvancementVisitor {
             Path root = null;
             if (source == null) {
                 if (serverLevel != null) {
-                    root = serverLevel.getServer().getServerDirectory().toPath().resolve("advancements/" + location.getNamespace());
+                    root = serverLevel.getServer().getServerDirectory().resolve("advancements/" + location.getNamespace());
                 }
             }
             else if (source.isFile()) {

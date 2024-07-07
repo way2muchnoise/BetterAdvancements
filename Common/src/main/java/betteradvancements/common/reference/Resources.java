@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class Resources {
     private static ResourceLocation resourceLocation(String location) {
-        return new ResourceLocation(Constants.ID, location);
+        return ResourceLocation.fromNamespaceAndPath(Constants.ID, location);
     }
 
     public static final class Gui {
