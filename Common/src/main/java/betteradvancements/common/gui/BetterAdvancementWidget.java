@@ -156,24 +156,24 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         int borderLineColor = 0xFF000000;
         
         if (this.betterDisplayInfo.drawDirectLines()) {
-            double x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2 + 3;
-            double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
-            double x2 = scrollX + parent.x + ADVANCEMENT_SIZE / 2 + 3;
-            double y2 = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
-            
-            double width;
+            float x1 = scrollX + this.x + ADVANCEMENT_SIZE / 2 + 3;
+            float y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
+            float x2 = scrollX + parent.x + ADVANCEMENT_SIZE / 2 + 3;
+            float y2 = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
+
+            float width;
             boolean perpendicular = x1 == x2 || y1 == y2;
             
             if (!perpendicular) {
                 switch (this.screenScale) {
-                    case 1 -> width = drawInside ? 1.5 : 0.5;
-                    case 2 -> width = drawInside ? 2.25 : 0.75;
-                    case 3 -> width = drawInside ? 2 : 0.6666666666666667;
-                    case 4 -> width = drawInside ? 2.125 : 0.625;
+                    case 1 -> width = drawInside ? 1.5F : 0.5F;
+                    case 2 -> width = drawInside ? 2.25F : 0.75F;
+                    case 3 -> width = drawInside ? 2F : 0.6666666666666667F;
+                    case 4 -> width = drawInside ? 2.125F : 0.625F;
                     default -> width = drawInside ? 3 : 1;
                 }
                 if (drawInside) {
-                    RenderUtil.drawRect(x1 - .75, y1 - .75, x2 - .75, y2 - .75, width, borderLineColor);
+                    RenderUtil.drawRect(x1 - .75F, y1 - .75F, x2 - .75F, y2 - .75F, width, borderLineColor);
                 }
                 else {
                     RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);

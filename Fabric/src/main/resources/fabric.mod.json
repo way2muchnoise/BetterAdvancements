@@ -27,10 +27,10 @@
       "betteradvancements.mixins.json"
     ],
     "depends": {
-      "fabricloader": ">=0.13",
+      "fabricloader": ">=0.15",
       "fabric-api": "*",
-      "minecraft": "1.20.x",
-      "java": ">=17"
+      "minecraft": "1.21.x",
+      "java": ">=21"
     },
     "suggests": {
     },
