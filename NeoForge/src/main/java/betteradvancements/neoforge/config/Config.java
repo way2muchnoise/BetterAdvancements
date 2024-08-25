@@ -27,7 +27,7 @@ public class Config {
     public void onFileChange(final ModConfigEvent.Reloading configEvent) {
         if (configEvent.getConfig().getModId().equals(Constants.ID)) {
             Constants.log.debug("Reloaded {} config file {}", Constants.ID, configEvent.getConfig().getFileName());
-            ((CommentedFileConfig) configEvent.getConfig().getConfigData()).load();
+            ((CommentedFileConfig) configEvent.getConfig().getLoadedConfig().config()).load();
             ConfigValues.pushChanges();
         }
     }

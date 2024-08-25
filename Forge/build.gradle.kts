@@ -41,6 +41,13 @@ loom {
 	}
 }
 
+configurations.configureEach {
+	// Fix that can be found in Forge MDK too
+	resolutionStrategy {
+		force("net.sf.jopt-simple:jopt-simple:5.0.4")
+	}
+}
+
 dependencies {
 	forge("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
 
