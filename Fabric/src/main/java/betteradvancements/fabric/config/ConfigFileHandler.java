@@ -22,8 +22,13 @@ import java.io.IOException;
 public class ConfigFileHandler {
     public static void readFromConfig() {
         JsonObject root = new JsonObject();
-        try (FileReader file = new FileReader(getConfigFile())) {
-            root = JsonParser.parseReader(file).getAsJsonObject();
+        try {
+            File configFile = getConfigFile();
+            if (!configFile.exists()) {
+                writeToConfig();
+                configFile = getConfigFile();
+            }
+            root = JsonParser.parseReader(new FileReader(configFile)).getAsJsonObject();
         } catch (IOException e) {
             Constants.log.error(e);
         }
@@ -106,7 +111,7 @@ public class ConfigFileHandler {
         }
     }
 
-    public static File getConfigFile() {
+    public static File getConfigFile() throws IOException {
         return FabricLoader.getInstance().getConfigDir().resolve("betteradvancements.json").toFile();
     }
 }
