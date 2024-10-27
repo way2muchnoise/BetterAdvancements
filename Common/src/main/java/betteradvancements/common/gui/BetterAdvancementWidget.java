@@ -62,9 +62,9 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
     private void refreshHover() {
         Minecraft mc = this.minecraft;
         int k = 0;
-        if (this.advancementNode.advancement().criteria().size() > 1) {
+        if (this.advancementNode.advancement().requirements().size() > 1) {
             // Add some space for the requirement counter
-            int strLengthRequirementCount = String.valueOf(this.advancementNode.advancement().criteria().size()).length();
+            int strLengthRequirementCount = String.valueOf(this.advancementNode.advancement().requirements().size()).length();
             k = mc.font.width("  ") + mc.font.width("0") * strLengthRequirementCount * 2 + mc.font.width("/");
         }
         int titleWidth = 29 + mc.font.width(this.title) + k;

@@ -1,11 +1,7 @@
 package betteradvancements.common.util;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.CriterionProgress;
+import net.minecraft.advancements.*;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -13,7 +9,6 @@ import net.minecraft.network.chat.MutableComponent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 // An arrangement of criteria into rows and columns
 public class CriterionGrid {
@@ -77,13 +72,13 @@ public class CriterionGrid {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
-        Map<String, Criterion<?>> criteria = advancement.criteria();
-        if (criteria.size() <= 1) {
+        AdvancementRequirements requirements = advancement.requirements();
+        if (requirements.size() <= 1) {
             return CriterionGrid.empty;
         }
         int numUnobtained = 0;
         List<Component> cellContents = new ArrayList<>();
-        for (String criterion : criteria.keySet()) {
+        for (String criterion : requirements.names()) {
             CriterionProgress criterionProgress = progress.getCriterion(criterion);
             String criterionKey = "betteradvancements.criterion." + holder.id() + "." + criterion;
             if (criterionProgress != null && criterionProgress.isDone()) {
