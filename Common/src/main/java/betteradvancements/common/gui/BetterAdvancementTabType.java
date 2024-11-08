@@ -3,6 +3,7 @@ package betteradvancements.common.gui;
 import betteradvancements.common.reference.Resources;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.advancements.AdvancementTabType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class BetterAdvancementTabType {
         }
 
         int j = selected ? this.textureY + this.height : this.textureY;
-        guiGraphics.blit(Resources.Gui.TABS, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.TABS, x + this.getX(index, width, height), y + this.getY(index, width, height), i, j, this.width, this.height, 256, 256);
     }
 
     public void drawIcon(GuiGraphics guiGraphics, int left, int top, int width, int height, int index, ItemStack stack) {

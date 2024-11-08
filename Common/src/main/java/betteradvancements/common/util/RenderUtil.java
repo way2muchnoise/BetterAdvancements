@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class RenderUtil {
@@ -17,7 +18,7 @@ public class RenderUtil {
             for (int l = 0; l < height; l += textureHeight) {
                 int drawY = y + l;
                 int drawHeight = Math.min(textureHeight, height - l);
-                guiGraphics.blit(texture, drawX, drawY, textureX, textureY, drawWidth, drawHeight);
+                guiGraphics.blit(RenderType::guiTextured, texture, drawX, drawY, textureX, textureY, drawWidth, drawHeight, 256, 256);
             }
         }
     }

@@ -15,6 +15,7 @@ import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -227,7 +228,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
             RenderSystem.enableBlend();
-            guiGraphics.blitSprite(advancementState.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+            guiGraphics.blitSprite(RenderType::guiTextured, advancementState.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
             RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
             guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
         }
@@ -322,21 +323,21 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         // Title left side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleLeft));
         int left_side = Math.min(j, WIDGET_WIDTH - 16);
-        guiGraphics.blit(Resources.Gui.WIDGETS, drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, drawX, drawY, 0, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, left_side, WIDGET_HEIGHT, 256, 256);
         if (left_side < j) {
-            guiGraphics.blit(Resources.Gui.WIDGETS, drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, drawX + left_side, drawY, 16, betterDisplayInfo.getTitleYMultiplier(stateTitleLeft) * WIDGET_HEIGHT, j - left_side, WIDGET_HEIGHT, 256, 256);
         }
         // Title right side
         RenderUtil.setColor(betterDisplayInfo.getTitleColor(stateTitleRight));
         int right_side = Math.min(k, WIDGET_WIDTH - 16);
-        guiGraphics.blit(Resources.Gui.WIDGETS, drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, drawX + j, drawY, WIDGET_WIDTH - right_side, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, right_side, WIDGET_HEIGHT, 256, 256);
         if (right_side < k) {
             // + and - 2 is to create some overlap in the drawing when it extends past the max length of the texture
-            guiGraphics.blit(Resources.Gui.WIDGETS, drawX + j + right_side - 2, drawY, WIDGET_WIDTH - k + right_side - 2, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side + 2, WIDGET_HEIGHT);
+            guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, drawX + j + right_side - 2, drawY, WIDGET_WIDTH - k + right_side - 2, betterDisplayInfo.getTitleYMultiplier(stateTitleRight) * WIDGET_HEIGHT, k - right_side + 2, WIDGET_HEIGHT, 256, 256);
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        guiGraphics.blitSprite(stateIcon.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+        guiGraphics.blitSprite(RenderType::guiTextured, stateIcon.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
         RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
 
         if (drawLeft) {
@@ -379,17 +380,17 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
     protected void render9Sprite(GuiGraphics guiGraphics, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
         // Top left corner
-        guiGraphics.blit(Resources.Gui.WIDGETS, x, y, textureX, textureY, textureHeight, textureHeight);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, x, y, textureX, textureY, textureHeight, textureHeight, 256, 256);
         // Top side
         RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + textureHeight, y, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY, textureWidth - textureHeight - textureHeight, textureDistance);
         // Top right corner
-        guiGraphics.blit(Resources.Gui.WIDGETS, x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, x + width - textureHeight, y, textureX + textureWidth - textureHeight, textureY, textureHeight, textureHeight, 256, 256);
         // Bottom left corner
-        guiGraphics.blit(Resources.Gui.WIDGETS, x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, x, y + height - textureHeight, textureX, textureY + textureDistance - textureHeight, textureHeight, textureHeight, 256, 256);
         // Bottom side
         RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + textureHeight, y + height - textureHeight, width - textureHeight - textureHeight, textureHeight, textureX + textureHeight, textureY + textureDistance - textureHeight, textureWidth - textureHeight - textureHeight, textureDistance);
         // Bottom right corner
-        guiGraphics.blit(Resources.Gui.WIDGETS, x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight);
+        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WIDGETS, x + width - textureHeight, y + height - textureHeight, textureX + textureWidth - textureHeight, textureY + textureDistance - textureHeight, textureHeight, textureHeight, 256, 256);
         // Left side
         RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
         // Center
