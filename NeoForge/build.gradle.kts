@@ -31,7 +31,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
+    accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 }
 
 repositories {
@@ -52,14 +52,6 @@ dependencies {
     forgeRuntimeLibrary(project(":CommonApi", configuration = "namedElements"))
     forgeRuntimeLibrary(project(":NeoForgeApi", configuration = "namedElements"))
 }
-
-tasks {
-    remapJar {
-        // Convert the access widener to a NeoForge access transformer.
-        atAccessWideners.add("betteradvancements.accesswidener")
-    }
-}
-
 
 val apiJar = tasks.register<Jar>("apiJar") {
     from(project(":CommonApi").sourceSets.main.get().output)

@@ -28,17 +28,7 @@ architectury {
 }
 
 loom {
-	// Make the Forge project use the common access widener.
-	accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
-
-	forge {
-		// Enable Loom's AW -> AT conversion for Forge.
-		// This will make remapJar convert the common AW to a Forge access transformer.
-		convertAccessWideners.set(true)
-		// Add an "extra" converted access widener which comes from outside the project.
-		// The path is relative to the mod jar's root.
-		extraAccessWideners.add("betteradvancements.accesswidener")
-	}
+	accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
 }
 
 configurations.configureEach {
