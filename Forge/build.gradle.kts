@@ -12,6 +12,7 @@ val curseProjectId: String by extra
 val modrinthProjectId: String by extra
 val forgeVersion: String by extra
 val minecraftVersion: String by extra
+val modId: String by extra
 val modFileName: String by extra
 val modJavaVersion: String by extra
 
@@ -72,6 +73,7 @@ tasks.withType<Jar> {
 }
 
 tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
+	atAccessWideners.add("${modId}.accesswidener")
 	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 

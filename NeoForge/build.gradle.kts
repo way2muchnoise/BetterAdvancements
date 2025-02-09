@@ -72,6 +72,7 @@ tasks.withType<Jar> {
 }
 
 tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
+    atAccessWideners.add("${modId}.accesswidener")
     destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 
