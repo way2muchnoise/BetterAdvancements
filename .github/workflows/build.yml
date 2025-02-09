@@ -38,7 +38,7 @@ jobs:
         run: chmod +x ./gradlew
       # Build
       - name: Build with Gradle
-        run: ./gradlew clean generateRemapClasspath build
+        run: ./gradlew clean generateRemapClasspath jar
       # Publish
       - name: Publish CurseForge
         run: ./gradlew :Forge:publishCurseForge :Fabric:publishCurseForge :NeoForge:publishCurseForge
