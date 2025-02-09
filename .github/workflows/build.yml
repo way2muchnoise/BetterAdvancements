@@ -38,12 +38,12 @@ jobs:
         run: chmod +x ./gradlew
       # Build
       - name: Build with Gradle
-        run: ./gradlew clean generateRemapClasspath jar
+        run: ./gradlew clean generateRemapClasspath build
       # Publish
       - name: Publish CurseForge
-        run: ./gradlew :Forge:publishCurseForge :Fabric:publishCurseForge :NeoForge:publishCurseForge
+        run: ./gradlew cleanRemapJar :Forge:publishCurseForge :Fabric:publishCurseForge :NeoForge:publishCurseForge
       - name: Publish Modrinth
-        run: ./gradlew :Forge:modrinth :Fabric:modrinth :NeoForge:modrinth
+        run: ./gradlew cleanRemapJar :Forge:modrinth :Fabric:modrinth :NeoForge:modrinth
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
