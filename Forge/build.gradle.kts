@@ -28,10 +28,6 @@ architectury {
 	forge()
 }
 
-loom {
-	accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
-}
-
 configurations.configureEach {
 	// Fix that can be found in Forge MDK too
 	resolutionStrategy {

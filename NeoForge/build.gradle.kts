@@ -30,10 +30,6 @@ architectury {
     neoForge()
 }
 
-loom {
-    accessWidenerPath.set(project(":Common").loom.accessWidenerPath)
-}
-
 repositories {
     maven("https://maven.neoforged.net/releases/")
 }
