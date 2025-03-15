@@ -57,6 +57,9 @@ public class ConfigFileHandler {
         if (root.has("uiScaling")) {
             BetterAdvancementsScreen.uiScaling = root.get("uiScaling").getAsInt();
         }
+        if (root.has("defaultZoom")) {
+            BetterAdvancementsScreen.zoom = root.get("defaultZoom").getAsFloat();
+        }
         if (root.has("criteriaDetail")) {
             CriterionGrid.detailLevel = CriteriaDetail.fromName(root.get("criteriaDetail").getAsString());
         }
@@ -94,6 +97,7 @@ public class ConfigFileHandler {
         root.addProperty("showDebugCoordinates", BetterAdvancementsScreen.showDebugCoordinates);
         root.addProperty("orderTabsAlphabetically", BetterAdvancementsScreen.orderTabsAlphabetically);
         root.addProperty("uiScaling", BetterAdvancementsScreen.uiScaling);
+        root.addProperty("defaultZoom", BetterAdvancementsScreen.zoom);
         root.addProperty("criteriaDetail", CriterionGrid.detailLevel.getName());
         root.addProperty("criteriaDetailRequiresShift", CriterionGrid.requiresShift);
         root.addProperty("addInventoryButton", BetterAdvancementsScreenButton.addToInventory);

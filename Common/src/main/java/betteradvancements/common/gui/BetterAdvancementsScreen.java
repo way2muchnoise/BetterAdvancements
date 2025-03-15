@@ -27,12 +27,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     private static final Component TITLE =Component.translatable("gui.advancements");
     private static final int WIDTH = 252, HEIGHT = 140, CORNER_SIZE = 30;
     private static final int SIDE = 30, TOP = 40, BOTTOM = 30, PADDING = 9;
-    private static final float MIN_ZOOM = 1, MAX_ZOOM = 2, ZOOM_STEP = 0.2F;
+    public static final float MIN_ZOOM = 0.4F, MAX_ZOOM = 1.6F, ZOOM_STEP = 0.1F;
     private final ClientAdvancements clientAdvancements;
     private final Map<AdvancementHolder, BetterAdvancementTab> tabs = Maps.newLinkedHashMap();
     private BetterAdvancementTab selectedTab;
     private static int tabPage, maxPages;
-    private float zoom = MIN_ZOOM;
+    public static float zoom = 1.0F;
     private boolean isScrolling;
     protected int internalWidth, internalHeight;
     public static int uiScaling = 100;
@@ -126,7 +126,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.selectedTab != null) {
-            this.selectedTab.scroll(scrollX * 16.0, scrollY * 16.0, width, height);
+            if (Screen.hasControlDown()) {
+                zoom += scrollY > 0 ? ZOOM_STEP : -ZOOM_STEP;
+                zoom = Math.max(MIN_ZOOM, Math.min(zoom, MAX_ZOOM));
+            } else {
+                this.selectedTab.scroll(scrollX * 16.0, scrollY * 16.0, width, height);
+            }
             return true;
         } else {
             return false;
@@ -159,7 +164,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 boolean inGui = mouseX < left + internalWidth - 2*SIDE - PADDING && mouseX > left + PADDING && mouseY < top + internalHeight - TOP + 1 && mouseY > top + 2*PADDING;
                 if (this.selectedTab != null && inGui) {
                     for (BetterAdvancementWidget betterAdvancementEntryScreen : this.selectedTab.widgets.values()) {
-                        if (betterAdvancementEntryScreen.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - left - PADDING, mouseY - top - 2*PADDING)) {
+                        if (betterAdvancementEntryScreen.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - left - PADDING, mouseY - top - 2*PADDING, zoom)) {
 
                             if (betterAdvancementEntryScreen.betterDisplayInfo.allowDragging())
                             {
@@ -383,7 +388,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             guiGraphics.drawString(this.font, NO_ADVANCEMENTS_LABEL, boxLeft + (width - this.font.width(NO_ADVANCEMENTS_LABEL)) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
             guiGraphics.drawString(this.font, VERY_SAD_LABEL, boxLeft + (width - this.font.width(VERY_SAD_LABEL)) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
         } else {
-            betterAdvancementTab.drawContents(guiGraphics, boxLeft, boxTop, width, height);
+            betterAdvancementTab.drawContents(guiGraphics, boxLeft, boxTop, width, height, zoom);
         }
     }
 
@@ -441,7 +446,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(left + PADDING, top + 2*PADDING, 400.0D);
             RenderSystem.enableDepthTest();
-            this.selectedTab.drawToolTips(guiGraphics,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING);
+            this.selectedTab.drawToolTips(guiGraphics,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING, zoom);
             RenderSystem.disableDepthTest();
             guiGraphics.pose().popPose();
         }

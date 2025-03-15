@@ -247,23 +247,25 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         this.children.add(betterAdvancementEntryScreen);
     }
 
-    public void drawHover(GuiGraphics guiGraphics, int scrollX, int scrollY, float fade, int left, int top) {
+    public void drawHover(GuiGraphics guiGraphics, int scrollX, int scrollY, float fade, int left, int top, float zoom) {
         this.refreshHover();
-        boolean drawLeft = left + scrollX + this.x + this.width + ADVANCEMENT_SIZE >= this.betterAdvancementTabGui.getScreen().internalWidth;
+        float scaled_scrolled_x = (scrollX + this.x) * zoom;
+        float scaled_scrolled_y = (scrollY + this.y) * zoom;
+        boolean drawLeft = left + scaled_scrolled_x  + this.width + ADVANCEMENT_SIZE >= this.betterAdvancementTabGui.getScreen().internalWidth;
         String s = this.advancementProgress == null || this.advancementProgress.getProgressText() == null ? null : this.advancementProgress.getProgressText().getString();
         int i = s == null ? 0 : this.minecraft.font.width(s);
         boolean drawTop;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             if (this.criterionGrid.height < this.betterAdvancementTabGui.getScreen().height) {
-                drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height + 50 >= this.betterAdvancementTabGui.getScreen().height;
+                drawTop = top + scaled_scrolled_y + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height + 50 >= this.betterAdvancementTabGui.getScreen().height;
             } else {
                 // Always draw on the bottom if the grid is larger than the screen
                 drawTop = false;
             }
         }
         else {
-            drawTop = top + scrollY + this.y + this.description.size() * this.minecraft.font.lineHeight + 50 >= this.betterAdvancementTabGui.getScreen().height;
+            drawTop = top + scaled_scrolled_y + this.description.size() * this.minecraft.font.lineHeight + 50 >= this.betterAdvancementTabGui.getScreen().height;
         }
 
         float percentageObtained = this.advancementProgress == null ? 0.0F : this.advancementProgress.getPercent();
@@ -295,13 +297,15 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
 
         int k = this.width - j;
         RenderSystem.enableBlend();
-        int drawY = scrollY + this.y;
+        int rounded_scaled_scrolled_x = Math.round(scaled_scrolled_x);
+        int rounded_scaled_scrolled_y = Math.round(scaled_scrolled_y);
+        int drawY = rounded_scaled_scrolled_y;
         int drawX;
 
         if (drawLeft) {
-            drawX = scrollX + this.x - this.width + ADVANCEMENT_SIZE + 6;
+            drawX = rounded_scaled_scrolled_x - this.width + ADVANCEMENT_SIZE + 6;
         } else {
-            drawX = scrollX + this.x;
+            drawX = rounded_scaled_scrolled_x;
         }
         int boxHeight;
         
@@ -337,20 +341,20 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         // Advancement icon
         RenderUtil.setColor(betterDisplayInfo.getIconColor(stateIcon));
-        guiGraphics.blitSprite(RenderType::guiTextured, stateIcon.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
+        guiGraphics.blitSprite(RenderType::guiTextured, stateIcon.frameSprite(this.displayInfo.getType()), rounded_scaled_scrolled_x + 3, rounded_scaled_scrolled_y, ICON_SIZE, ICON_SIZE);
         RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
 
         if (drawLeft) {
-            guiGraphics.drawString(this.minecraft.font, this.title, drawX + 5, scrollY + this.y + 9, -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, drawX + 5, rounded_scaled_scrolled_y + 9, -1);
 
             if (s != null) {
-                guiGraphics.drawString(this.minecraft.font, s, scrollX + this.x - i, scrollY + this.y + 9, -1);
+                guiGraphics.drawString(this.minecraft.font, s, rounded_scaled_scrolled_x - i, rounded_scaled_scrolled_y + 9, -1);
             }
         } else {
-            guiGraphics.drawString(this.minecraft.font, this.title, scrollX + this.x + 32, scrollY + this.y + 9, -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, rounded_scaled_scrolled_x + 32, rounded_scaled_scrolled_y + 9, -1);
 
             if (s != null) {
-                guiGraphics.drawString(this.minecraft.font, s, scrollX + this.x + this.width - i - 5, scrollY + this.y + 9, -1);
+                guiGraphics.drawString(this.minecraft.font, s, rounded_scaled_scrolled_x + this.width - i - 5, rounded_scaled_scrolled_y + 9, -1);
             }
         }
 
@@ -358,7 +362,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         if (drawTop) {
             yOffset = drawY + 26 - boxHeight + 7;
         } else {
-            yOffset = scrollY + this.y + 9 + 17;
+            yOffset = rounded_scaled_scrolled_y + 9 + 17;
         }
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
             guiGraphics.drawString(this.minecraft.font, this.description.get(k1), drawX + 5, yOffset + k1 * this.minecraft.font.lineHeight, -5592406, false);
@@ -375,7 +379,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
             }
         }
 
-        guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
+        guiGraphics.renderFakeItem(this.displayInfo.getIcon(), rounded_scaled_scrolled_x + 8, rounded_scaled_scrolled_y + 5);
     }
 
     protected void render9Sprite(GuiGraphics guiGraphics, int x, int y, int width, int height, int textureHeight, int textureWidth, int textureDistance, int textureX, int textureY) {
@@ -399,13 +403,13 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         RenderUtil.renderRepeating(Resources.Gui.WIDGETS, guiGraphics, x + width - textureHeight, y + textureHeight, textureHeight, height - textureHeight - textureHeight, textureX + textureWidth - textureHeight, textureY + textureHeight, textureWidth, textureDistance - textureHeight - textureHeight);
     }
 
-    public boolean isMouseOver(double scrollX, double scrollY, double mouseX, double mouseY) {
+    public boolean isMouseOver(double scrollX, double scrollY, double mouseX, double mouseY, float zoom) {
         if (!this.displayInfo.isHidden() || this.advancementProgress != null && this.advancementProgress.isDone()) {
             double left = scrollX + this.x;
             double right = left + ADVANCEMENT_SIZE;
             double top = scrollY + this.y;
             double bottom = top + ADVANCEMENT_SIZE;
-            return mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom;
+            return mouseX >= left * zoom && mouseX <= right * zoom && mouseY >= top * zoom && mouseY <= bottom * zoom;
         } else {
             return false;
         }

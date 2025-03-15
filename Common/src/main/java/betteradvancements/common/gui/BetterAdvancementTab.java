@@ -72,7 +72,7 @@ public class BetterAdvancementTab {
         this.type.drawIcon(guiGraphics, left, top, width, height, this.index, this.icon);
     }
 
-    public void drawContents(GuiGraphics guiGraphics, int left, int top, int width, int height) {
+    public void drawContents(GuiGraphics guiGraphics, int left, int top, int width, int height, float zoom) {
         if (!this.centered) {
             this.scrollX = (width - (this.maxX + this.minX)) / 2;
             this.scrollY = (height - (this.maxY + this.minY)) / 2;
@@ -96,7 +96,7 @@ public class BetterAdvancementTab {
             guiGraphics.blit(RenderType::guiTextured, resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
         }
 
-
+        guiGraphics.pose().scale(zoom, zoom, 1F);
         this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, true);
         this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, false);
         this.root.draw(guiGraphics, this.scrollX, this.scrollY);
@@ -104,7 +104,7 @@ public class BetterAdvancementTab {
         guiGraphics.disableScissor();
     }
 
-    public void drawToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height) {
+    public void drawToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height, float zoom) {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0D, 0.0D, -200.0D);
         guiGraphics.fill(0, 0, width, height, Mth.floor(this.fade * 255.0F) << 24);
@@ -112,9 +112,9 @@ public class BetterAdvancementTab {
 
         if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
             for (BetterAdvancementWidget betterAdvancementWidget : this.widgets.values()) {
-                if (betterAdvancementWidget.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY)) {
+                if (betterAdvancementWidget.isMouseOver(this.scrollX, this.scrollY, mouseX, mouseY, zoom)) {
                     flag = true;
-                    betterAdvancementWidget.drawHover(guiGraphics, this.scrollX, this.scrollY, this.fade, left, top);
+                    betterAdvancementWidget.drawHover(guiGraphics, this.scrollX, this.scrollY, this.fade, left, top, zoom);
                     break;
                 }
             }

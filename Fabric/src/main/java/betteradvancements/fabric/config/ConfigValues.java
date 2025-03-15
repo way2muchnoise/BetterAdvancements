@@ -10,10 +10,7 @@ import betteradvancements.common.util.CriteriaDetail;
 import betteradvancements.common.util.CriterionGrid;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
-import me.shedaniel.clothconfig2.gui.entries.BooleanListEntry;
-import me.shedaniel.clothconfig2.gui.entries.ColorEntry;
-import me.shedaniel.clothconfig2.gui.entries.DropdownBoxEntry;
-import me.shedaniel.clothconfig2.gui.entries.IntegerSliderEntry;
+import me.shedaniel.clothconfig2.gui.entries.*;
 import net.minecraft.network.chat.Component;
 
 public class ConfigValues {
@@ -27,6 +24,7 @@ public class ConfigValues {
     public static BooleanListEntry showDebugCoordinates;
     public static BooleanListEntry orderTabsAlphabetically;
     public static IntegerSliderEntry uiScaling;
+    public static FloatListEntry defaultZoom;
 
     public static DropdownBoxEntry<CriteriaDetail> detailLevel;
     public static BooleanListEntry requiresShift;
@@ -82,6 +80,14 @@ public class ConfigValues {
             .setSaveConsumer(newValue -> BetterAdvancementsScreen.uiScaling = newValue)
             .build();
         category.addEntry(uiScaling);
+        defaultZoom = builder.startFloatField(Component.literal("defaultZoom"), BetterAdvancementsScreen.zoom)
+                .setTooltip(Component.literal("UI zoom steps are 0.1"))
+                .setDefaultValue(1F)
+                .setMin(BetterAdvancementsScreen.MIN_ZOOM)
+                .setMax(BetterAdvancementsScreen.MAX_ZOOM)
+                .setSaveConsumer(newValue -> BetterAdvancementsScreen.zoom = newValue)
+                .build();
+        category.addEntry(defaultZoom);
 
         detailLevel = builder.startDropdownMenu(Component.literal("criteriaDetail"),
                 CriterionGrid.detailLevel, CriteriaDetail::fromName, o -> (Component.literal(o.getName()))
