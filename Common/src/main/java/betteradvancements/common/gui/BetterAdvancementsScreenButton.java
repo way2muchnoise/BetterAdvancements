@@ -30,7 +30,6 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
             if (this.isHovered) {
                 guiGraphics.renderTooltip(mc.font, Component.translatable("gui.advancements"), mouseX, mouseY);
             }
-            RenderSystem.defaultBlendFunc();
             guiGraphics.renderFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
         }
     }

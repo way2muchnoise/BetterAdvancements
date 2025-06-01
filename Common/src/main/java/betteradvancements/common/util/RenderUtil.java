@@ -1,6 +1,6 @@
 package betteradvancements.common.util;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +27,7 @@ public class RenderUtil {
         RenderSystem.setShaderColor(((color >> 16) & 255) / 255F, ((color >> 8) & 255) / 255F, (color & 255) / 255F, 1.0F);
     }
     
-    public static void drawRect(float x, float y, float x2, float y2, float width, int color) {
+    public static void drawRect(GuiGraphics guiGraphics, float x, float y, float x2, float y2, float width, int color) {
         if (y > y2) {
             float tempY = y;
             float tempX = x;
@@ -36,16 +36,19 @@ public class RenderUtil {
             y2 = tempY;
             x2 = tempX;
         }
-        Tesselator tesselator = RenderSystem.renderThreadTesselator();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderUtil.setColor(color);
-        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
         boolean xHigh = x < x2;
-        bufferbuilder.addVertex(x, xHigh ? y + width : y, 0.0F);
-        bufferbuilder.addVertex(x2, xHigh ? y2 + width : y2, 0.0F);
-        bufferbuilder.addVertex(x2 + width, xHigh ? y2 : y2 + width, 0.0F);
-        bufferbuilder.addVertex(x + width, xHigh ? y : y + width, 0.0F);
-        RenderSystem.disableBlend();
+        float finalX = x;
+        float finalY = y;
+        float finalX2 = x2;
+        float finalY2 = y2;
+        guiGraphics.drawSpecial(multiBufferSource ->
+        {
+            VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.gui());
+
+            vertexConsumer.addVertex(finalX, xHigh ? finalY + width : finalY, 0.0F);
+            vertexConsumer.addVertex(finalX2, xHigh ? finalY2 + width : finalY2, 0.0F);
+            vertexConsumer.addVertex(finalX2 + width, xHigh ? finalY2 : finalY2 + width, 0.0F);
+            vertexConsumer.addVertex(finalX + width, xHigh ? finalY : finalY + width, 0.0F);
+        });
     }
 }

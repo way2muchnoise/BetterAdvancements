@@ -174,20 +174,20 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
                     default -> width = drawInside ? 3 : 1;
                 }
                 if (drawInside) {
-                    RenderUtil.drawRect(x1 - .75F, y1 - .75F, x2 - .75F, y2 - .75F, width, borderLineColor);
+                    RenderUtil.drawRect(guiGraphics, x1 - .75F, y1 - .75F, x2 - .75F, y2 - .75F, width, borderLineColor);
                 }
                 else {
-                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                    RenderUtil.drawRect(guiGraphics, x1, y1, x2, y2, width, innerLineColor);
                 }
             }
             else {
                 width = drawInside ? 3 : 1;
                 
                 if (drawInside) {
-                    RenderUtil.drawRect(x1 - 1, y1 - 1, x2 - 1, y2 - 1, width, borderLineColor);
+                    RenderUtil.drawRect(guiGraphics, x1 - 1, y1 - 1, x2 - 1, y2 - 1, width, borderLineColor);
                 }
                 else {
-                    RenderUtil.drawRect(x1, y1, x2, y2, width, innerLineColor);
+                    RenderUtil.drawRect(guiGraphics, x1, y1, x2, y2, width, innerLineColor);
                 }
             }
         }
@@ -227,7 +227,6 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
             }
 
             RenderUtil.setColor(betterDisplayInfo.getIconColor(advancementState));
-            RenderSystem.enableBlend();
             guiGraphics.blitSprite(RenderType::guiTextured, advancementState.frameSprite(this.displayInfo.getType()), scrollX + this.x + 3, scrollY + this.y, ICON_SIZE, ICON_SIZE);
             RenderUtil.setColor(betterDisplayInfo.defaultIconColor());
             guiGraphics.renderFakeItem(this.displayInfo.getIcon(), scrollX + this.x + 8, scrollY + this.y + 5);
@@ -296,7 +295,6 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
 
         int k = this.width - j;
-        RenderSystem.enableBlend();
         int rounded_scaled_scrolled_x = Math.round(scaled_scrolled_x);
         int rounded_scaled_scrolled_y = Math.round(scaled_scrolled_y);
         int drawY = rounded_scaled_scrolled_y;

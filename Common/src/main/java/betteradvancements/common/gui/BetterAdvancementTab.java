@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -82,7 +83,7 @@ public class BetterAdvancementTab {
         guiGraphics.enableScissor(left, top, left + width, top + height);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(left, top, 0);
-        ResourceLocation resourcelocation = this.display.getBackground().orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        ResourceLocation resourcelocation = this.display.getBackground().map(ClientAsset::texturePath).orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
