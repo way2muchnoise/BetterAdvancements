@@ -1,12 +1,11 @@
 package betteradvancements.common.gui;
 
 import betteradvancements.common.reference.Resources;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,9 +25,9 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
         {
             Minecraft mc  = Minecraft.getInstance();
             this.isHovered = mouseX >= this.getX() && mouseY >= this.getY() && mouseX < this.getX() + this.getWidth() && mouseY < this.getY() + this.getHeight();
-            guiGraphics.blit(RenderType::guiTextured, Resources.Gui.TABS, this.getX(), this.getY(), 56, 0, 28, 32, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.TABS, this.getX(), this.getY(), 56, 0, 28, 32, 256, 256);
             if (this.isHovered) {
-                guiGraphics.renderTooltip(mc.font, Component.translatable("gui.advancements"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(mc.font, Component.translatable("gui.advancements"), mouseX, mouseY);
             }
             guiGraphics.renderFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
         }

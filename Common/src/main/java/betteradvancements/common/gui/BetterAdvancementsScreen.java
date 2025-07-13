@@ -4,7 +4,6 @@ import betteradvancements.common.platform.Services;
 import betteradvancements.common.reference.Resources;
 import betteradvancements.common.util.RenderUtil;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
@@ -14,7 +13,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ServerboundSeenAdvancementsPacket;
 import net.minecraft.util.FormattedCharSequence;
@@ -215,14 +214,15 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int maxTabs = BetterAdvancementTabType.getMaxTabs(width, height);
         int skip = tabPage * maxTabs;
 
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (maxPages != 0) {
             Component page = Component.literal(String.format("%d / %d", tabPage + 1, maxPages + 1));
             int textWidth = this.font.width(page);
             guiGraphics.drawString(this.font, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
             super.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
+        guiGraphics.nextStratum();
         this.renderInside(guiGraphics, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
+        guiGraphics.nextStratum();
         this.renderWindow(guiGraphics, left, top, right, bottom, maxTabs, skip);
         //Don't draw tool tips if dragging an advancement
         if (this.advConnectedToMouse == null) {
@@ -394,21 +394,21 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
     public void renderWindow(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int maxTabs, int skip) {
         // Top left corner
-        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WINDOW, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.WINDOW, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE, 256, 256);
         // Top side
         RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left + CORNER_SIZE, top, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 0, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Top right corner
-        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WINDOW, right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.WINDOW, right - CORNER_SIZE, top, WIDTH - CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, 256, 256);
         // Left side
         RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, 0, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Right side
         RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, right - CORNER_SIZE, top + CORNER_SIZE, CORNER_SIZE, bottom - top - 2 * CORNER_SIZE, WIDTH - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE - CORNER_SIZE);
         // Bottom left corner
-        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WINDOW, left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.WINDOW, left, bottom - CORNER_SIZE, 0, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 256, 256);
         // Bottom side
         RenderUtil.renderRepeating(Resources.Gui.WINDOW, guiGraphics, left + CORNER_SIZE, bottom - CORNER_SIZE, internalWidth - CORNER_SIZE - 2*SIDE - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, HEIGHT - CORNER_SIZE, WIDTH - CORNER_SIZE - CORNER_SIZE, CORNER_SIZE);
         // Bottom right corner
-        guiGraphics.blit(RenderType::guiTextured, Resources.Gui.WINDOW, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.WINDOW, right - CORNER_SIZE, bottom - CORNER_SIZE, WIDTH - CORNER_SIZE, HEIGHT - CORNER_SIZE, CORNER_SIZE, CORNER_SIZE, 256, 256);
 
         int width = right - left;
         int height = bottom - top;
@@ -435,13 +435,11 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     }
 
     private void renderToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
         if (this.selectedTab != null) {
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(left + PADDING, top + 2*PADDING, 400.0D);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(left + PADDING, top + 2*PADDING);
             this.selectedTab.drawToolTips(guiGraphics,mouseX - left - PADDING, mouseY - top - 2*PADDING, left, top, right - left - 2*PADDING, bottom - top - 3*PADDING, zoom);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         }
 
         int width = right - left;
@@ -450,7 +448,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (this.tabs.size() > 1) {
             for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
                 if (tab.isMouseOver(left, top, width, height, mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(this.font, tab.getTitle(), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(this.font, tab.getTitle(), mouseX, mouseY);
                 }
             }
         }

@@ -8,7 +8,7 @@ import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
@@ -18,7 +18,6 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 public class BetterAdvancementTab {
@@ -81,8 +80,8 @@ public class BetterAdvancementTab {
         }
 
         guiGraphics.enableScissor(left, top, left + width, top + height);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(left, top, 0);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(left, top);
         ResourceLocation resourcelocation = this.display.getBackground().map(ClientAsset::texturePath).orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
 
         int i = this.scrollX % 16;
@@ -92,22 +91,20 @@ public class BetterAdvancementTab {
         for (; k <= 1 + width / 16; k++) {
             int l = -1;
             for (;l <= height / 16; l++) {
-                guiGraphics.blit(RenderType::guiTextured, resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, 16, 16, 16);
             }
-            guiGraphics.blit(RenderType::guiTextured, resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resourcelocation, i + 16 * k, j + 16 * l, 0.0F, 0.0F, 16, height % 16, 16, 16);
         }
 
-        guiGraphics.pose().scale(zoom, zoom, 1F);
+        guiGraphics.pose().scale(zoom, zoom);
         this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, true);
         this.root.drawConnectivity(guiGraphics, this.scrollX, this.scrollY, false);
         this.root.draw(guiGraphics, this.scrollX, this.scrollY);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
         guiGraphics.disableScissor();
     }
 
     public void drawToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height, float zoom) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0D, 0.0D, -200.0D);
         guiGraphics.fill(0, 0, width, height, Mth.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
@@ -120,8 +117,6 @@ public class BetterAdvancementTab {
                 }
             }
         }
-
-        guiGraphics.pose().popPose();
 
         if (doFade && flag) {
             this.fade = Mth.clamp(this.fade + 0.02F, 0.0F, 0.3F);
