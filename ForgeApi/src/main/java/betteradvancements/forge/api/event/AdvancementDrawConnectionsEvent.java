@@ -6,14 +6,16 @@ import java.util.List;
 import betteradvancements.common.api.event.IAdvancementDrawConnectionsEvent;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 /**
  *  Event fired during advancement connection drawing.
  *  
  *  Used for adding extra connection lines.
  */
-public class AdvancementDrawConnectionsEvent extends Event implements IAdvancementDrawConnectionsEvent {
+public class AdvancementDrawConnectionsEvent extends MutableEvent implements IAdvancementDrawConnectionsEvent {
+    public static final EventBus<AdvancementDrawConnectionsEvent> BUS = EventBus.create(AdvancementDrawConnectionsEvent.class);
     /**
      * Advancement having its connection lines drawn.
      */

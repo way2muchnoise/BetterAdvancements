@@ -3,12 +3,14 @@ package betteradvancements.forge.api.event;
 import betteradvancements.common.api.IBetterAdvancementEntryGui;
 import betteradvancements.common.api.event.IAdvancementMovedEvent;
 import net.minecraft.advancements.AdvancementNode;
-import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.eventbus.api.bus.EventBus;
+import net.minecraftforge.eventbus.api.event.MutableEvent;
 
 /**
  *  Event fired after an advancement has been moved in the gui and the mouse button has been released.
  */
-public class AdvancementMovedEvent extends Event implements IAdvancementMovedEvent {
+public class AdvancementMovedEvent extends MutableEvent implements IAdvancementMovedEvent {
+    public static final EventBus<AdvancementMovedEvent> BUS = EventBus.create(AdvancementMovedEvent.class);
     /**
      * Advancement that has been moved.
      */

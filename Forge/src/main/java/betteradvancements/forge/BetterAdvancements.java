@@ -12,15 +12,17 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+import java.lang.invoke.MethodHandles;
+
 @Mod(Constants.ID)
 public class BetterAdvancements {
-        public BetterAdvancements() {
+        public BetterAdvancements(FMLJavaModLoadingContext context) {
         //Make sure the mod being absent on the other network side does not cause the client to display the server as incompatible
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(()-> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (remote, isServer)-> true));
+        context.registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(()-> IExtensionPoint.DisplayTest.IGNORESERVERONLY, (remote, isServer)-> true));
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
-            FMLJavaModLoadingContext.get().getModEventBus().register(Config.instance);
+            context.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
+            context.getModBusGroup().register(MethodHandles.publicLookup(), Config.instance);
             MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
         }
     }
