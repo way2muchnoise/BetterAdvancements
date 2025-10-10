@@ -12,7 +12,6 @@ import net.minecraft.advancements.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.locale.Language;
@@ -72,7 +71,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.holder(), this.advancementNode.advancement(), advancementProgress, screen.width / 2, mc.font);
         int maxWidth;
         
-        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
+        if (!CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
             maxWidth = Math.max(titleWidth, this.criterionGrid.width);
         }
         else {
@@ -252,7 +251,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         int i = s == null ? 0 : this.minecraft.font.width(s);
         boolean drawTop;
         
-        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
+        if (!CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
             if (this.criterionGrid.height < this.betterAdvancementTabGui.getScreen().height) {
                 drawTop = top + scaled_scrolled_y + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height + 50 >= this.betterAdvancementTabGui.getScreen().height;
             } else {
@@ -304,7 +303,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         int boxHeight;
         
-        if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
+        if (!CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
             boxHeight = TITLE_SIZE + this.description.size() * this.minecraft.font.lineHeight + this.criterionGrid.height;
         }
         else {
@@ -358,7 +357,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         for (int k1 = 0; k1 < this.description.size(); ++k1) {
             guiGraphics.drawString(this.minecraft.font, this.description.get(k1), drawX + 5, yOffset + k1 * this.minecraft.font.lineHeight, -5592406, false);
         }
-        if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
+        if (this.criterionGrid != null && !CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.font.lineHeight;
             for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {

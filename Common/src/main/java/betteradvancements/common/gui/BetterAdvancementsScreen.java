@@ -11,6 +11,8 @@ import net.minecraft.client.GameNarrator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -98,8 +100,8 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int modifiers) {
-        if (modifiers == 0) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.modifiers() == 0) {
             int left = SIDE + (width - internalWidth) / 2;
             int top = TOP + (height - internalHeight) / 2;
 
@@ -113,19 +115,19 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             int skip = tabPage * maxTabs;
 
             for (BetterAdvancementTab tab : this.tabs.values().stream().skip(skip).limit(maxTabs).toList()) {
-                if (tab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, mouseX, mouseY)) {
+                if (tab.isMouseOver(left, top, internalWidth - 2*SIDE, internalHeight - top - BOTTOM, event.x(), event.y())) {
                     this.clientAdvancements.setSelectedTab(tab.getRootNode().holder(), true);
                     break;
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, modifiers);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.selectedTab != null) {
-            if (Screen.hasControlDown()) {
+            if (minecraft.hasControlDown()) {
                 zoom += scrollY > 0 ? ZOOM_STEP : -ZOOM_STEP;
                 zoom = Math.max(MIN_ZOOM, Math.min(zoom, MAX_ZOOM));
             } else {
@@ -138,32 +140,32 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.minecraft.options.keyAdvancements.matches(keyCode, scanCode)) {
+    public boolean keyPressed(KeyEvent event) {
+        if (this.minecraft.options.keyAdvancements.matches(event)) {
             this.minecraft.setScreen(null);
             this.minecraft.mouseHandler.grabMouse();
             return true;
         } else {
-            return super.keyPressed(keyCode, scanCode, modifiers);
+            return super.keyPressed(event);
         }
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseDeltaX, double mouseDeltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseDeltaX, double mouseDeltaY) {
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
-        if (button != 0) {
+        if (event.button() != 0) {
             this.isScrolling = false;
             return false;
         }
 
         if (!this.isScrolling) {
             if (this.advConnectedToMouse == null) {
-                boolean inGui = mouseX < left + internalWidth - 2*SIDE - PADDING && mouseX > left + PADDING && mouseY < top + internalHeight - TOP + 1 && mouseY > top + 2*PADDING;
+                boolean inGui = event.x() < left + internalWidth - 2*SIDE - PADDING && event.x() > left + PADDING && event.y() < top + internalHeight - TOP + 1 && event.y() > top + 2*PADDING;
                 if (this.selectedTab != null && inGui) {
                     for (BetterAdvancementWidget betterAdvancementEntryScreen : this.selectedTab.widgets.values()) {
-                        if (betterAdvancementEntryScreen.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, mouseX - left - PADDING, mouseY - top - 2*PADDING, zoom)) {
+                        if (betterAdvancementEntryScreen.isMouseOver(this.selectedTab.scrollX, this.selectedTab.scrollY, event.x() - left - PADDING, event.y() - top - 2*PADDING, zoom)) {
 
                             if (betterAdvancementEntryScreen.betterDisplayInfo.allowDragging())
                             {
