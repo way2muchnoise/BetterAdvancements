@@ -22,7 +22,7 @@ public class BetterAdvancements {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             context.registerConfig(ModConfig.Type.CLIENT, Config.CLIENT);
-            context.getModBusGroup().register(MethodHandles.publicLookup(), Config.instance);
+            context.getModBusGroup().register(MethodHandles.lookup(), Config.instance);
             MinecraftForge.EVENT_BUS.register(GuiOpenHandler.instance);
         }
     }
