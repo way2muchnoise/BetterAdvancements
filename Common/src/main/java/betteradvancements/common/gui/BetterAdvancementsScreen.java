@@ -429,7 +429,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (selectedTab != null) {
             windowTitle = FormattedCharSequence.composite(
                 windowTitle,
-                  Component.literal(" - ").getVisualOrderText(),
+                  Component.translatableWithFallback("betteradvancements.title_separator"," - ").getVisualOrderText(),
                 selectedTab.getTitle().getVisualOrderText()
             );
         }

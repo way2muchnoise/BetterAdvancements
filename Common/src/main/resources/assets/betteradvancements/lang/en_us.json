@@ -1,3 +1,4 @@
 {
-  "betteradvancements.remaining": "%d remaining"
+  "betteradvancements.remaining": "%d remaining",
+  "betteradvancements.title_separator" : " - "
 }
