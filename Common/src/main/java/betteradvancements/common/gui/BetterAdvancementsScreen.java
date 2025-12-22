@@ -433,7 +433,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 selectedTab.getTitle().getVisualOrderText()
             );
         }
-        guiGraphics.drawString(this.font, windowTitle, left + 8, top + 6, 4210752, false);
+        guiGraphics.drawString(this.font, windowTitle, left + 8, top + 6, -12566464, false);
     }
 
     private void renderToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
