@@ -36,6 +36,7 @@ public class ConfigValues {
     public static ColorEntry defaultUncompletedLineColor;
 
     public static BooleanListEntry onlyUseAboveAdvancementTabs;
+    public static BooleanListEntry keepAdvancementsTitle;
 
     public static void build(ConfigCategory category, ConfigEntryBuilder builder) {
         defaultUncompletedIconColor = builder.startAlphaColorField(Component.literal("defaultUncompletedIconColor"), BetterDisplayInfo.defaultUncompletedIconColor)
@@ -135,5 +136,11 @@ public class ConfigValues {
             .setSaveConsumer(newValue -> BetterAdvancementTabType.onlyUseAbove = newValue)
             .build();
         category.addEntry(onlyUseAboveAdvancementTabs);
+
+        keepAdvancementsTitle = builder.startBooleanToggle(Component.literal("keepAdvancementsTitle"), BetterAdvancementsScreen.keepAdvancementsTitle)
+            .setDefaultValue(true)
+            .setSaveConsumer(newValue -> BetterAdvancementsScreen.keepAdvancementsTitle = newValue)
+            .build();
+        category.addEntry(keepAdvancementsTitle);
     }
 }

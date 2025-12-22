@@ -33,6 +33,7 @@ public class ConfigValues {
     public static ForgeConfigSpec.ConfigValue<String>  defaultUncompletedLineColor;
 
     public static ForgeConfigSpec.BooleanValue onlyUseAboveAdvancementTabs;
+    public static ForgeConfigSpec.BooleanValue keepAdvancementsTitle;
 
     public static ForgeConfigSpec build() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -58,6 +59,7 @@ public class ConfigValues {
         defaultUncompletedLineColor = builder.define("defaultUncompletedLineColor", "#FFFFFF");
 
         onlyUseAboveAdvancementTabs = builder.define("onlyUseAboveAdvancementTabs", false);
+        keepAdvancementsTitle = builder.define("keepAdvancementsTitle", false);
 
         return builder.build();
     }
@@ -84,5 +86,6 @@ public class ConfigValues {
         BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(defaultUncompletedLineColor.get());
 
         BetterAdvancementTabType.onlyUseAbove = onlyUseAboveAdvancementTabs.get();
+        BetterAdvancementsScreen.keepAdvancementsTitle = keepAdvancementsTitle.get();
     }
 }

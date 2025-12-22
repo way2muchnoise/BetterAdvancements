@@ -33,6 +33,7 @@ public class ConfigValues {
     public static ModConfigSpec.ConfigValue<String>  defaultUncompletedLineColor;
 
     public static ModConfigSpec.BooleanValue onlyUseAboveAdvancementTabs;
+    public static ModConfigSpec.BooleanValue keepAdvancementsTitle;
 
     public static ModConfigSpec build() {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -58,6 +59,7 @@ public class ConfigValues {
         defaultUncompletedLineColor = builder.define("defaultUncompletedLineColor", "#FFFFFF");
 
         onlyUseAboveAdvancementTabs = builder.define("onlyUseAboveAdvancementTabs", false);
+        keepAdvancementsTitle = builder.define("keepAdvancementsTitle", false);
 
         return builder.build();
     }
@@ -84,5 +86,6 @@ public class ConfigValues {
         BetterDisplayInfo.defaultUncompletedLineColor = ColorHelper.RGB(defaultUncompletedLineColor.get());
 
         BetterAdvancementTabType.onlyUseAbove = onlyUseAboveAdvancementTabs.get();
+        BetterAdvancementsScreen.keepAdvancementsTitle = keepAdvancementsTitle.get();
     }
 }

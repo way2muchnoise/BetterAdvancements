@@ -39,6 +39,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     public static int uiScaling = 100;
     public static boolean showDebugCoordinates = false;
     public static boolean orderTabsAlphabetically = false;
+    public static boolean keepAdvancementsTitle = true;
     private BetterAdvancementWidget advConnectedToMouse = null;
 
     public BetterAdvancementsScreen(ClientAdvancements clientAdvancements) {
@@ -427,11 +428,16 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
         FormattedCharSequence windowTitle = TITLE.getVisualOrderText();
         if (selectedTab != null) {
-            windowTitle = FormattedCharSequence.composite(
-                windowTitle,
-                  Component.translatableWithFallback("betteradvancements.title_separator"," - ").getVisualOrderText(),
-                selectedTab.getTitle().getVisualOrderText()
-            );
+            if (keepAdvancementsTitle) {
+                windowTitle = FormattedCharSequence.composite(
+                    windowTitle,
+                    Component.translatableWithFallback("betteradvancements.title_separator"," - ").getVisualOrderText(),
+                    selectedTab.getTitle().getVisualOrderText()
+                );
+            } else {
+                windowTitle = selectedTab.getTitle().getVisualOrderText();
+            }
+
         }
         guiGraphics.drawString(this.font, windowTitle, left + 8, top + 6, -12566464, false);
     }
