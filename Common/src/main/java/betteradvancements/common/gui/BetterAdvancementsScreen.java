@@ -131,7 +131,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 zoom += scrollY > 0 ? ZOOM_STEP : -ZOOM_STEP;
                 zoom = Math.max(MIN_ZOOM, Math.min(zoom, MAX_ZOOM));
             } else {
-                this.selectedTab.scroll(scrollX * 16.0, scrollY * 16.0, width, height);
+                this.selectedTab.scroll(scrollX * 16, scrollY * 16, internalWidth - 2 * SIDE - 3 * PADDING, internalHeight - TOP - BOTTOM - 3 * PADDING);
             }
             return true;
         } else {
@@ -498,7 +498,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
         this.selectedTab = this.tabs.get(advancement);
         if (this.selectedTab != null) {
-            this.selectedTab.loadScroll();
+            this.selectedTab.loadScroll(internalWidth - 2 * SIDE - 3 * PADDING, internalHeight - TOP - BOTTOM - 3 * PADDING);
         }
     }
 
