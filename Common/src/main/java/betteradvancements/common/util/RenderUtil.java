@@ -3,13 +3,12 @@ package betteradvancements.common.util;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class RenderUtil {
     private RenderUtil() {}
 
-    public static void renderRepeating(ResourceLocation texture, GuiGraphics guiGraphics, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
+    public static void renderRepeating(Identifier texture, GuiGraphics guiGraphics, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         for (int i = 0; i < width; i += textureWidth) {
             int drawX = x + i;
             int drawWidth = Math.min(textureWidth, width - i);

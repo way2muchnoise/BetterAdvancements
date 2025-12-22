@@ -21,7 +21,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible)
         {
             Minecraft mc  = Minecraft.getInstance();

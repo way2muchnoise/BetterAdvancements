@@ -7,7 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BetterDisplayInfoRegistry {
-    private final Map<ResourceLocation, BetterDisplayInfo> registry;
+    private final Map<Identifier, BetterDisplayInfo> registry;
 
     public BetterDisplayInfoRegistry(AdvancementNode advancementNode) {
         registry = new HashMap<>();
@@ -29,7 +29,7 @@ public class BetterDisplayInfoRegistry {
         return registry.getOrDefault(advancementHolder.id(), new BetterDisplayInfo(advancementHolder));
     }
 
-    private void load(ResourceLocation location, ServerLevel serverLevel) {
+    private void load(Identifier location, ServerLevel serverLevel) {
         Services.PLATFORM.getAdvancementVisitor().findAdvancements(location, serverLevel, null,
             (root, file) ->
             {
@@ -43,7 +43,7 @@ public class BetterDisplayInfoRegistry {
                     return true;
 
                 String name = FilenameUtils.removeExtension(relative).replaceAll("\\\\", "/");
-                ResourceLocation key = ResourceLocation.fromNamespaceAndPath(location.getNamespace(), name);
+                Identifier key = Identifier.fromNamespaceAndPath(location.getNamespace(), name);
 
                 if (!registry.containsKey(key)) {
                     BufferedReader reader = null;

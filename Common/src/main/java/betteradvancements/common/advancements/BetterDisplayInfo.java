@@ -7,7 +7,7 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BetterDisplayInfo implements IBetterDisplayInfo {
     public static final String defaultMinecraftCompletedIconColor = "#DBA213", defaultMinecraftUncompletedIconColor = "#FFFFFF";
@@ -27,7 +27,7 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
     private static final int WHITE = ColorHelper.RGB(1F, 1F, 1F);
 
 
-    private ResourceLocation id;
+    private Identifier id;
     private int completedIconColor, unCompletedIconColor;
     private int completedTitleColor, unCompletedTitleColor;
     private boolean drawDirectLines;
@@ -51,12 +51,12 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         }
     }
 
-    public BetterDisplayInfo(ResourceLocation id) {
+    public BetterDisplayInfo(Identifier id) {
         this.id = id;
         this.defaults();
     }
 
-    public BetterDisplayInfo(ResourceLocation id, JsonObject displayJson) {
+    public BetterDisplayInfo(Identifier id, JsonObject displayJson) {
         this(id);
         if (displayJson != null) {
             this.parseDisplayJson(displayJson);
@@ -144,7 +144,7 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
         this.allowDragging = betterDisplayInfo.allowDragging();
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 

@@ -2,7 +2,7 @@ package betteradvancements.forge;
 
 import betteradvancements.common.platform.IAdvancementVisitor;
 import betteradvancements.common.reference.Constants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.fml.ModContainer;
@@ -22,7 +22,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ForgeAdvancementVisitor implements IAdvancementVisitor {
-    public boolean findAdvancements(ResourceLocation location, ServerLevel serverLevel, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
+    public boolean findAdvancements(Identifier location, ServerLevel serverLevel, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
         ModContainer mod = ModList.get().getModContainerById(location.getNamespace()).orElse(null);
         try {
