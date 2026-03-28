@@ -12,6 +12,6 @@ rootProject.name = "BetterAdvancements"
 include(
 		"CommonApi", "Common",
         "FabricApi", "Fabric",
-		"ForgeApi", "Forge",
+//		"ForgeApi", "Forge",
 		"NeoForgeApi", "NeoForge",
 )
