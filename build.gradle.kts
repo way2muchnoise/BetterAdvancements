@@ -6,7 +6,7 @@ plugins {
     base
     id("architectury-plugin") version ("3.5-SNAPSHOT")
     id("dev.architectury.loom-no-remap") version ("1.14-SNAPSHOT") apply (false)
-    id("com.github.johnrengelman.shadow") version ("8.1.1") apply (false)
+    id("com.gradleup.shadow") version ("9.4.1") apply (false)
 }
 
 // gradle.properties
@@ -134,7 +134,7 @@ subprojects {
     if (path != ":Common" && path != ":CommonApi") {
         // Apply the shadow plugin which lets us include contents of any libraries in our mod jars.
         // Architectury uses it for bundling the common mod code in the platform jars.
-        apply(plugin = "com.github.johnrengelman.shadow")
+        apply(plugin = "com.gradleup.shadow")
 
         // Set a different run directory for the server run config,
         // so it won't override client logs/config (or vice versa).
@@ -158,7 +158,7 @@ subprojects {
 
         tasks {
             "shadowJar"(ShadowJar::class) {
-                archiveClassifier.set("dev-shadow")
+                archiveClassifier.set(null)
                 // Load only our own shadow task
                 configurations = listOf(shadowImplementation)
                 exclude("architectury.common.json")
