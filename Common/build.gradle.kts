@@ -10,5 +10,5 @@ loom {
 }
 
 dependencies {
-    api(project(":CommonApi", configuration = "namedElements"))
+    api(project(":CommonApi"))
 }

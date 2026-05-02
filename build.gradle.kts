@@ -5,7 +5,7 @@ import net.fabricmc.loom.task.RemapJarTask
 plugins {
     base
     id("architectury-plugin") version ("3.5-SNAPSHOT")
-    id("dev.architectury.loom") version ("1.14-SNAPSHOT") apply (false)
+    id("dev.architectury.loom-no-remap") version ("1.14-SNAPSHOT") apply (false)
     id("com.github.johnrengelman.shadow") version ("8.1.1") apply (false)
 }
 
@@ -53,15 +53,15 @@ base {
 
 subprojects {
     apply(plugin = "java")
-    apply(plugin = "dev.architectury.loom")
+    apply(plugin = "dev.architectury.loom-no-remap")
     apply(plugin = "architectury-plugin")
 
     version = rootProject.version
 
     // Set Java version.
     extensions.configure<JavaPluginExtension> {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     architectury {
@@ -75,11 +75,6 @@ subprojects {
 
     dependencies {
         "minecraft"("com.mojang:minecraft:${minecraftVersion}")
-        // Parchement mappings
-        "mappings"(loom.layered {
-            officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-${mappingsParchmentMinecraftVersion}:${mappingsParchmentVersion}@zip")
-        })
     }
 
     repositories {
@@ -89,21 +84,6 @@ subprojects {
     }
 
     tasks {
-        withType<RemapJarTask> {
-            val now = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(java.util.Date())
-            manifest {
-                attributes(mapOf(
-                       "Specification-Title" to modName,
-                        "Specification-Vendor" to modAuthor,
-                        "Specification-Version" to specificationVersion,
-                        "Implementation-Title" to name,
-                        "Implementation-Version" to archiveVersion,
-                        "Implementation-Vendor" to modAuthor,
-                        "Implementation-Timestamp" to now,
-                ))
-            }
-        }
-
         withType<Javadoc> {
             // workaround cast for https://github.com/gradle/gradle/issues/7038
             val standardJavadocDocletOptions = options as StandardJavadocDocletOptions
@@ -141,10 +121,6 @@ subprojects {
         withType<AbstractArchiveTask> {
             isReproducibleFileOrder = true
             isPreserveFileTimestamps = false
-        }
-
-        named<RemapJarTask>("remapJar") {
-            archiveClassifier.set(null as String?)
         }
 
         withType<Jar> {
@@ -186,12 +162,6 @@ subprojects {
                 // Load only our own shadow task
                 configurations = listOf(shadowImplementation)
                 exclude("architectury.common.json")
-            }
-
-            "remapJar"(RemapJarTask::class) {
-                dependsOn("shadowJar")
-                // Replace the remap jar task's input with the shadow jar containing the common classes.
-                inputFile.set(named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
             }
         }
     }

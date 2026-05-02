@@ -30,6 +30,11 @@ architectury {
     neoForge()
 }
 
+loom {
+    accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
+}
+
+
 repositories {
     maven("https://maven.neoforged.net/releases/")
 }
@@ -37,16 +42,16 @@ repositories {
 dependencies {
     neoForge("net.neoforged:neoforge:${neoforgeVersion}")
 
-    implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
+    implementation(project(":Common")) { isTransitive = false }
     shadowImplementation(project(":Common", configuration = "transformProductionNeoForge")) { isTransitive = false }
 
-    implementation(project(":NeoForgeApi", configuration = "namedElements"))
+    implementation(project(":NeoForgeApi"))
     shadowImplementation(project(":CommonApi")) { isTransitive = false }
     shadowImplementation(project(":NeoForgeApi")) { isTransitive = false }
 
     // Need to make sure the API packages are loaded while during run in IDE
-    forgeRuntimeLibrary(project(":CommonApi", configuration = "namedElements"))
-    forgeRuntimeLibrary(project(":NeoForgeApi", configuration = "namedElements"))
+    forgeRuntimeLibrary(project(":CommonApi"))
+    forgeRuntimeLibrary(project(":NeoForgeApi"))
 }
 
 val apiJar = tasks.register<Jar>("apiJar") {
@@ -59,16 +64,10 @@ val apiJar = tasks.register<Jar>("apiJar") {
 
 artifacts {
     archives(apiJar.get())
-    archives(tasks.remapJar.get())
-    archives(tasks.remapSourcesJar.get())
+    archives(tasks.shadowJar.get())
 }
 
 tasks.withType<Jar> {
-    destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
-}
-
-tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
-    atAccessWideners.add("${modId}.accesswidener")
     destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 
@@ -76,7 +75,7 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 
     apiToken = System.getenv("CURSE_KEY") ?: "0"
 
-    val mainFile = upload(curseProjectId, tasks.remapJar.get())
+    val mainFile = upload(curseProjectId, tasks.shadowJar.get())
     mainFile.changelogType = CFG_Constants.CHANGELOG_MARKDOWN
     mainFile.changelog = System.getenv("CHANGELOG") ?: ""
     mainFile.releaseType = CFG_Constants.RELEASE_TYPE_ALPHA
@@ -96,8 +95,8 @@ modrinth {
     versionName.set("${project.version} for NeoForge $minecraftVersion")
     versionType.set("alpha")
     changelog.set(System.getenv("CHANGELOG") ?: "")
-    uploadFile.set(tasks.remapJar.get())
+    uploadFile.set(tasks.shadowJar.get())
     gameVersions.add(minecraftVersion)
     // additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
-tasks.modrinth.get().dependsOn(tasks.jar)
+tasks.modrinth.get().dependsOn(tasks.shadowJar)

@@ -8,7 +8,7 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.GameNarrator;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -203,7 +203,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     /**
      * Draws the screen and all the components in it.
      */
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
@@ -220,8 +220,8 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         if (maxPages != 0) {
             Component page = Component.literal(String.format("%d / %d", tabPage + 1, maxPages + 1));
             int textWidth = this.font.width(page);
-            guiGraphics.drawString(this.font, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
-            super.render(guiGraphics, mouseX, mouseY, partialTicks);
+            guiGraphics.text(this.font, page.getVisualOrderText(), left + (internalWidth - textWidth) / 2 - textWidth, bottom + 8, -1);
+            super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         }
         guiGraphics.nextStratum();
         this.renderInside(guiGraphics, mouseX, mouseY, left, top, right, bottom, maxTabs, skip);
@@ -362,7 +362,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = this.advConnectedToMouse.x + left + PADDING + this.selectedTab.scrollX + 3 + 1;
                 int currentY = this.advConnectedToMouse.y + top + 2 * PADDING + this.selectedTab.scrollY - font.lineHeight + 1;
 
-                guiGraphics.drawString(font, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
+                guiGraphics.text(font, this.advConnectedToMouse.x + "," + this.advConnectedToMouse.y, currentX, currentY, 0x000000);
             } else {
                 //Draws a string containing the current position above the mouse. Locked to inside the advancement window.
                 int xMouse = mouseX - left - PADDING;
@@ -371,12 +371,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
                 int currentX = xMouse - this.selectedTab.scrollX - 3 - 1;
                 int currentY = yMouse - this.selectedTab.scrollY - 1;
 
-                guiGraphics.drawString(font, currentX + "," + currentY, mouseX, mouseY - font.lineHeight, 0x000000);
+                guiGraphics.text(font, currentX + "," + currentY, mouseX, mouseY - font.lineHeight, 0x000000);
             }
         }
     }
 
-    private void renderInside(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
+    private void renderInside(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         BetterAdvancementTab betterAdvancementTab = this.selectedTab;
         int boxLeft = left + PADDING;
         int boxTop = top + 2*PADDING;
@@ -388,14 +388,14 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
         if (betterAdvancementTab == null) {
             guiGraphics.fill(boxLeft, boxTop, boxRight, boxBottom, -16777216);
-            guiGraphics.drawString(this.font, NO_ADVANCEMENTS_LABEL, boxLeft + (width - this.font.width(NO_ADVANCEMENTS_LABEL)) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
-            guiGraphics.drawString(this.font, VERY_SAD_LABEL, boxLeft + (width - this.font.width(VERY_SAD_LABEL)) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
+            guiGraphics.text(this.font, NO_ADVANCEMENTS_LABEL, boxLeft + (width - this.font.width(NO_ADVANCEMENTS_LABEL)) / 2, boxTop + height / 2 - this.font.lineHeight, -1);
+            guiGraphics.text(this.font, VERY_SAD_LABEL, boxLeft + (width - this.font.width(VERY_SAD_LABEL)) / 2, boxTop + height / 2 + this.font.lineHeight, -1);
         } else {
             betterAdvancementTab.drawContents(guiGraphics, boxLeft, boxTop, width, height, zoom);
         }
     }
 
-    public void renderWindow(GuiGraphics guiGraphics, int left, int top, int right, int bottom, int maxTabs, int skip) {
+    public void renderWindow(GuiGraphicsExtractor guiGraphics, int left, int top, int right, int bottom, int maxTabs, int skip) {
         // Top left corner
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Resources.Gui.WINDOW, left, top, 0, 0, CORNER_SIZE, CORNER_SIZE, 256, 256);
         // Top side
@@ -439,10 +439,10 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
             }
 
         }
-        guiGraphics.drawString(this.font, windowTitle, left + 8, top + 6, -12566464, false);
+        guiGraphics.text(this.font, windowTitle, left + 8, top + 6, -12566464, false);
     }
 
-    private void renderToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
+    private void renderToolTips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int left, int top, int right, int bottom, int maxTabs, int skip) {
         if (this.selectedTab != null) {
             guiGraphics.pose().pushMatrix();
             guiGraphics.pose().translate(left + PADDING, top + 2*PADDING);

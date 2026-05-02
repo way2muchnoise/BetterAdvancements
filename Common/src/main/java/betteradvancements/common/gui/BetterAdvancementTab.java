@@ -7,7 +7,7 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.ClientAsset;
@@ -49,7 +49,7 @@ public class BetterAdvancementTab {
         this.index = index;
         this.rootNode = advancementNode;
         this.display = displayInfo;
-        this.icon = displayInfo.getIcon();
+        this.icon = displayInfo.getIcon().create();
         this.title = displayInfo.getTitle();
         this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancementNode);
         this.root = new BetterAdvancementWidget(this, mc, advancementNode, displayInfo);
@@ -64,15 +64,15 @@ public class BetterAdvancementTab {
         return this.title;
     }
 
-    public void drawTab(GuiGraphics guiGraphics, int left, int top, int width, int height, boolean selected) {
+    public void drawTab(GuiGraphicsExtractor guiGraphics, int left, int top, int width, int height, boolean selected) {
         this.type.draw(guiGraphics, left, top, width, height, selected, this.index);
     }
 
-    public void drawIcon(GuiGraphics guiGraphics, int left, int top,int width, int height) {
+    public void drawIcon(GuiGraphicsExtractor guiGraphics, int left, int top,int width, int height) {
         this.type.drawIcon(guiGraphics, left, top, width, height, this.index, this.icon);
     }
 
-    public void drawContents(GuiGraphics guiGraphics, int left, int top, int width, int height, float zoom) {
+    public void drawContents(GuiGraphicsExtractor guiGraphics, int left, int top, int width, int height, float zoom) {
         if (!this.centered) {
             this.scrollX = (width - (this.maxX + this.minX)) / 2;
             this.scrollY = (height - (this.maxY + this.minY)) / 2;
@@ -104,7 +104,7 @@ public class BetterAdvancementTab {
         guiGraphics.disableScissor();
     }
 
-    public void drawToolTips(GuiGraphics guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height, float zoom) {
+    public void drawToolTips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int left, int top, int width, int height, float zoom) {
         guiGraphics.fill(0, 0, width, height, Mth.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 

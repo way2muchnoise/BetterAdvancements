@@ -24,7 +24,7 @@ public class GuiOpenHandler implements ScreenEvents.AfterInit {
         if (screen instanceof InventoryScreen) {
             if (BetterAdvancementsScreenButton.addToInventory) {
                 InventoryScreen inventoryScreen = (InventoryScreen) screen;
-                Screens.getButtons(screen).add(new BetterAdvancementsScreenButton(inventoryScreen.leftPos + inventoryScreen.imageWidth, inventoryScreen.topPos, Component.literal("BA")));
+                Screens.getWidgets(screen).add(new BetterAdvancementsScreenButton(inventoryScreen.leftPos + inventoryScreen.imageWidth, inventoryScreen.topPos, Component.literal("BA")));
             }
         }
     }

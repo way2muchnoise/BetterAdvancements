@@ -2,7 +2,7 @@ package betteradvancements.common.gui;
 
 import betteradvancements.common.reference.Resources;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.InputWithModifiers;
@@ -21,7 +21,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
     }
 
     @Override
-    public void renderContents(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (this.visible)
         {
             Minecraft mc  = Minecraft.getInstance();
@@ -30,7 +30,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
             if (this.isHovered) {
                 guiGraphics.setTooltipForNextFrame(mc.font, Component.translatable("gui.advancements"), mouseX, mouseY);
             }
-            guiGraphics.renderFakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
+            guiGraphics.fakeItem(new ItemStack(Items.BOOK), this.getX() + 6, this.getY() + 10);
         }
     }
 

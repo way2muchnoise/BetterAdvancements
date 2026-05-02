@@ -1,14 +1,14 @@
 package betteradvancements.common.util;
 
 import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 
 public class RenderUtil {
     private RenderUtil() {}
 
-    public static void renderRepeating(Identifier texture, GuiGraphics guiGraphics, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
+    public static void renderRepeating(Identifier texture, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int textureX, int textureY, int textureWidth, int textureHeight) {
         for (int i = 0; i < width; i += textureWidth) {
             int drawX = x + i;
             int drawWidth = Math.min(textureWidth, width - i);
@@ -21,7 +21,7 @@ public class RenderUtil {
         }
     }
     
-    public static void drawRect(GuiGraphics guiGraphics, float x, float y, float x2, float y2, float width, int color) {
+    public static void drawRect(GuiGraphicsExtractor guiGraphics, float x, float y, float x2, float y2, float width, int color) {
         if (y > y2) {
             float tempY = y;
             float tempX = x;

@@ -8,7 +8,7 @@ architectury {
 }
 
 dependencies {
-	modImplementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
-	modImplementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
-	api(project(":CommonApi", configuration = "namedElements"))
+	implementation("net.fabricmc:fabric-loader:${fabricLoaderVersion}")
+	implementation("net.fabricmc.fabric-api:fabric-api:${fabricVersion}")
+	api(project(":CommonApi"))
 }

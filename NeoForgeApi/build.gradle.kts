@@ -12,6 +12,6 @@ repositories {
 
 dependencies {
     neoForge("net.neoforged:neoforge:${neoforgeVersion}")
-    api(project(":CommonApi", configuration = "namedElements"))
+    api(project(":CommonApi"))
 }
 
