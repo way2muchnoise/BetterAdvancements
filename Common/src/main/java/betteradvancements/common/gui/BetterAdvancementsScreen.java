@@ -497,7 +497,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
         this.selectedTab = this.tabs.get(advancement);
         if (this.selectedTab != null) {
-            this.selectedTab.loadScroll();
+            this.selectedTab.loadScroll(internalWidth - 2 * SIDE - 3 * PADDING, internalHeight - TOP - BOTTOM - 3 * PADDING);
         }
     }
 

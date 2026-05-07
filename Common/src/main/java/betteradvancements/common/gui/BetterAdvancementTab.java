@@ -193,12 +193,20 @@ public class BetterAdvancementTab {
         scrollHistory.put(this.advancement, new Tuple<>(scrollX, scrollY));
     }
 
-    public void loadScroll() {
+    public void loadScroll(int width, int height) {
         Tuple<Integer, Integer> scroll = scrollHistory.get(this.advancement);
         if (scroll != null) {
             this.centered = true;
             this.scrollX = scroll.getA();
             this.scrollY = scroll.getB();
+
+            if (this.maxX - this.minX > width) {
+                this.scrollX = Mth.clamp(this.scrollX, -(this.maxX - width), -this.minX);
+            }
+
+            if (this.maxY - this.minY > height) {
+                this.scrollY = Mth.clamp(this.scrollY, -(this.maxY - height), -this.minY);
+            }
         }
     }
 }
