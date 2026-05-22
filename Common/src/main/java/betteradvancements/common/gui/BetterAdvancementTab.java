@@ -206,7 +206,6 @@ public class BetterAdvancementTab {
             this.scrollY = scroll.getB();
         }
 
-
         if (this.maxX - this.minX > width) {
             this.scrollX = Mth.clamp(this.scrollX, -(this.maxX - width), -this.minX);
         }
