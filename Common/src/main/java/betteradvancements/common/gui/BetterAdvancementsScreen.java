@@ -123,7 +123,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
         if (this.selectedTab != null) {
-            this.selectedTab.scroll(scroll * 16.0, scroll * 16.0, width, height);
+            this.selectedTab.scroll(scroll * 16.0, scroll * 16.0, internalWidth - 2 * SIDE - 3 * PADDING, internalHeight - TOP - BOTTOM - 3 * PADDING);
             return true;
         } else {
             return false;
