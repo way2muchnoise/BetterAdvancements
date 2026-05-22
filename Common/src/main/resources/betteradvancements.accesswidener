@@ -1,5 +1,5 @@
 accessWidener	v1	official
-accessible  class   net/minecraft/client/gui/screens/advancements/AdvancementTabType
+accessible class net/minecraft/client/gui/screens/advancements/AdvancementTabType
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen leftPos I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen topPos I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen imageWidth I
