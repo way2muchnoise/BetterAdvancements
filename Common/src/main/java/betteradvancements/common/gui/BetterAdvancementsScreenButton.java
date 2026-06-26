@@ -36,7 +36,7 @@ public class BetterAdvancementsScreenButton extends AbstractButton {
 
     @Override
     public void onPress(InputWithModifiers input) {
-        Minecraft.getInstance().setScreen(new BetterAdvancementsScreen(Minecraft.getInstance().player.connection.getAdvancements()));
+        Minecraft.getInstance().setScreenAndShow(new BetterAdvancementsScreen(Minecraft.getInstance().player.connection.getAdvancements()));
     }
 
     @Override

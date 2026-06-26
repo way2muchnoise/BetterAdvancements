@@ -3,6 +3,7 @@ package betteradvancements.common.gui;
 import betteradvancements.common.advancements.BetterDisplayInfo;
 import betteradvancements.common.advancements.BetterDisplayInfoRegistry;
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.DisplayInfo;
@@ -14,7 +15,6 @@ import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class BetterAdvancementTab {
     public static boolean doFade = true;
-    public static final Map<AdvancementHolder, Tuple<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
+    public static final Map<AdvancementHolder, Pair<Integer, Integer>> scrollHistory = Maps.newLinkedHashMap();
 
     private final Minecraft minecraft;
     private final BetterAdvancementsScreen screen;
@@ -191,15 +191,15 @@ public class BetterAdvancementTab {
     }
 
     public void storeScroll() {
-        scrollHistory.put(this.rootNode.holder(), new Tuple<>(scrollX, scrollY));
+        scrollHistory.put(this.rootNode.holder(), Pair.of(scrollX, scrollY));
     }
 
     public void loadScroll(int width, int height) {
-        Tuple<Integer, Integer> scroll = scrollHistory.get(this.rootNode.holder());
+        Pair<Integer, Integer> scroll = scrollHistory.get(this.rootNode.holder());
         if (scroll != null) {
             this.centered = true;
-            this.scrollX = scroll.getA();
-            this.scrollY = scroll.getB();
+            this.scrollX = scroll.getFirst();
+            this.scrollY = scroll.getSecond();
 
             if (this.maxX - this.minX > width) {
                 this.scrollX = Mth.clamp(this.scrollX, -(this.maxX - width), -this.minX);

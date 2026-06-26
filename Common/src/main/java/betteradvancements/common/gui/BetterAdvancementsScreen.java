@@ -143,7 +143,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     @Override
     public boolean keyPressed(KeyEvent event) {
         if (this.minecraft.options.keyAdvancements.matches(event)) {
-            this.minecraft.setScreen(null);
+            this.minecraft.setScreenAndShow(null);
             this.minecraft.mouseHandler.grabMouse();
             return true;
         } else {
