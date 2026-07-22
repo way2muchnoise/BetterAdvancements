@@ -28,6 +28,7 @@ public class ConfigValues {
 
     public static DropdownBoxEntry<CriteriaDetail> detailLevel;
     public static BooleanListEntry requiresShift;
+    public static BooleanListEntry colorWholeCriteriaText;
     public static BooleanListEntry addToInventory;
 
     public static BooleanListEntry defaultDrawDirectLines;
@@ -104,6 +105,11 @@ public class ConfigValues {
             .setSaveConsumer(newValue -> CriterionGrid.requiresShift = newValue)
             .build();
         category.addEntry(requiresShift);
+        colorWholeCriteriaText = builder.startBooleanToggle(Component.literal("colorWholeCriteriaText"), CriterionGrid.colorWholeCriteriaText)
+                .setDefaultValue(false)
+                .setSaveConsumer(newValue -> CriterionGrid.colorWholeCriteriaText = newValue)
+                .build();
+        category.addEntry(colorWholeCriteriaText);
         addToInventory = builder.startBooleanToggle(Component.literal("addInventoryButton"), BetterAdvancementsScreenButton.addToInventory)
             .setDefaultValue(false)
             .setSaveConsumer(newValue -> BetterAdvancementsScreenButton.addToInventory = newValue)

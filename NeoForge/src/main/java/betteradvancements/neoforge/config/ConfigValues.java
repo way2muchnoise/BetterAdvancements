@@ -25,6 +25,7 @@ public class ConfigValues {
 
     public static ModConfigSpec.ConfigValue<String> detailLevel;
     public static ModConfigSpec.BooleanValue requiresShift;
+    public static ModConfigSpec.BooleanValue colorWholeCriteriaText;
     public static ModConfigSpec.BooleanValue addToInventory;
 
     public static ModConfigSpec.BooleanValue defaultDrawDirectLines;
@@ -51,6 +52,7 @@ public class ConfigValues {
 
         detailLevel = builder.comment(CriteriaDetail.comments()).defineInList("criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.names());
         requiresShift = builder.define("criteriaDetailRequiresShift", false);
+        colorWholeCriteriaText = builder.define("colorWholeCriteriaText", false);
         addToInventory = builder.define("addInventoryButton", false);
 
         defaultDrawDirectLines = builder.define("defaultDrawDirectLines", false);
@@ -78,6 +80,7 @@ public class ConfigValues {
 
         CriterionGrid.detailLevel = CriteriaDetail.fromName(detailLevel.get());
         CriterionGrid.requiresShift = requiresShift.get();
+        CriterionGrid.colorWholeCriteriaText = colorWholeCriteriaText.get();
         BetterAdvancementsScreenButton.addToInventory = addToInventory.get();
 
         BetterDisplayInfo.defaultDrawDirectLines = defaultDrawDirectLines.get();

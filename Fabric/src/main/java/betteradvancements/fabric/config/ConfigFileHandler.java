@@ -66,6 +66,9 @@ public class ConfigFileHandler {
         if (root.has("criteriaDetailRequiresShift")) {
             CriterionGrid.requiresShift = root.get("criteriaDetailRequiresShift").getAsBoolean();
         }
+        if (root.has("colorWholeCriteriaText")) {
+            CriterionGrid.colorWholeCriteriaText = root.get("colorWholeCriteriaText").getAsBoolean();
+        }
         if (root.has("addInventoryButton")) {
             BetterAdvancementsScreenButton.addToInventory = root.get("addInventoryButton").getAsBoolean();
         }
@@ -100,6 +103,7 @@ public class ConfigFileHandler {
         root.addProperty("defaultZoom", BetterAdvancementsScreen.zoom);
         root.addProperty("criteriaDetail", CriterionGrid.detailLevel.getName());
         root.addProperty("criteriaDetailRequiresShift", CriterionGrid.requiresShift);
+        root.addProperty("colorWholeCriteriaText", CriterionGrid.colorWholeCriteriaText);
         root.addProperty("addInventoryButton", BetterAdvancementsScreenButton.addToInventory);
         root.addProperty("defaultDrawDirectLines", BetterDisplayInfo.defaultDrawDirectLines);
         root.addProperty("defaultHideLines", BetterDisplayInfo.defaultHideLines);

@@ -14,6 +14,7 @@ import java.util.List;
 public class CriterionGrid {
     public static CriteriaDetail detailLevel = CriteriaDetail.DEFAULT;
     public static boolean requiresShift = false;
+    public static boolean colorWholeCriteriaText = false;
     private static final CriterionGrid empty = new CriterionGrid();
 
     private final List<Component> cellContents;
@@ -83,7 +84,7 @@ public class CriterionGrid {
             if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
-                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.GREEN : ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text);
                 }
@@ -91,7 +92,7 @@ public class CriterionGrid {
             else {
                 if (detailLevel.showUnobtained()) {
                     MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.DARK_RED : ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text);
                 }
@@ -101,7 +102,7 @@ public class CriterionGrid {
 
         if (!detailLevel.showUnobtained()) {
             MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-            MutableComponent text2 = Component.translatable("betteradvancements.remaining", numUnobtained).withStyle(ChatFormatting.WHITE, ChatFormatting.ITALIC);
+            MutableComponent text2 = Component.translatable("betteradvancements.remaining", numUnobtained).withStyle(colorWholeCriteriaText ? ChatFormatting.DARK_RED : ChatFormatting.WHITE, ChatFormatting.ITALIC);
         	text.append(text2);
             cellContents.add(text);
         }
