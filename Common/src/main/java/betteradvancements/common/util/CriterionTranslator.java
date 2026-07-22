@@ -11,6 +11,7 @@ import java.util.List;
 public class CriterionTranslator {
     public static MutableComponent tryTranslateCriterion(AdvancementHolder advancementHolder, String criterion) {
         String preppedCriterion = criterion.replace(":",".");
+        if (!criterion.contains(":")) preppedCriterion = advancementHolder.id().getNamespace()+ "." + preppedCriterion;
         List<String> translations = new LinkedList<>();
         translations.add(preppedCriterion);
         translations.add("betteradvancements.criterion." + advancementHolder.id() + "." + criterion);
