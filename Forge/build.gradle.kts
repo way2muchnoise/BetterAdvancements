@@ -28,6 +28,10 @@ architectury {
 	forge()
 }
 
+loom {
+	accessWidenerPath.set(project(":Common").file("src/main/resources/betteradvancements.accesswidener"))
+}
+
 configurations.configureEach {
 	// Fix that can be found in Forge MDK too
 	resolutionStrategy {
@@ -38,16 +42,16 @@ configurations.configureEach {
 dependencies {
 	forge("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
 
-	implementation(project(":Common", configuration = "namedElements")) { isTransitive = false }
+	implementation(project(":Common")) { isTransitive = false }
 	shadowImplementation(project(":Common", configuration = "transformProductionForge")) { isTransitive = false }
 
-	implementation(project(":ForgeApi", configuration = "namedElements"))
+	implementation(project(":ForgeApi"))
 	shadowImplementation(project(":CommonApi")) { isTransitive = false }
 	shadowImplementation(project(":ForgeApi")) { isTransitive = false }
 
 	// Need to make sure the API packages are loaded while during run in IDE
-	forgeRuntimeLibrary(project(":CommonApi", configuration = "namedElements"))
-	forgeRuntimeLibrary(project(":ForgeApi", configuration = "namedElements"))
+	forgeRuntimeLibrary(project(":CommonApi"))
+	forgeRuntimeLibrary(project(":ForgeApi"))
 }
 
 val apiJar = tasks.register<Jar>("apiJar") {
@@ -60,16 +64,10 @@ val apiJar = tasks.register<Jar>("apiJar") {
 
 artifacts {
 	archives(apiJar.get())
-	archives(tasks.remapJar.get())
-	archives(tasks.remapSourcesJar.get())
+	archives(tasks.shadowJar.get())
 }
 
 tasks.withType<Jar> {
-	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
-}
-
-tasks.withType<net.fabricmc.loom.task.RemapJarTask> {
-	atAccessWideners.add("${modId}.accesswidener")
 	destinationDirectory.set(file(rootProject.rootDir.path + "/output"))
 }
 
@@ -77,7 +75,7 @@ tasks.register<TaskPublishCurseForge>("publishCurseForge") {
 
 	apiToken = System.getenv("CURSE_KEY") ?: "0"
 
-	val mainFile = upload(curseProjectId, tasks.remapJar.get())
+	val mainFile = upload(curseProjectId, tasks.shadowJar.get())
 	mainFile.changelogType = CFG_Constants.CHANGELOG_MARKDOWN
 	mainFile.changelog = System.getenv("CHANGELOG") ?: ""
 	mainFile.releaseType = CFG_Constants.RELEASE_TYPE_ALPHA
@@ -97,8 +95,8 @@ modrinth {
 	versionName.set("${project.version} for Forge $minecraftVersion")
 	versionType.set("alpha")
 	changelog.set(System.getenv("CHANGELOG") ?: "")
-	uploadFile.set(tasks.remapJar.get())
+	uploadFile.set(tasks.shadowJar.get())
 	gameVersions.add(minecraftVersion)
 	// additionalFiles.addAll(arrayOf(apiJar.get(), sourcesJar.get())) // TODO: Figure out how to upload these
 }
-tasks.modrinth.get().dependsOn(tasks.remapJar)
+tasks.modrinth.get().dependsOn(tasks.shadowJar)

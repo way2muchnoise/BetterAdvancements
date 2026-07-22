@@ -41,9 +41,9 @@ jobs:
         run: ./gradlew clean build
       # Publish
       - name: Publish CurseForge
-        run: ./gradlew :Fabric:publishCurseForge :NeoForge:publishCurseForge
+        run: ./gradlew :Fabric:publishCurseForge :NeoForge:publishCurseForge :Forge:publishCurseForge
       - name: Publish Modrinth
-        run: ./gradlew :Fabric:modrinth :NeoForge:modrinth
+        run: ./gradlew :Fabric:modrinth :NeoForge:modrinth :Forge:modrinth
       - uses: actions/upload-artifact@v7
         with:
           if-no-files-found: error

@@ -1,11 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     base
     id("architectury-plugin") version ("3.5-SNAPSHOT")
-    id("dev.architectury.loom-no-remap") version ("1.14-SNAPSHOT") apply (false)
+    id("dev.architectury.loom-no-remap") version ("1.17-SNAPSHOT") apply (false)
     id("com.gradleup.shadow") version ("9.4.1") apply (false)
 }
 

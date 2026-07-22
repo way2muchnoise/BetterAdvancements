@@ -24,7 +24,7 @@ import java.util.function.Function;
 public class ForgeAdvancementVisitor implements IAdvancementVisitor {
     public boolean findAdvancements(Identifier location, ServerLevel serverLevel, Function<Path, Boolean> preprocessor, BiFunction<Path, Path, Boolean> processor, boolean defaultUnfoundRoot, boolean visitAllFiles) {
         FileSystem fs = null;
-        ModContainer mod = ModList.get().getModContainerById(location.getNamespace()).orElse(null);
+        ModContainer mod = ModList.getModContainerById(location.getNamespace()).orElse(null);
         try {
             File source = null;
 

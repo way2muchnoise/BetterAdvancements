@@ -9,5 +9,5 @@ architectury {
 
 dependencies {
 	forge("net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}")
-	api(project(":CommonApi", configuration = "namedElements"))
+	api(project(":CommonApi"))
 }
