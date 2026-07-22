@@ -80,11 +80,10 @@ public class CriterionGrid {
         List<Component> cellContents = new ArrayList<>();
         for (String criterion : requirements.names()) {
             CriterionProgress criterionProgress = progress.getCriterion(criterion);
-            String criterionKey = "betteradvancements.criterion." + holder.id() + "." + criterion;
             if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
-                    MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text);
                 }
@@ -92,7 +91,7 @@ public class CriterionGrid {
             else {
                 if (detailLevel.showUnobtained()) {
                     MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-                    MutableComponent text2 = Component.translatableWithFallback(criterionKey, criterion).withStyle(ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text);
                 }
