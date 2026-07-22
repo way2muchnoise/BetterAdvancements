@@ -1,4 +1,5 @@
 {
   "betteradvancements.remaining": "%d remaining",
-  "betteradvancements.title_separator" : " - "
+  "betteradvancements.title_separator" : " - ",
+  "title.betteradvancements.config" : "Better Advancements Configuration"
 }
