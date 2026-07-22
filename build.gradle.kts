@@ -78,7 +78,8 @@ subprojects {
 
     repositories {
         maven("https://maven.parchmentmc.org/")
-        maven("https://maven.terraformersmc.com/releases/")
+        // maven("https://maven.terraformersmc.com/releases/")
+        maven("https://api.modrinth.com/maven") // Temp replacement maven for modmenu
         maven("https://maven.shedaniel.me/")
     }
 
