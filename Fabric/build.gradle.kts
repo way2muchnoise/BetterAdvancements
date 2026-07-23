@@ -41,8 +41,7 @@ dependencies {
 	api("me.shedaniel.cloth:cloth-config-fabric:${clothVersion}") {
 		exclude("net.fabricmc.fabric-api")
 	}
-	// implementation("com.terraformersmc:modmenu:${modMenuVersion}")
-	implementation("maven.modrinth:mOgUt4GM:njXb639R") // Temp fetch modmenu from Modrinth
+	implementation("com.terraformersmc:modmenu:${modMenuVersion}")
 
 	implementation(project(":Common")) { isTransitive = false }
 	shadowImplementation(project(":Common", configuration = "transformProductionFabric")) { isTransitive = false }
