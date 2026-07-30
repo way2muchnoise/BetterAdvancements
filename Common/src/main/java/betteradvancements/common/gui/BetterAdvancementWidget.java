@@ -69,7 +69,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         int titleWidth = 29 + mc.font.width(this.title) + k;
         BetterAdvancementsScreen screen = betterAdvancementTabGui.getScreen();
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancement, advancementProgress, screen.width / 2, mc.font);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancement, advancementProgress, screen.width / 2, screen.height / 2, mc.font);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || Screen.hasShiftDown()) {
@@ -160,7 +160,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
             double y1 = scrollY + this.y + ADVANCEMENT_SIZE / 2;
             double x2 = scrollX + parent.x + ADVANCEMENT_SIZE / 2 + 3;
             double y2 = scrollY + parent.y + ADVANCEMENT_SIZE / 2;
-            
+
             double width;
             boolean perpendicular = x1 == x2 || y1 == y2;
             
@@ -363,12 +363,14 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || Screen.hasShiftDown()) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.font.lineHeight;
-            for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
-                CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
-                for (int rowIndex = 0; rowIndex < col.cells().size(); rowIndex++) {
-                    guiGraphics.drawString(this.minecraft.font, col.cells().get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
+            if (this.criterionGrid.hasPages()) {
+                for (int colIndex = 0; colIndex < this.criterionGrid.getCurrentPage().size(); colIndex++) {
+                    CriterionGrid.Column col = this.criterionGrid.getCurrentPage().get(colIndex);
+                    for (int rowIndex = 0; rowIndex < col.cells().size(); rowIndex++) {
+                        guiGraphics.drawString(this.minecraft.font, col.cells().get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
+                    }
+                    xOffset += col.width();
                 }
-                xOffset += col.width();
             }
         }
 

@@ -63,6 +63,9 @@ public class ConfigFileHandler {
         if (root.has("criteriaDetailRequiresShift")) {
             CriterionGrid.requiresShift = root.get("criteriaDetailRequiresShift").getAsBoolean();
         }
+        if (root.has("criteriaRotationSpeed")) {
+            CriterionGrid.criteriaRotationSpeed = root.get("criteriaRotationSpeed").getAsInt();
+        }
         if (root.has("addInventoryButton")) {
             BetterAdvancementsScreenButton.addToInventory = root.get("addInventoryButton").getAsBoolean();
         }
@@ -94,8 +97,10 @@ public class ConfigFileHandler {
         root.addProperty("showDebugCoordinates", BetterAdvancementsScreen.showDebugCoordinates);
         root.addProperty("orderTabsAlphabetically", BetterAdvancementsScreen.orderTabsAlphabetically);
         root.addProperty("uiScaling", BetterAdvancementsScreen.uiScaling);
+        root.addProperty("defaultZoom", BetterAdvancementsScreen.zoom);
         root.addProperty("criteriaDetail", CriterionGrid.detailLevel.getName());
         root.addProperty("criteriaDetailRequiresShift", CriterionGrid.requiresShift);
+        root.addProperty("criteriaRotationSpeed", CriterionGrid.criteriaRotationSpeed);
         root.addProperty("addInventoryButton", BetterAdvancementsScreenButton.addToInventory);
         root.addProperty("defaultDrawDirectLines", BetterDisplayInfo.defaultDrawDirectLines);
         root.addProperty("defaultHideLines", BetterDisplayInfo.defaultHideLines);

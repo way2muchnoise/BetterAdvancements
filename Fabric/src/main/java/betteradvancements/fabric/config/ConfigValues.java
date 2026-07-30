@@ -27,9 +27,11 @@ public class ConfigValues {
     public static BooleanListEntry showDebugCoordinates;
     public static BooleanListEntry orderTabsAlphabetically;
     public static IntegerSliderEntry uiScaling;
+    public static FloatListEntry defaultZoom;
 
     public static DropdownBoxEntry<CriteriaDetail> detailLevel;
     public static BooleanListEntry requiresShift;
+    public static IntegerSliderEntry criteriaRotationSpeed;
     public static BooleanListEntry addToInventory;
 
     public static BooleanListEntry defaultDrawDirectLines;
@@ -97,6 +99,11 @@ public class ConfigValues {
             .setSaveConsumer(newValue -> CriterionGrid.requiresShift = newValue)
             .build();
         category.addEntry(requiresShift);
+        criteriaRotationSpeed = builder.startIntSlider(Component.literal("criteriaRotationSpeed"), CriterionGrid.criteriaRotationSpeed, 1, 10)
+                .setDefaultValue(3)
+                .setSaveConsumer(newValue -> CriterionGrid.criteriaRotationSpeed = newValue)
+                .build();
+        category.addEntry(criteriaRotationSpeed);
         addToInventory = builder.startBooleanToggle(Component.literal("addInventoryButton"), BetterAdvancementsScreenButton.addToInventory)
             .setDefaultValue(false)
             .setSaveConsumer(newValue -> BetterAdvancementsScreenButton.addToInventory = newValue)

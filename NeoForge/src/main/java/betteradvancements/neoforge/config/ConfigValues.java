@@ -9,6 +9,7 @@ import betteradvancements.common.util.ColorHelper;
 import betteradvancements.common.util.CriteriaDetail;
 import betteradvancements.common.util.CriterionGrid;
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigValues {
 
@@ -24,6 +25,7 @@ public class ConfigValues {
 
     public static ForgeConfigSpec.ConfigValue<String> detailLevel;
     public static ForgeConfigSpec.BooleanValue requiresShift;
+    public static ModConfigSpec.IntValue criteriaRotationSpeed;
     public static ForgeConfigSpec.BooleanValue addToInventory;
 
     public static ForgeConfigSpec.BooleanValue defaultDrawDirectLines;
@@ -48,6 +50,7 @@ public class ConfigValues {
 
         detailLevel = builder.comment(CriteriaDetail.comments()).defineInList("criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.names());
         requiresShift = builder.define("criteriaDetailRequiresShift", false);
+        criteriaRotationSpeed = builder.defineInRange("criteriaRotationSpeed", 3, 1, 10);
         addToInventory = builder.define("addInventoryButton", false);
 
         defaultDrawDirectLines = builder.define("defaultDrawDirectLines", false);
@@ -73,6 +76,7 @@ public class ConfigValues {
 
         CriterionGrid.detailLevel = CriteriaDetail.fromName(detailLevel.get());
         CriterionGrid.requiresShift = requiresShift.get();
+        CriterionGrid.criteriaRotationSpeed = criteriaRotationSpeed.get();
         BetterAdvancementsScreenButton.addToInventory = addToInventory.get();
 
         BetterDisplayInfo.defaultDrawDirectLines = defaultDrawDirectLines.get();
