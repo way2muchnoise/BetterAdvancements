@@ -25,6 +25,8 @@ public class ConfigValues {
 
     public static ForgeConfigSpec.ConfigValue<String> detailLevel;
     public static ForgeConfigSpec.BooleanValue requiresShift;
+    public static ForgeConfigSpec.BooleanValue colorWholeCriteriaText;
+    public static ForgeConfigSpec.IntValue criteriaRotationSpeed;
     public static ForgeConfigSpec.BooleanValue addToInventory;
 
     public static ForgeConfigSpec.BooleanValue defaultDrawDirectLines;
@@ -51,6 +53,8 @@ public class ConfigValues {
 
         detailLevel = builder.comment(CriteriaDetail.comments()).defineInList("criteriaDetail", CriteriaDetail.DEFAULT.getName(), CriteriaDetail.names());
         requiresShift = builder.define("criteriaDetailRequiresShift", false);
+        colorWholeCriteriaText = builder.define("colorWholeCriteriaText", false);
+        criteriaRotationSpeed = builder.defineInRange("criteriaRotationSpeed", 3, 1, 10);
         addToInventory = builder.define("addInventoryButton", false);
 
         defaultDrawDirectLines = builder.define("defaultDrawDirectLines", false);
@@ -78,6 +82,8 @@ public class ConfigValues {
 
         CriterionGrid.detailLevel = CriteriaDetail.fromName(detailLevel.get());
         CriterionGrid.requiresShift = requiresShift.get();
+        CriterionGrid.colorWholeCriteriaText = colorWholeCriteriaText.get();
+        CriterionGrid.criteriaRotationSpeed = criteriaRotationSpeed.get();
         BetterAdvancementsScreenButton.addToInventory = addToInventory.get();
 
         BetterDisplayInfo.defaultDrawDirectLines = defaultDrawDirectLines.get();

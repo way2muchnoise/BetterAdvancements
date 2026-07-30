@@ -68,7 +68,7 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         }
         int titleWidth = 29 + mc.font.width(this.title) + k;
         BetterAdvancementsScreen screen = betterAdvancementTabGui.getScreen();
-        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.holder(), this.advancementNode.advancement(), advancementProgress, screen.width / 2, mc.font);
+        this.criterionGrid = CriterionGrid.findOptimalCriterionGrid(this.advancementNode.holder(), this.advancementNode.advancement(), advancementProgress, screen.width / 2, screen.height / 2, mc.font);
         int maxWidth;
         
         if (!CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
@@ -360,12 +360,14 @@ public class BetterAdvancementWidget implements IBetterAdvancementEntryGui {
         if (this.criterionGrid != null && !CriterionGrid.requiresShift || minecraft.hasShiftDown()) {
             int xOffset = drawX + 5;
             yOffset += this.description.size() * this.minecraft.font.lineHeight;
-            for (int colIndex = 0; colIndex < this.criterionGrid.columns.size(); colIndex++) {
-                CriterionGrid.Column col = this.criterionGrid.columns.get(colIndex);
-                for (int rowIndex = 0; rowIndex < col.cells().size(); rowIndex++) {
-                    guiGraphics.text(this.minecraft.font, col.cells().get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
+            if (this.criterionGrid.hasPages()) {
+                for (int colIndex = 0; colIndex < this.criterionGrid.getCurrentPage().size(); colIndex++) {
+                    CriterionGrid.Column col = this.criterionGrid.getCurrentPage().get(colIndex);
+                    for (int rowIndex = 0; rowIndex < col.cells().size(); rowIndex++) {
+                        guiGraphics.text(this.minecraft.font, col.cells().get(rowIndex), xOffset, yOffset + rowIndex * this.minecraft.font.lineHeight, -5592406, false);
+                    }
+                    xOffset += col.width();
                 }
-                xOffset += col.width();
             }
         }
 

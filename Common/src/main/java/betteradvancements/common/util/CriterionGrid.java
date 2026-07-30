@@ -15,14 +15,16 @@ public class CriterionGrid {
     public static CriteriaDetail detailLevel = CriteriaDetail.DEFAULT;
     public static boolean requiresShift = false;
     public static boolean colorWholeCriteriaText = false;
+    public static int criteriaRotationSpeed = 3;
     private static final CriterionGrid empty = new CriterionGrid();
 
     private final List<Component> cellContents;
     private final int[] cellWidths;
     private final int fontHeight;
     private final int numColumns;
-    public final int numRows;
-    public List<Column> columns;
+    private final int numRows;
+    private final int numPages;
+    private List<List<Column>> pagedColumns;
     public int width;
     public int height;
 
@@ -32,44 +34,60 @@ public class CriterionGrid {
         this.fontHeight = 0;
         this.numColumns = 0;
         this.numRows = 0;
-        this.columns = Collections.emptyList();
+        this.numPages = 1;
+        this.pagedColumns = Collections.emptyList();
         this.width = 0;
         this.height = 0;
     }
 
-    public CriterionGrid(List<Component> cellContents, int[] cellWidths, int fontHeight, int numColumns) {
+    public CriterionGrid(List<Component> cellContents, int[] cellWidths, int fontHeight, int numColumns, int numPages) {
         this.cellContents = cellContents;
         this.cellWidths = cellWidths;
         this.fontHeight = fontHeight;
         this.numColumns = numColumns;
-        this.numRows = (int)Math.ceil((double)cellContents.size() / numColumns);
+        this.numPages = numPages;
+        this.numRows = (int)Math.ceil((double)cellContents.size() / numColumns / numPages);
     }
 
     public void init() {
-        this.columns = new ArrayList<>();
+        this.pagedColumns = new ArrayList<>();
         this.width = 0;
-        for (int c = 0; c < this.numColumns; c++) {
-            List<Component> column = new ArrayList<>();
-            int columnWidth = 0;
-            for (int r = 0; r < this.numRows; r++) {
-                int cellIndex = c * this.numRows + r;
-                if (cellIndex >= this.cellContents.size()) {
-                    break;
+        for (int p = 0; p < this.numPages; p++) {
+            List<Column> columns = new ArrayList<>();
+            int pageWidth = 0;
+            for (int c = 0; c < this.numColumns; c++) {
+                List<Component> column = new ArrayList<>();
+                int columnWidth = 0;
+                for (int r = 0; r < this.numRows; r++) {
+                    int cellIndex = p * this.numColumns * this.numRows + c * this.numRows + r;
+                    if (cellIndex >= this.cellContents.size()) {
+                        break;
+                    }
+                    column.add(this.cellContents.get(cellIndex));
+                    columnWidth = Math.max(columnWidth, this.cellWidths[cellIndex]);
                 }
-                column.add(this.cellContents.get(cellIndex));
-                columnWidth = Math.max(columnWidth, this.cellWidths[cellIndex]);
+                columns.add(new Column(column, columnWidth));
+                pageWidth += columnWidth;
             }
-            this.columns.add(new Column(column, columnWidth));
-            this.width += columnWidth;
+            this.pagedColumns.add(columns);
+            this.width = Math.max(pageWidth, this.width);
         }
         this.height = this.numRows * this.fontHeight;
+    }
+
+    public List<Column> getCurrentPage() {
+        return this.pagedColumns.get((int) (System.currentTimeMillis() / (criteriaRotationSpeed * 1000) % this.numPages));
+    }
+
+    public boolean hasPages() {
+        return !this.pagedColumns.isEmpty();
     }
 
     public record Column(List<Component> cells, int width) {}
 
     // Of all the possible grids whose aspect ratio is less than the maximum, this method returns the one with the smallest number of rows.
     // If there is no such grid, this method returns a single-column grid.
-    public static CriterionGrid findOptimalCriterionGrid(AdvancementHolder holder, Advancement advancement, AdvancementProgress progress, int maxWidth, Font font) {
+    public static CriterionGrid findOptimalCriterionGrid(AdvancementHolder holder, Advancement advancement, AdvancementProgress progress, int maxWidth, int maxHeight, Font font) {
         if (progress == null || progress.isDone() || detailLevel.equals(CriteriaDetail.OFF)) {
             return CriterionGrid.empty;
         }
@@ -113,11 +131,13 @@ public class CriterionGrid {
         }
 
         int numCols = 0;
+        int numPages = 1;
         CriterionGrid prevGrid = null;
         CriterionGrid currGrid = null;
+        // Optimise columns
         do {
             numCols++;
-            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, font.lineHeight, numCols);
+            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, font.lineHeight, numCols, numPages);
             if (prevGrid != null && newGrid.numRows == prevGrid.numRows) {
                 // We increased the width without decreasing the height, which is pointless.
                 continue;
@@ -126,6 +146,21 @@ public class CriterionGrid {
             prevGrid = currGrid;
             currGrid = newGrid;
         } while(numCols <= cellContents.size() && currGrid.width <= maxWidth);
-        return prevGrid != null ? prevGrid : currGrid;
+        numCols--; // Decrease numCols as it will be one above what is accepted
+        currGrid = prevGrid; // Make sure
+        prevGrid = null; // Reset prevGrid before we work on pages
+        // If needed further optimise for pages
+        while(numPages <= cellContents.size() && currGrid.height > maxHeight) {
+            numPages++;
+            CriterionGrid newGrid = new CriterionGrid(cellContents, cellWidths, font.lineHeight, numCols, numPages);
+            if (prevGrid != null && newGrid.numRows == prevGrid.numRows) {
+                // We increased the pages without decreasing the height, which is pointless.
+                continue;
+            }
+            newGrid.init();
+            prevGrid = currGrid;
+            currGrid = newGrid;
+        }
+        return currGrid;
     }
 }

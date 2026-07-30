@@ -29,6 +29,7 @@ public class ConfigValues {
     public static DropdownBoxEntry<CriteriaDetail> detailLevel;
     public static BooleanListEntry requiresShift;
     public static BooleanListEntry colorWholeCriteriaText;
+    public static IntegerSliderEntry criteriaRotationSpeed;
     public static BooleanListEntry addToInventory;
 
     public static BooleanListEntry defaultDrawDirectLines;
@@ -110,6 +111,11 @@ public class ConfigValues {
                 .setSaveConsumer(newValue -> CriterionGrid.colorWholeCriteriaText = newValue)
                 .build();
         category.addEntry(colorWholeCriteriaText);
+        criteriaRotationSpeed = builder.startIntSlider(Component.literal("criteriaRotationSpeed"), CriterionGrid.criteriaRotationSpeed, 1, 10)
+                .setDefaultValue(3)
+                .setSaveConsumer(newValue -> CriterionGrid.criteriaRotationSpeed = newValue)
+                .build();
+        category.addEntry(criteriaRotationSpeed);
         addToInventory = builder.startBooleanToggle(Component.literal("addInventoryButton"), BetterAdvancementsScreenButton.addToInventory)
             .setDefaultValue(false)
             .setSaveConsumer(newValue -> BetterAdvancementsScreenButton.addToInventory = newValue)
