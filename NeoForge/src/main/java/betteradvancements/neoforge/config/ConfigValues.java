@@ -9,7 +9,6 @@ import betteradvancements.common.util.ColorHelper;
 import betteradvancements.common.util.CriteriaDetail;
 import betteradvancements.common.util.CriterionGrid;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigValues {
 
@@ -25,7 +24,7 @@ public class ConfigValues {
 
     public static ForgeConfigSpec.ConfigValue<String> detailLevel;
     public static ForgeConfigSpec.BooleanValue requiresShift;
-    public static ModConfigSpec.IntValue criteriaRotationSpeed;
+    public static ForgeConfigSpec.IntValue criteriaRotationSpeed;
     public static ForgeConfigSpec.BooleanValue addToInventory;
 
     public static ForgeConfigSpec.BooleanValue defaultDrawDirectLines;

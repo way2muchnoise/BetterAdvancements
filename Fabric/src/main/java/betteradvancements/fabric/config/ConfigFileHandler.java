@@ -97,7 +97,6 @@ public class ConfigFileHandler {
         root.addProperty("showDebugCoordinates", BetterAdvancementsScreen.showDebugCoordinates);
         root.addProperty("orderTabsAlphabetically", BetterAdvancementsScreen.orderTabsAlphabetically);
         root.addProperty("uiScaling", BetterAdvancementsScreen.uiScaling);
-        root.addProperty("defaultZoom", BetterAdvancementsScreen.zoom);
         root.addProperty("criteriaDetail", CriterionGrid.detailLevel.getName());
         root.addProperty("criteriaDetailRequiresShift", CriterionGrid.requiresShift);
         root.addProperty("criteriaRotationSpeed", CriterionGrid.criteriaRotationSpeed);

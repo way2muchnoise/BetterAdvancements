@@ -27,7 +27,6 @@ public class ConfigValues {
     public static BooleanListEntry showDebugCoordinates;
     public static BooleanListEntry orderTabsAlphabetically;
     public static IntegerSliderEntry uiScaling;
-    public static FloatListEntry defaultZoom;
 
     public static DropdownBoxEntry<CriteriaDetail> detailLevel;
     public static BooleanListEntry requiresShift;
