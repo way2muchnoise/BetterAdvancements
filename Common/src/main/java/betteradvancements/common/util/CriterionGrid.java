@@ -106,7 +106,7 @@ public class CriterionGrid {
             if (criterionProgress != null && criterionProgress.isDone()) {
                 if (detailLevel.showObtained()) {
                     MutableComponent text = Component.literal(" + ").withStyle(ChatFormatting.GREEN);
-                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.GREEN : ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(advancement, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.GREEN : ChatFormatting.WHITE);
                     text.append(text2);
                     cellContents.add(text);
                 }
@@ -114,7 +114,7 @@ public class CriterionGrid {
             else {
                 if (detailLevel.showUnobtained()) {
                     MutableComponent text = Component.literal(" x ").withStyle(ChatFormatting.DARK_RED);
-                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(holder, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.DARK_RED : ChatFormatting.WHITE);
+                    MutableComponent text2 = CriterionTranslator.tryTranslateCriterion(advancement, criterion).withStyle(colorWholeCriteriaText ? ChatFormatting.DARK_RED : ChatFormatting.WHITE);
                 	text.append(text2);
                     cellContents.add(text);
                 }
