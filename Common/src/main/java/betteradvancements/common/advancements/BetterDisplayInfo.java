@@ -45,9 +45,10 @@ public class BetterDisplayInfo implements IBetterDisplayInfo {
 //        }
         if (advancement.display().isPresent()) {
             DisplayInfo displayInfo = advancement.display().get();
-            if (displayInfo instanceof IBetterDisplayInfo){
-                parseIBetterDisplayInfo((IBetterDisplayInfo) displayInfo);
-            }
+//            TODO: IS THERE STILL A NEED FOR THIS?
+//            if (displayInfo instanceof IBetterDisplayInfo){
+//                parseIBetterDisplayInfo((IBetterDisplayInfo) displayInfo);
+//            }
         }
     }
 

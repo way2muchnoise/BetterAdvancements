@@ -9,7 +9,9 @@ import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.network.chat.Component;
@@ -49,8 +51,8 @@ public class BetterAdvancementTab {
         this.index = index;
         this.rootNode = advancementNode;
         this.display = displayInfo;
-        this.icon = displayInfo.getIcon().create();
-        this.title = displayInfo.getTitle();
+        this.icon = displayInfo.icon().create();
+        this.title = displayInfo.title();
         this.betterDisplayInfos = new BetterDisplayInfoRegistry(advancementNode);
         this.root = new BetterAdvancementWidget(this, mc, advancementNode, displayInfo);
         this.addWidget(this.root, advancementNode.holder());
@@ -58,6 +60,10 @@ public class BetterAdvancementTab {
 
     public AdvancementNode getRootNode() {
         return this.rootNode;
+    }
+
+    public AdvancementHolder getRootHolder() {
+        return this.rootNode.holder();
     }
 
     public Component getTitle() {
@@ -82,7 +88,7 @@ public class BetterAdvancementTab {
         guiGraphics.enableScissor(left, top, left + width, top + height);
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().translate(left, top);
-        Identifier resourcelocation = this.display.getBackground().map(ClientAsset.ResourceTexture::texturePath).orElse(TextureManager.INTENTIONAL_MISSING_TEXTURE);
+        Identifier resourcelocation = this.display.background().map(ClientAsset.ResourceTexture::texturePath).orElse(MissingTextureAtlasSprite.getLocation());
 
         int i = this.scrollX % 16;
         int j = this.scrollY % 16;
@@ -209,5 +215,15 @@ public class BetterAdvancementTab {
                 this.scrollY = Mth.clamp(this.scrollY, -(this.maxY - height), -this.minY);
             }
         }
+    }
+
+    public void copyPosition(final BetterAdvancementTab source) {
+        this.scrollX = source.scrollX;
+        this.scrollY = source.scrollY;
+        this.minX = source.minX;
+        this.minY = source.minY;
+        this.maxX = source.maxX;
+        this.maxY = source.maxY;
+        this.centered = source.centered;
     }
 }

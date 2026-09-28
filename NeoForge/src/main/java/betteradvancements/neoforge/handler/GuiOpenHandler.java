@@ -48,7 +48,7 @@ public class GuiOpenHandler {
             if (BetterAdvancementsScreen.orderTabsAlphabetically) {
                 Minecraft mc = Minecraft.getInstance();
                 ClientAdvancements clientAdvancements = mc.player.connection.getAdvancements();
-                AdvancementTree advancementTree = clientAdvancements.getTree();
+                AdvancementTree advancementTree = clientAdvancements.tree();
                 Set<AdvancementNode> roots = (Set<AdvancementNode>) advancementTree.roots();
 
                 List<String> advancementLocations = roots.stream().sorted(AdvancementComparer.sortByTitle()).map(n -> n.holder().id().toString()).toList();

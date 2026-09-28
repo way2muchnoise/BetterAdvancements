@@ -6,7 +6,7 @@ import betteradvancements.common.util.RenderUtil;
 import com.google.common.collect.Maps;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
-import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.AdvancementTree;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
@@ -156,7 +156,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
-        if (event.button() != 0) {
+        if (event.button() != 1) {
             this.isScrolling = false;
             return false;
         }
@@ -198,6 +198,12 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         }
 
         return true;
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        this.isScrolling = false;
+        return super.mouseReleased(event);
     }
 
     /**
@@ -463,37 +469,50 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
     }
 
     @Override
-    public void onAddAdvancementRoot(AdvancementNode advancement) {
-        BetterAdvancementTab betterAdvancementTabGui = BetterAdvancementTab.create(this.minecraft, this, this.tabs.size(), advancement, internalWidth - 2*SIDE, internalHeight - TOP - SIDE);
+    public void onAdvancementsUpdated() {
+        Map<AdvancementHolder, BetterAdvancementTab> oldTabs = Map.copyOf(this.tabs);
+        this.tabs.clear();
+        AdvancementTree tree = this.clientAdvancements.tree();
 
-        if (betterAdvancementTabGui != null) {
-            this.tabs.put(advancement.holder(), betterAdvancementTabGui);
+        for (AdvancementNode root : tree.roots()) {
+            AdvancementHolder rootHolder = root.holder();
+            if (!this.tabs.containsKey(rootHolder)) {
+                BetterAdvancementTab newTab = BetterAdvancementTab.create(this.minecraft, this, this.tabs.size(), root, internalWidth - 2 * SIDE, internalHeight - TOP - SIDE);
+                if (newTab != null) {
+                    BetterAdvancementTab oldTab = oldTabs.get(rootHolder);
+                    if (oldTab != null) {
+                        newTab.copyPosition(oldTab);
+                    }
+
+                    this.tabs.put(rootHolder, newTab);
+                }
+            }
         }
-    }
 
-    @Override
-    public void onRemoveAdvancementRoot(AdvancementNode advancement) {
-    }
-
-    @Override
-    public void onAddAdvancementTask(AdvancementNode advancement) {
-        BetterAdvancementTab betterAdvancementTabGui = this.getTab(advancement);
-
-        if (betterAdvancementTabGui != null) {
-            betterAdvancementTabGui.addAdvancement(advancement);
+        for (AdvancementNode task : tree.tasks()) {
+            BetterAdvancementTab tab = this.getTab(task);
+            if (tab != null) {
+                tab.addAdvancement(task);
+            }
         }
-    }
 
-    @Override
-    public void onRemoveAdvancementTask(AdvancementNode advancement) {
-    }
+        this.clientAdvancements.progress().forEach((holder, progress) -> {
+            AdvancementNode node = tree.get(holder);
+            if (node != null) {
+                BetterAdvancementWidget widget = this.getAdvancementWidget(node);
+                if (widget != null) {
+                    widget.setAdvancementProgress(progress);
+                }
+            }
 
-    @Override
-    public void onUpdateAdvancementProgress(AdvancementNode advancement, AdvancementProgress advancementProgress) {
-        BetterAdvancementWidget betterAdvancementEntryScreen = this.getAdvancementWidget(advancement);
+        });
+        if (this.selectedTab != null) {
+            this.selectedTab = this.tabs.get(this.selectedTab.getRootHolder());
+        }
 
-        if (betterAdvancementEntryScreen != null) {
-            betterAdvancementEntryScreen.getAdvancementProgress(advancementProgress);
+        if (this.selectedTab == null && !this.tabs.isEmpty()) {
+            this.selectedTab = this.tabs.values().iterator().next();
+            this.clientAdvancements.setSelectedTab(this.selectedTab.getRootHolder(), true);
         }
     }
 

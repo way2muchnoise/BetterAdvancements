@@ -29,8 +29,8 @@ public class AdvancementComparer {
                 } else if (info1.isPresent() && info2.isEmpty()) {
                     return -1;
                 } else {
-                    String title1 = info1.get().getTitle().getString().toLowerCase();
-                    String title2 = info2.get().getTitle().getString().toLowerCase();
+                    String title1 = info1.get().title().getString().toLowerCase();
+                    String title2 = info2.get().title().getString().toLowerCase();
                     return title1.compareTo(title2);
                 }
             }
