@@ -1,4 +1,6 @@
 {
   "modmenu.descriptionTranslation.betteradvancements": "对成就界面的进行改进。",
-  "betteradvancements.remaining": "剩余 %d 个"
+  "betteradvancements.remaining": "剩余 %d 项",
+  "betteradvancements.title_separator": " - ",
+  "title.betteradvancements.config": "更好的进度 配置"
 }
