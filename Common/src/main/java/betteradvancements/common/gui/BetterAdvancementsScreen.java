@@ -4,6 +4,7 @@ import betteradvancements.common.platform.Services;
 import betteradvancements.common.reference.Resources;
 import betteradvancements.common.util.RenderUtil;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementNode;
 import net.minecraft.advancements.AdvancementTree;
@@ -102,7 +103,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.modifiers() == 0) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
             int left = SIDE + (width - internalWidth) / 2;
             int top = TOP + (height - internalHeight) / 2;
 
@@ -156,7 +157,7 @@ public class BetterAdvancementsScreen extends Screen implements ClientAdvancemen
         int left = SIDE + (width - internalWidth) / 2;
         int top = TOP + (height - internalHeight) / 2;
 
-        if (event.button() != 1) {
+        if (event.button() != InputConstants.MOUSE_BUTTON_LEFT) {
             this.isScrolling = false;
             return false;
         }
